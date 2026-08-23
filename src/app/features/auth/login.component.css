@@ -1,0 +1,150 @@
+@reference "../../../styles.css";
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.login-page {
+  @apply relative flex min-h-screen flex-col justify-between overflow-x-hidden bg-[#faf5ee] font-body text-stone-800 selection:bg-[#c34e3a] selection:text-white;
+}
+
+.top-accent-bar {
+  @apply h-1.5 w-full bg-[#c34e3a];
+}
+
+.bg-shape {
+  @apply pointer-events-none absolute rounded-full blur-3xl -z-0;
+}
+
+.bg-shape-top {
+  @apply -top-20 -right-20 h-80 w-80 bg-[#f6dfd2]/60;
+}
+
+.bg-shape-middle {
+  @apply top-1/3 -left-28 h-80 w-80 bg-[#f6dfd2]/50;
+}
+
+.bg-shape-bottom {
+  @apply -bottom-20 -right-16 h-72 w-72 bg-[#fae8dc]/60;
+}
+
+.login-container {
+  @apply relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center px-6 py-8 sm:py-12;
+}
+
+.logo-wrapper {
+  @apply relative;
+}
+
+.logo-squircle {
+  @apply flex h-32 w-32 items-center justify-center rounded-[32px] bg-[#c34e3a] p-2.5 shadow-xl shadow-[#c34e3a]/25 ring-4 ring-[#f4dbcf] transition-transform duration-300 sm:h-36 sm:w-36;
+}
+
+.logo-wrapper:hover .logo-squircle {
+  @apply scale-105;
+}
+
+.logo-inner {
+  @apply flex h-full w-full items-center justify-center overflow-hidden rounded-[24px] bg-white p-1.5 shadow-inner;
+}
+
+.logo-image {
+  @apply h-full w-full object-contain;
+}
+
+.login-header {
+  @apply mt-6 text-center;
+}
+
+.brand-title {
+  @apply font-display text-4xl font-black leading-tight tracking-tight text-[#b83d28] sm:text-[44px];
+}
+
+.brand-tagline {
+  @apply mt-1.5 flex items-center justify-center gap-1.5 text-base font-medium text-stone-600 sm:text-lg;
+}
+
+.login-form {
+  @apply mt-8 flex w-full flex-col gap-4;
+}
+
+.form-label {
+  @apply pb-1 text-sm font-semibold text-stone-900;
+}
+
+.input-wrapper {
+  @apply relative w-full;
+}
+
+.input-icon-left {
+  @apply pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4 text-stone-500;
+}
+
+.field-icon {
+  @apply h-5 w-5;
+}
+
+.form-input {
+  @apply w-full rounded-2xl border border-stone-300/70 py-3.5 pl-12 pr-4 text-base text-stone-900 placeholder:text-stone-400 transition-all hover:bg-[#eae0d4] focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#c34e3a]/40;
+}
+
+.form-input-password {
+  @apply pr-12 tracking-normal;
+}
+
+.password-toggle-btn {
+  @apply absolute inset-y-0 right-0 z-10 flex cursor-pointer items-center pr-4 text-stone-500 transition-colors hover:text-stone-800 focus:outline-hidden;
+}
+
+.form-error {
+  @apply mt-1 px-1 text-xs font-medium text-error;
+}
+
+.status-alert {
+  @apply flex items-center gap-2 rounded-2xl py-2.5 px-4 text-sm shadow-sm;
+}
+
+.alert-success-custom {
+  @apply text-white;
+}
+
+.status-icon {
+  @apply h-5 w-5 shrink-0 stroke-current;
+}
+
+.submit-btn {
+  @apply mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-[#dc8878] px-6 py-4 text-lg font-bold text-white shadow-md shadow-[#dc8878]/35 transition-all hover:bg-[#cf7b6a] hover:shadow-lg hover:shadow-[#dc8878]/45 active:scale-[0.99] active:bg-[#c26e5d] disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+.btn-arrow-icon {
+  @apply h-5 w-5;
+}
+
+.demo-accounts-card {
+  @apply mt-8 w-full rounded-2xl border border-stone-200/50 bg-[#f2e7dc]/80 p-4 shadow-xs backdrop-blur-xs sm:p-5;
+}
+
+.demo-accounts-title {
+  @apply mb-3 text-xs font-bold tracking-wider text-stone-500 uppercase;
+}
+
+.demo-accounts-list {
+  @apply flex flex-col gap-2 text-sm;
+}
+
+.demo-account-item {
+  @apply flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-left transition-colors hover:bg-stone-200/60;
+}
+
+.demo-account-label {
+  @apply font-semibold text-stone-800 transition-colors;
+}
+
+.demo-account-item:hover .demo-account-label {
+  @apply text-[#b83d28];
+}
+
+.demo-account-credentials {
+  @apply font-mono text-xs tracking-tight text-stone-600 sm:text-sm;
+}

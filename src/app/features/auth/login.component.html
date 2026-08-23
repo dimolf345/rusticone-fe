@@ -1,0 +1,236 @@
+<div class="login-page">
+  <!-- Top decorative accent line -->
+  <div class="top-accent-bar"></div>
+
+  <!-- Decorative soft organic background shapes -->
+  <div class="bg-shape bg-shape-top"></div>
+  <div class="bg-shape bg-shape-middle"></div>
+  <div class="bg-shape bg-shape-bottom"></div>
+
+  <!-- Main Login Container -->
+  <main class="login-container">
+    <!-- Brand Logo -->
+    <div class="logo-wrapper">
+      <div class="logo-squircle">
+        <div class="logo-inner">
+          <img src="main-logo.png" alt="Il Rusticone Logo" class="logo-image" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Brand Typography Header -->
+    <header class="login-header">
+      <h1 class="brand-title">Il Rusticone</h1>
+      <p class="brand-tagline">
+        <span>I buffet più buoni della città</span>
+        <span role="img" aria-label="pizza">🍕</span>
+      </p>
+    </header>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Username Fieldset -->
+      <fieldset class="fieldset w-full">
+        <label class="label form-label" for="username"> Nome utente </label>
+        <div class="input-wrapper">
+          <span class="input-icon-left">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="field-icon"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.75"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+              />
+            </svg>
+          </span>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="input form-input"
+            placeholder="es. mario.rossi"
+            autocomplete="username"
+          />
+        </div>
+        @if (usernameError()) {
+          <span class="form-error">{{ usernameError() }}</span>
+        }
+      </fieldset>
+
+      <!-- Password Fieldset -->
+      <fieldset class="fieldset w-full">
+        <label class="label form-label" for="password"> Password </label>
+        <div class="input-wrapper">
+          <span class="input-icon-left">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="field-icon"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.75"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+              />
+            </svg>
+          </span>
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            class="input form-input form-input-password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            (click)="togglePassword()"
+            class="password-toggle-btn"
+            [attr.aria-label]="showPassword() ? 'Nascondi password' : 'Mostra password'"
+          >
+            @if (showPassword()) {
+              <!-- Eye Off Icon -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="field-icon"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.75"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
+                />
+              </svg>
+            } @else {
+              <!-- Eye Icon -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="field-icon"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.75"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            }
+          </button>
+        </div>
+        @if (passwordError()) {
+          <span class="form-error">{{ passwordError() }}</span>
+        }
+      </fieldset>
+
+      <!-- Status Alerts -->
+      @if (errorMessage()) {
+        <div class="alert alert-error status-alert" role="alert">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="status-icon"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      @if (successMessage()) {
+        <div class="alert alert-success status-alert alert-success-custom" role="alert">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="status-icon"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>{{ successMessage() }}</span>
+        </div>
+      }
+
+      <!-- Submit Button -->
+      <button type="submit" [disabled]="isLoading()" class="submit-btn">
+        @if (isLoading()) {
+          <span class="loading loading-spinner loading-sm" aria-hidden="true"></span>
+          <span>Accesso in corso...</span>
+        } @else {
+          <span>Accedi</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="btn-arrow-icon"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+            />
+          </svg>
+        }
+      </button>
+    </form>
+
+    <!-- Demo Accounts Card -->
+    <aside class="demo-accounts-card">
+      <h2 class="demo-accounts-title">ACCOUNT DI PROVA</h2>
+      <div class="demo-accounts-list">
+        @for (account of demoAccounts; track account.role) {
+          <button
+            type="button"
+            (click)="fillDemoAccount(account)"
+            class="demo-account-item"
+            [title]="'Clicca per compilare con credenziali ' + account.roleLabel"
+          >
+            <span class="demo-account-label">
+              {{ account.roleLabel }}
+            </span>
+            <span class="demo-account-credentials">
+              {{ account.username }} / {{ account.password }}
+            </span>
+          </button>
+        }
+      </div>
+    </aside>
+  </main>
+</div>

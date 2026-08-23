@@ -1,6 +1,7 @@
 # Il Rusticone - Frontend Guidelines & Agent Instructions
 
 ## 🍕 Project Overview
+
 **Rusticone Frontend (`rusticone-fe`)** is the client web application for **"Il Rusticone"**, an artisanal pizzeria offering a dedicated buffet catering service.
 The application showcases catering buffet packages, menu customization, quote/order requests, and will feature an **interactive AI chatbot** to assist customers in estimating catering needs, answering menu questions, and building customized buffet proposals.
 
@@ -53,6 +54,7 @@ src/
 ## 🎯 Development & Agent Guidelines
 
 ### 1. Modern Angular Standards
+
 - **Always use Standalone Components** (`standalone: true` is default in recent Angular versions; omit legacy `NgModule` unless strictly interacting with third-party legacy libraries).
 - **Zoneless & Signal-first**:
   - Design components around Signals for local and shared state.
@@ -62,20 +64,28 @@ src/
   - Follow Angular style conventions: `*.component.ts` (or `*.ts` matching convention), `*.html`, and `*.css` when necessary.
 
 ### 2. UI & Design System
+
 - **Brand Identity**: Warm, artisanal, Italian rustic yet elegant dining aesthetic.
 - **DaisyUI & Tailwind**:
-  - Rely on DaisyUI semantic classes (`btn`, `card`, `badge`, `modal`, etc.) with the `caramellatte` theme palette.
+  - Rely on DaisyUI semantic classes (`btn`, `card`, `badge`, `modal`, `fieldset`, `label`, `input`, etc.) with the `caramellatte` theme palette.
   - Apply `--font-display` (`font-display` / Playfair Display) for titles and `--font-body` (`font-body` / DM Sans) for text.
+- **Tailwind CSS & Component Styling Convention**:
+  - **Do NOT write long Tailwind class chains directly in HTML templates** (unless there are only 1 or 2 classes to apply).
+  - For a higher number of classes, create meaningful, semantic class names in the component's linked `*.css` file and compose them using Tailwind's `@apply` syntax.
+  - In component `*.css` files, include `@reference "<relative-path>/styles.css";` at the top so Tailwind v4 recognizes custom `@theme` tokens and utilities.
 - **Mobile-First & Accessible**:
   - Ensure fully responsive layouts for mobile catering requests.
   - Adhere to WCAG accessibility guidelines (semantic HTML, proper ARIA labels, keyboard navigation).
 
 ### 3. AI Assistant Integration Guidelines (Future-proofing)
+
 - Design modular UI components for the chat widget to easily embed or dock anywhere in the flow.
 - Maintain decoupled service layers for streaming AI responses, conversation state management, and buffet tool-calling / action triggers.
 
 ### 4. Code Formatting & Style
+
 - **Prettier**: Use Prettier for formatting (`"semi": true`, `"singleQuote": true`, `"printWidth": 100`). Always end statements with semicolons.
 
 ### 5. Git & Commits
+
 - Use Conventional Commits (`feat:`, `fix:`, `style:`, `refactor:`, `test:`, `docs:`).
