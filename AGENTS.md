@@ -85,7 +85,13 @@ src/
 ### 4. Code Formatting & Style
 
 - **Prettier**: Use Prettier for formatting (`"semi": true`, `"singleQuote": true`, `"printWidth": 100`). Always end statements with semicolons.
-
+- **Icons**: This project uses `@ng-icons/core` to provide icons. `NgIcon` component should be used to display icons. The icons are imported from `@ng-icons/heroicons/outline` or `@ng-icons/heroicons/solid`.
 ### 5. Git & Commits
 
 - Use Conventional Commits (`feat:`, `fix:`, `style:`, `refactor:`, `test:`, `docs:`).
+
+### 6. Component creation conventions
+- For component attributes and methods, prefer using the "#" prefix instead of the "private" access modifier
+
+### 7. Forms & Validation
+- Create forms using `FormBuilder` class, don't create directly FormGroups with syntax like form = new FormGroup({})

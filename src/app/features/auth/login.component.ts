@@ -1,53 +1,67 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { FormValidationService } from '../../core/services/form-validation.service';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+  heroArrowRight,
+  heroEye,
+  heroEyeSlash,
+  heroLockClosed,
+  heroUser,
+} from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, NgIcon],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    provideIcons({
+      heroUser,
+      heroLockClosed,
+      heroEye,
+      heroEyeSlash,
+      heroArrowRight,
+    }),
+  ],
 })
 export class LoginComponent {
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
+  #fb = inject(FormBuilder);
+  #authService = inject(AuthService);
+  #router = inject(Router);
+  #validationService = inject(FormValidationService);
 
   readonly showPassword = signal(false);
   readonly isLoading = signal(false);
   readonly submitted = signal(false);
 
-  readonly loginForm = new FormGroup({
-    username: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3)],
-    }),
-    password: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(4)],
-    }),
+  readonly loginForm = this.#fb.nonNullable.group({
+    username: ['', [Validators.required, Validators.minLength(3)]],
+    password: ['', [Validators.required, Validators.minLength(4)]],
   });
 
   readonly usernameControl = this.loginForm.controls.username;
   readonly passwordControl = this.loginForm.controls.password;
 
-  readonly usernameError = computed(() => {
-    if (!this.submitted() && !this.usernameControl.touched) return null;
-    if (this.usernameControl.hasError('required')) return 'Il nome utente è obbligatorio';
-    if (this.usernameControl.hasError('minlength'))
-      return 'Il nome utente deve avere almeno 3 caratteri';
-    return null;
-  });
+  readonly usernameError = computed(() =>
+    this.#validationService.getControlError(this.usernameControl, {
+      isSubmitted: this.submitted(),
+      fieldName: 'Il nome utente',
+    }),
+  );
 
-  readonly passwordError = computed(() => {
-    if (!this.submitted() && !this.passwordControl.touched) return null;
-    if (this.passwordControl.hasError('required')) return 'La password è obbligatoria';
-    if (this.passwordControl.hasError('minlength'))
-      return 'La password deve avere almeno 4 caratteri';
-    return null;
-  });
+  readonly passwordError = computed(() =>
+    this.#validationService.getControlError(this.passwordControl, {
+      isSubmitted: this.submitted(),
+      fieldName: 'La password',
+      customMessages: {
+        required: 'La password è obbligatoria',
+      },
+    }),
+  );
 
   togglePassword(): void {
     this.showPassword.update((val) => !val);
@@ -57,7 +71,7 @@ export class LoginComponent {
     this.submitted.set(true);
 
     if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
+      this.#validationService.markFormGroupTouched(this.loginForm);
       return;
     }
 
@@ -71,6 +85,6 @@ export class LoginComponent {
 
   onRegister(): void {
     // Navigation or handler for manual registration
-    this.router.navigate(['/register']).catch(() => {});
+    this.#router.navigate(['/register']).catch(() => {});
   }
 }

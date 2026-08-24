@@ -9,3 +9,8 @@
   --font-display: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
 }
+
+
+button {
+  @apply rounded-2xl text-base 
+}
