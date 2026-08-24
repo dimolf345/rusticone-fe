@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { LoginComponent } from './login.component';
 
@@ -9,7 +10,7 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LoginComponent],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), provideHttpClient()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
@@ -52,10 +53,10 @@ describe('LoginComponent', () => {
     expect(component.passwordError()).toBeNull();
   });
 
-  it('should handle Google Sign-in trigger', () => {
-    const googleSpy = vi.spyOn(component, 'onGoogleSignIn');
-    component.onGoogleSignIn();
-    expect(googleSpy).toHaveBeenCalled();
+  it('should have google button container in view', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const googleBtn = compiled.querySelector('.google-btn-container');
+    expect(googleBtn).toBeTruthy();
   });
 
   it('should handle Register trigger', () => {

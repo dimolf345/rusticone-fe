@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -17,7 +26,6 @@ import {
   imports: [ReactiveFormsModule, NgIcon],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     provideIcons({
       heroUser,
@@ -33,6 +41,7 @@ export class LoginComponent {
   #authService = inject(AuthService);
   #router = inject(Router);
   #validationService = inject(FormValidationService);
+  protected readonly googleBtn = viewChild<ElementRef<HTMLElement>>('googleBtn');
 
   readonly showPassword = signal(false);
   readonly isLoading = signal(false);
@@ -63,6 +72,22 @@ export class LoginComponent {
     }),
   );
 
+  constructor() {
+    afterNextRender(() => {
+      const container = this.googleBtn()?.nativeElement;
+      if (container) {
+        this.#authService.renderGoogleButton(container, {
+          onSuccess: () => {
+            this.#router.navigate(['/']).catch(() => { });
+          },
+          onError: (error) => {
+            console.error('Google Sign-in failed:', error);
+          },
+        });
+      }
+    });
+  }
+
   togglePassword(): void {
     this.showPassword.update((val) => !val);
   }
@@ -79,12 +104,8 @@ export class LoginComponent {
     // HTTP authentication call will be integrated here
   }
 
-  onGoogleSignIn(): void {
-    // OAuth 2.0 Google Sign-in will be integrated here
-  }
-
   onRegister(): void {
     // Navigation or handler for manual registration
-    this.#router.navigate(['/register']).catch(() => {});
+    this.#router.navigate(['/register']).catch(() => { });
   }
 }
