@@ -34,38 +34,6 @@
   @apply relative z-10 mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center px-6 py-4 sm:py-6;
 }
 
-.logo-wrapper {
-  @apply relative;
-}
-
-.logo-squircle {
-  @apply flex h-24 w-24 items-center justify-center rounded-3xl bg-[#c34e3a] p-2 shadow-lg shadow-[#c34e3a]/25 ring-4 ring-[#f4dbcf] transition-transform duration-300 sm:h-28 sm:w-28;
-}
-
-.logo-wrapper:hover .logo-squircle {
-  @apply scale-105;
-}
-
-.logo-inner {
-  @apply flex h-full w-full items-center justify-center overflow-hidden rounded-2xl bg-white p-1 shadow-inner;
-}
-
-.logo-image {
-  @apply h-full w-full object-contain;
-}
-
-.login-header {
-  @apply mt-3 text-center sm:mt-4;
-}
-
-.brand-title {
-  @apply font-display text-3xl font-black leading-tight tracking-tight text-[#b83d28] sm:text-4xl;
-}
-
-.brand-tagline {
-  @apply mt-0.5 flex items-center justify-center gap-1.5 text-xs font-medium text-stone-600 sm:text-sm;
-}
-
 .login-form {
   @apply mt-5 flex w-full flex-col gap-3 sm:mt-6;
 }

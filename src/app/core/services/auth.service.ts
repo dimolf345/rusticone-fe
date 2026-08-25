@@ -1,14 +1,14 @@
 /// <reference types="google.accounts" />
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal, Service, effect } from '@angular/core';
+import { computed, effect, inject, Service, signal } from '@angular/core';
 import { environment } from '@env/environment';
 import { firstValueFrom } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constant';
-import { User } from '../models/user.model';
 import { LOCAL_STORAGE_KEYS } from '../constants/local-storage.constants';
+import { IAuthResponse } from '../models/auth.model';
 
 export interface RenderGoogleButtonOptions {
-  onSuccess?: (user: User) => void;
+  onSuccess?: (user: IAuthResponse) => void;
   onError?: (err: unknown) => void;
   customOptions?: google.accounts.id.GsiButtonConfiguration;
 }
@@ -16,20 +16,20 @@ export interface RenderGoogleButtonOptions {
 @Service()
 export class AuthService {
   #http = inject(HttpClient);
-  #currentUser = signal<User | null>(null);
+  #authResponse = signal<IAuthResponse | null>(null);
 
-  readonly currentUser = this.#currentUser.asReadonly();
-  readonly isAuthenticated = computed(() => this.#currentUser() !== null);
-  readonly isAdmin = computed(() => this.#currentUser()?.role === 'admin');
+  readonly currentUser = computed(() => this.#authResponse()?.user || null);
+  readonly isAuthenticated = computed(() => this.currentUser() !== null);
+  readonly isAdmin = computed(() => this.currentUser()?.role === 'admin');
 
   saveOrRemoveTokenEffect = effect(() => {
-    const authenticatedUser = this.currentUser();
+    const authResponse = this.#authResponse();
 
-    if (authenticatedUser === null) {
+    if (authResponse === null) {
       [LOCAL_STORAGE_KEYS.ACCESS_TOKEN, LOCAL_STORAGE_KEYS.REFRESH_TOKEN].forEach((k) => localStorage.removeItem(k));
     }
 
-    const { accessToken, refreshToken } = authenticatedUser;
+    const { accessToken, refreshToken } = authResponse!;
     if (accessToken) {
       localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, accessToken);
     }
@@ -57,9 +57,9 @@ export class AuthService {
               throw new Error('Nessun token ID Google ricevuto');
             }
 
-            const user = await this.#verifyGoogleTokenOnBackend(response.credential);
-            this.setCurrentUser(user);
-            options?.onSuccess?.(user);
+            const authResponse = await this.#verifyGoogleTokenOnBackend(response.credential);
+            this.#authResponse.set(authResponse);
+            options?.onSuccess?.(authResponse);
           } catch (err) {
             options?.onError?.(err);
           }
@@ -98,17 +98,13 @@ export class AuthService {
   /**
    * Sends the Google ID token to the backend for verification.
    */
-  #verifyGoogleTokenOnBackend(idToken: string): Promise<User> {
+  #verifyGoogleTokenOnBackend(idToken: string): Promise<IAuthResponse> {
     const url = `${environment.apiUrl}${API_ENDPOINTS.AUTH.SIGN_IN_WITH_GOOGLE}`;
-    return firstValueFrom(this.#http.post<User>(url, { idToken }));
-  }
-
-  setCurrentUser(user: User | null): void {
-    this.#currentUser.set(user);
+    return firstValueFrom(this.#http.post<IAuthResponse>(url, { idToken }));
   }
 
   logout(): void {
-    this.#currentUser.set(null);
+    this.#authResponse.set(null);
     if (typeof google !== 'undefined' && google?.accounts?.id) {
       google.accounts.id.disableAutoSelect();
     }

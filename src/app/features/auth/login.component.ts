@@ -1,17 +1,14 @@
 import {
   afterNextRender,
-  ChangeDetectionStrategy,
   Component,
   computed,
   ElementRef,
   inject,
   signal,
-  viewChild,
+  viewChild
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
-import { FormValidationService } from '../../core/services/form-validation.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
   heroArrowRight,
@@ -20,10 +17,13 @@ import {
   heroLockClosed,
   heroUser,
 } from '@ng-icons/heroicons/outline';
+import { AuthService } from '../../core/services/auth.service';
+import { FormValidationService } from '../../core/services/form-validation.service';
+import { MainLogo } from '../../components/main-logo/main-logo';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, NgIcon],
+  imports: [ReactiveFormsModule, NgIcon, MainLogo],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   providers: [

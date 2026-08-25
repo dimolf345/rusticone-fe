@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -26,9 +26,7 @@ export interface ValidationControlErrorOptions extends ValidationErrorMessageOpt
   isSubmitted?: boolean;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class FormValidationService {
   /**
    * Extracts the first error message from an AbstractControl if any error exists.

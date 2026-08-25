@@ -1,8 +1,8 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { User } from '../models/user.model';
-import { AuthService } from './auth.service';
+import { User } from '../../models/user.model';
+import { AuthService } from '../auth.service';
 
 describe('AuthService', () => {
   let service: AuthService;

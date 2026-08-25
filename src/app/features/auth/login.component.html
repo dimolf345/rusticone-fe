@@ -7,26 +7,9 @@
   <div class="bg-shape bg-shape-middle"></div>
   <div class="bg-shape bg-shape-bottom"></div>
 
+  <app-main-logo />
   <!-- Main Login Container -->
   <main class="login-container">
-    <!-- Brand Logo -->
-    <div class="logo-wrapper">
-      <div class="logo-squircle">
-        <div class="logo-inner">
-          <img src="main-logo.png" alt="Il Rusticone Logo" class="logo-image" />
-        </div>
-      </div>
-    </div>
-
-    <!-- Brand Typography Header -->
-    <header class="login-header">
-      <h1 class="brand-title">Il Rusticone</h1>
-      <p class="brand-tagline">
-        <span>I buffet più buoni della città</span>
-        <span role="img" aria-label="pizza">🍕</span>
-      </p>
-    </header>
-
     <!-- Login Form -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <!-- Username Fieldset -->
