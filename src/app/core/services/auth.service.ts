@@ -25,11 +25,11 @@ export class AuthService {
   saveOrRemoveTokenEffect = effect(() => {
     const authResponse = this.#authResponse();
 
-    if (authResponse === null) {
+    if (!authResponse) {
       [LOCAL_STORAGE_KEYS.ACCESS_TOKEN, LOCAL_STORAGE_KEYS.REFRESH_TOKEN].forEach((k) => localStorage.removeItem(k));
     }
 
-    const { accessToken, refreshToken } = authResponse!;
+    const { accessToken, refreshToken } = authResponse || {};
     if (accessToken) {
       localStorage.setItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN, accessToken);
     }

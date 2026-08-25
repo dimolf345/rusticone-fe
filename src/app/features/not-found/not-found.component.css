@@ -1,0 +1,63 @@
+@reference "../../../styles.css";
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.not-found-page {
+  @apply relative flex min-h-dvh flex-col justify-center overflow-hidden bg-[#faf5ee] font-body text-stone-800 selection:bg-[#c34e3a] selection:text-white;
+}
+
+.top-accent-bar {
+  @apply absolute top-0 left-0 h-1.5 w-full shrink-0 bg-[#c34e3a];
+}
+
+.bg-shape {
+  @apply pointer-events-none absolute rounded-full blur-3xl -z-0;
+}
+
+.bg-shape-top {
+  @apply -top-20 -right-20 h-72 w-72 bg-[#f6dfd2]/60;
+}
+
+.bg-shape-middle {
+  @apply top-1/3 -left-28 h-72 w-72 bg-[#f6dfd2]/50;
+}
+
+.bg-shape-bottom {
+  @apply -bottom-20 -right-16 h-64 w-64 bg-[#fae8dc]/60;
+}
+
+.not-found-content {
+  @apply relative z-10 mx-auto flex w-full max-w-lg flex-col items-center justify-center text-center px-6 py-8;
+}
+
+.message-card {
+  @apply mt-6 flex w-full flex-col items-center rounded-3xl border border-stone-200/80 bg-white/70 p-6 shadow-xl backdrop-blur-md sm:p-8;
+}
+
+.status-code {
+  @apply font-display text-5xl font-black tracking-tight text-[#b83d28] sm:text-6xl;
+}
+
+.error-title {
+  @apply mt-2 font-display text-2xl font-bold text-stone-900 sm:text-3xl;
+}
+
+.error-description {
+  @apply mt-3 max-w-sm text-sm text-stone-600 sm:text-base;
+}
+
+.action-wrapper {
+  @apply mt-6 w-full max-w-xs;
+}
+
+.home-btn {
+  @apply btn btn-neutral flex w-full cursor-pointer items-center justify-center gap-2 font-bold text-white shadow-md shadow-[#dc8878]/35 transition-all hover:bg-[#cf7b6a] hover:shadow-lg hover:shadow-[#dc8878]/45 active:scale-[0.99] active:bg-[#c26e5d] sm:text-base;
+}
+
+.btn-icon {
+  @apply h-5 w-5;
+}

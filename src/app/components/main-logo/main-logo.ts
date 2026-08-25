@@ -4,6 +4,11 @@ import { Component } from '@angular/core';
   imports: [],
   selector: 'app-main-logo',
   styles: `
+    :host {
+      display: block;
+    }
+    @reference "../../../styles.css";
+
     .logo-squircle {
       @apply flex h-24 w-24 items-center justify-center rounded-3xl bg-[#c34e3a] p-2 shadow-lg shadow-[#c34e3a]/25 ring-4 ring-[#f4dbcf] hover:scale-105 transition-transform duration-300 sm:h-28 sm:w-28;
     }
@@ -30,7 +35,7 @@ import { Component } from '@angular/core';
   `,
   template: `   
     <!-- Brand Logo -->
-    <div class="relative hover:scale-105">
+    <div class="relative hover:scale-105 flex justify-center">
       <div class="logo-squircle">
         <div class="logo-inner">
           <img src="main-logo.png" alt="Il Rusticone Logo" class="logo-image" />
