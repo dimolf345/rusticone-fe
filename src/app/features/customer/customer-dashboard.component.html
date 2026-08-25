@@ -1,0 +1,165 @@
+<div class="customer-page">
+  <!-- Top Navigation Header -->
+  <header class="customer-navbar">
+    <div class="navbar-brand">
+      <div class="brand-logo-small">🍕</div>
+      <div>
+        <h1 class="brand-title">Il Rusticone</h1>
+        <span class="brand-subtitle">Catering & Buffet d'Eccellenza</span>
+      </div>
+    </div>
+
+    <div class="navbar-actions">
+      <div class="user-chip">
+        <ng-icon size="1.1rem" name="heroUser" />
+        <span class="font-medium">{{ currentUser()?.name || currentUser()?.username || 'Cliente' }}</span>
+        <span class="badge badge-primary badge-sm">Cliente</span>
+      </div>
+
+      <button (click)="logout()" class="btn btn-ghost btn-sm btn-logout" aria-label="Esci">
+        <ng-icon size="1.25rem" name="heroArrowRightOnRectangle" />
+        <span class="hidden sm:inline">Esci</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="customer-content">
+    <!-- Welcome Hero Card -->
+    <div class="hero-card">
+      <div class="hero-text">
+        <span class="hero-tagline">Organizza il tuo evento speciale</span>
+        <h2 class="hero-title">Ciao, {{ currentUser()?.name || currentUser()?.username || 'Golosone' }}! 🍕</h2>
+        <p class="hero-desc">
+          Crea il buffet perfetto con le nostre pizze artigianali ad alta idratazione, focacce calde e fritti fragranti.
+        </p>
+      </div>
+
+      <div class="hero-actions">
+        <button class="btn btn-neutral btn-build-buffet">
+          <ng-icon size="1.1rem" name="heroPlus" />
+          <span>Componi il tuo Buffet</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- AI Assistant Callout Banner -->
+    <div class="ai-banner">
+      <div class="ai-icon-bubble">
+        <ng-icon size="1.75rem" name="heroSparkles" />
+      </div>
+      <div class="ai-banner-text">
+        <h3 class="ai-banner-title">Non sai quante pizze o porzioni ordinare?</h3>
+        <p class="ai-banner-desc">
+          Il nostro <strong>Assistente AI Catering</strong> calcola esattamente le dosi ottimali in base a invitati, orario e preferenze.
+        </p>
+      </div>
+      <button class="btn btn-sm sm:btn-md btn-ai-chat">
+        <ng-icon size="1.1rem" name="heroChatBubbleLeftRight" />
+        <span>Chiedi all'Assistente AI</span>
+      </button>
+    </div>
+
+    <!-- Active Quotes / Requests -->
+    <section class="section-container">
+      <div class="section-heading">
+        <div>
+          <h3 class="section-title">Le tue richieste di preventivo</h3>
+          <p class="section-desc">Controlla lo stato delle tue proposte buffet salvate</p>
+        </div>
+      </div>
+
+      @if (activeQuotes().length > 0) {
+        <div class="quotes-grid">
+          @for (quote of activeQuotes(); track quote.id) {
+            <div class="quote-card">
+              <div class="quote-header">
+                <div>
+                  <span class="quote-id">{{ quote.id }}</span>
+                  <h4 class="quote-title">{{ quote.packageTitle }}</h4>
+                </div>
+                <span class="badge {{ getStatusBadge(quote.status).class }}">
+                  {{ getStatusBadge(quote.status).label }}
+                </span>
+              </div>
+
+              <div class="quote-details">
+                <div class="quote-detail-item">
+                  <ng-icon size="1rem" name="heroCalendarDays" />
+                  <span>{{ quote.date }}</span>
+                </div>
+                <div class="quote-detail-item">
+                  <ng-icon size="1rem" name="heroUser" />
+                  <span>{{ quote.guestCount }} persone</span>
+                </div>
+              </div>
+
+              <div class="quote-footer">
+                <div class="quote-price">
+                  <span class="text-xs text-stone-500">Stima totale</span>
+                  <span class="font-display font-bold text-lg text-stone-900">€ {{ quote.estimatedCost }}</span>
+                </div>
+                <button class="btn btn-ghost btn-xs sm:btn-sm btn-quote-details">
+                  <span>Dettagli</span>
+                  <ng-icon size="0.9rem" name="heroArrowRight" />
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">
+          <ng-icon size="2.5rem" name="heroClipboardDocumentList" class="text-stone-400" />
+          <p class="empty-text">Nessun preventivo attivo al momento.</p>
+        </div>
+      }
+    </section>
+
+    <!-- Suggested Buffet Packages Showcase -->
+    <section class="section-container">
+      <div class="section-heading">
+        <div>
+          <h3 class="section-title">Pacchetti Buffet Più Amati</h3>
+          <p class="section-desc">Seleziona uno dei nostri menù completi pronti per il tuo buffet</p>
+        </div>
+      </div>
+
+      <div class="packages-grid">
+        @for (pkg of buffetPackages(); track pkg.id) {
+          <div class="pkg-card" [class.pkg-card-popular]="pkg.popular">
+            @if (pkg.popular) {
+              <div class="pkg-popular-badge">
+                <ng-icon size="0.9rem" name="heroSparkles" />
+                <span>Più Scelto</span>
+              </div>
+            }
+
+            <div class="pkg-header">
+              <h4 class="pkg-title">{{ pkg.title }}</h4>
+              <p class="pkg-desc">{{ pkg.description }}</p>
+            </div>
+
+            <div class="pkg-price-row">
+              <span class="pkg-price">€ {{ pkg.pricePerPerson }}</span>
+              <span class="pkg-unit">/ persona</span>
+            </div>
+
+            <ul class="pkg-highlights">
+              @for (item of pkg.highlights; track item) {
+                <li class="pkg-highlight-item">
+                  <ng-icon size="1rem" name="heroCheckCircle" class="text-emerald-600 shrink-0" />
+                  <span>{{ item }}</span>
+                </li>
+              }
+            </ul>
+
+            <button class="btn btn-outline btn-select-pkg">
+              <span>Scegli Questo Pacchetto</span>
+              <ng-icon size="1rem" name="heroArrowRight" />
+            </button>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+</div>

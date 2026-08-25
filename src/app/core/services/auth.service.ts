@@ -5,7 +5,9 @@ import { environment } from '@env/environment';
 import { firstValueFrom } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constant';
 import { LOCAL_STORAGE_KEYS } from '../constants/local-storage.constants';
-import { IAuthResponse } from '../models/auth.model';
+import { Router } from '@angular/router';
+import { AuthProvider, IAuthResponse, IRegisterRequest } from '../models/auth.model';
+import { User } from '../models/user.model';
 
 export interface RenderGoogleButtonOptions {
   onSuccess?: (user: IAuthResponse) => void;
@@ -16,6 +18,7 @@ export interface RenderGoogleButtonOptions {
 @Service()
 export class AuthService {
   #http = inject(HttpClient);
+  #router = inject(Router);
   #authResponse = signal<IAuthResponse | null>(null);
 
   readonly currentUser = computed(() => this.#authResponse()?.user || null);
@@ -103,10 +106,55 @@ export class AuthService {
     return firstValueFrom(this.#http.post<IAuthResponse>(url, { idToken }));
   }
 
+  /**
+   * Registers a new user with email and password (mocked for testing).
+   */
+  register(request: IRegisterRequest): Promise<IAuthResponse> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const mockAuthResponse: IAuthResponse = {
+          accessToken: `mock-access-token-${Date.now()}`,
+          refreshToken: `mock-refresh-token-${Date.now()}`,
+          user: {
+            id: `mock-user-${Math.random().toString(36).substring(2, 9)}`,
+            username: request.username,
+            name: request.username,
+            email: request.email,
+            role: 'customer',
+            authProvider: AuthProvider.Local,
+            authProviderUserID: 'mock-user-id',
+            emailVerified: false,
+            lastLoginAt: new Date().toISOString(),
+          },
+        };
+
+        this.#authResponse.set(mockAuthResponse);
+        resolve(mockAuthResponse);
+      }, 1000);
+    });
+  }
+
+  /**
+   * Redirects the user according to their role.
+   */
+  redirectUserByRole(user?: User | null): Promise<boolean> {
+    const targetUser = user ?? this.currentUser();
+    if (!targetUser) {
+      return this.#router.navigate(['/login']);
+    }
+
+    if (targetUser.role === 'admin') {
+      return this.#router.navigate(['/admin']);
+    }
+
+    return this.#router.navigate(['/customer']);
+  }
+
   logout(): void {
     this.#authResponse.set(null);
     if (typeof google !== 'undefined' && google?.accounts?.id) {
       google.accounts.id.disableAutoSelect();
     }
+    this.#router.navigate(['/login']).catch(() => {});
   }
 }

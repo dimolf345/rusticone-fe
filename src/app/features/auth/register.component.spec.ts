@@ -81,7 +81,7 @@ describe('RegisterComponent', () => {
   });
 
   it('should fallback username to email if left empty upon submission', () => {
-    (authService as any).register = vi.fn();
+    vi.spyOn(authService, 'register').mockResolvedValue({} as any);
 
     component.registerForm.patchValue({
       email: 'mario.rossi@example.com',
@@ -92,7 +92,7 @@ describe('RegisterComponent', () => {
 
     component.onSubmit();
 
-    expect((authService as any).register).toHaveBeenCalledWith({
+    expect(authService.register).toHaveBeenCalledWith({
       email: 'mario.rossi@example.com',
       username: 'mario.rossi@example.com',
       password: 'secretPassword123',
@@ -101,7 +101,7 @@ describe('RegisterComponent', () => {
   });
 
   it('should use explicit username if provided upon submission', () => {
-    (authService as any).register = vi.fn();
+    vi.spyOn(authService, 'register').mockResolvedValue({} as any);
 
     component.registerForm.patchValue({
       email: 'mario.rossi@example.com',
@@ -112,7 +112,7 @@ describe('RegisterComponent', () => {
 
     component.onSubmit();
 
-    expect((authService as any).register).toHaveBeenCalledWith({
+    expect(authService.register).toHaveBeenCalledWith({
       email: 'mario.rossi@example.com',
       username: 'mariorossi99',
       password: 'secretPassword123',

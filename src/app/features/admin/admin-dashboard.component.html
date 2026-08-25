@@ -1,0 +1,140 @@
+<div class="dashboard-page">
+  <!-- Top Navigation Header -->
+  <header class="dashboard-navbar">
+    <div class="navbar-brand">
+      <div class="brand-badge">
+        <ng-icon size="1.25rem" name="heroShieldCheck" />
+      </div>
+      <div>
+        <h1 class="brand-title">Il Rusticone</h1>
+        <span class="brand-subtitle">Pannello Amministrazione Buffet & Catering</span>
+      </div>
+    </div>
+
+    <div class="navbar-actions">
+      <div class="user-chip">
+        <ng-icon size="1.1rem" name="heroUser" />
+        <span class="font-medium">{{ currentUser()?.name || currentUser()?.username || 'Admin' }}</span>
+        <span class="badge badge-error badge-sm uppercase">Admin</span>
+      </div>
+
+      <button (click)="logout()" class="btn btn-ghost btn-sm btn-logout" aria-label="Esci">
+        <ng-icon size="1.25rem" name="heroArrowRightOnRectangle" />
+        <span class="hidden sm:inline">Esci</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main class="dashboard-content">
+    <!-- Welcome banner -->
+    <div class="welcome-banner">
+      <div class="welcome-text">
+        <h2 class="welcome-title">Bentornato, {{ currentUser()?.name || currentUser()?.username || 'Admin' }}! 👋</h2>
+        <p class="welcome-desc">
+          Ecco il riepilogo delle richieste di catering, preventivi buffet e ordini in preparazione.
+        </p>
+      </div>
+      <div class="quick-cta-group">
+        <button class="btn btn-neutral btn-primary-action">
+          <ng-icon size="1.1rem" name="heroPlus" />
+          <span>Nuovo Pacchetto</span>
+        </button>
+        <button class="btn btn-outline btn-secondary-action">
+          <ng-icon size="1.1rem" name="heroSparkles" />
+          <span>Configura Assistente AI</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon-wrapper bg-amber-500/15 text-amber-700">
+          <ng-icon size="1.75rem" name="heroClipboardDocumentList" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Preventivi Attivi</span>
+          <span class="stat-value">14</span>
+          <span class="stat-subtext text-emerald-700 font-semibold">+4 rispetto a ieri</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrapper bg-[#c34e3a]/15 text-[#c34e3a]">
+          <ng-icon size="1.75rem" name="heroCalendarDays" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Eventi Questa Settimana</span>
+          <span class="stat-value">8</span>
+          <span class="stat-subtext">350 invitati totali</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrapper bg-emerald-500/15 text-emerald-700">
+          <ng-icon size="1.75rem" name="heroBanknotes" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Fatturato Stimato Mese</span>
+          <span class="stat-value">€ 8.420</span>
+          <span class="stat-subtext text-emerald-700 font-semibold">+18% vs mese prec.</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon-wrapper bg-sky-500/15 text-sky-700">
+          <ng-icon size="1.75rem" name="heroUsers" />
+        </div>
+        <div class="stat-info">
+          <span class="stat-label">Clienti Registrati</span>
+          <span class="stat-value">148</span>
+          <span class="stat-subtext">+12 questa settimana</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Orders Table Section -->
+    <div class="orders-section">
+      <div class="section-header">
+        <div>
+          <h3 class="section-title">Richieste Catering & Buffet Recenti</h3>
+          <p class="section-subtitle">Gestisci lo stato delle conferme e la preparazione delle portate</p>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="table w-full">
+          <thead>
+            <tr>
+              <th>ID Richiesta</th>
+              <th>Cliente</th>
+              <th>Pacchetto / Evento</th>
+              <th>Invitati</th>
+              <th>Data Evento</th>
+              <th>Totale</th>
+              <th>Stato</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of recentOrders(); track order.id) {
+              <tr class="table-row-hover">
+                <td class="font-mono text-xs font-bold text-stone-600">{{ order.id }}</td>
+                <td class="font-medium text-stone-900">{{ order.customerName }}</td>
+                <td>{{ order.eventType }}</td>
+                <td>{{ order.guestsCount }} pax</td>
+                <td>{{ order.eventDate }}</td>
+                <td class="font-semibold text-stone-900">€ {{ order.totalAmount }}</td>
+                <td>
+                  <span class="badge {{ getStatusBadgeClass(order.status) }}">
+                    {{ getStatusLabel(order.status) }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>

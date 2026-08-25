@@ -6,6 +6,13 @@ export interface IAuthResponse {
     user: User;
 }
 
+export interface IRegisterRequest {
+    email: string;
+    username: string;
+    password: string;
+    confirmPassword?: string;
+}
+
 export enum AuthProvider {
     Local = 'local',
     Google = 'google'

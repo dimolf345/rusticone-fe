@@ -77,8 +77,8 @@ export class LoginComponent {
       const container = this.googleBtn()?.nativeElement;
       if (container) {
         this.#authService.renderGoogleButton(container, {
-          onSuccess: () => {
-            this.#router.navigate(['/']).catch(() => { });
+          onSuccess: (authResponse) => {
+            this.#authService.redirectUserByRole(authResponse.user).catch(() => { });
           },
           onError: (error) => {
             console.error('Google Sign-in failed:', error);

@@ -133,10 +133,18 @@ export class RegisterComponent {
       confirmPassword,
     };
 
-    // When register method is implemented on AuthService:
-    if ('register' in this.#authService && typeof (this.#authService as any).register === 'function') {
-      (this.#authService as any).register(payload);
-    }
+    this.isLoading.set(true);
+    this.#authService
+      .register(payload)
+      .then((authResponse) => {
+        this.#authService.redirectUserByRole(authResponse.user).catch(() => {});
+      })
+      .catch((error) => {
+        console.error('Registration error:', error);
+      })
+      .finally(() => {
+        this.isLoading.set(false);
+      });
   }
 
   onLogin(): void {

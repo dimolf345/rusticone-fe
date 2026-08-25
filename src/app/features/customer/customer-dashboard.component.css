@@ -1,0 +1,122 @@
+@reference "../../../styles.css";
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.customer-page {
+  @apply min-h-screen bg-[#faf5ee] font-body text-stone-800;
+}
+
+.customer-navbar {
+  @apply sticky top-0 z-30 flex items-center justify-between border-b border-stone-200/80 bg-white/90 px-4 py-3 backdrop-blur-md sm:px-8;
+}
+
+.navbar-brand {
+  @apply flex items-center gap-3;
+}
+
+.brand-logo-small {
+  @apply flex h-10 w-10 items-center justify-center rounded-xl bg-[#f0e7dc] text-xl shadow-xs;
+}
+
+.brand-title {
+  @apply font-display text-lg font-bold text-[#b83d28] sm:text-xl;
+}
+
+.brand-subtitle {
+  @apply hidden text-xs text-stone-500 sm:block;
+}
+
+.navbar-actions {
+  @apply flex items-center gap-3;
+}
+
+.user-chip {
+  @apply flex items-center gap-2 rounded-xl bg-stone-100 px-3 py-1.5 text-xs sm:text-sm text-stone-700;
+}
+
+.customer-content {
+  @apply mx-auto max-w-6xl px-4 py-6 sm:px-8 sm:py-8;
+}
+
+.hero-card {
+  @apply flex flex-col justify-between gap-5 rounded-3xl border border-[#eedbcc] bg-gradient-to-br from-white via-[#fcf9f5] to-[#f9ede3] p-6 shadow-sm sm:flex-row sm:items-center sm:p-8;
+}
+
+.hero-tagline {
+  @apply text-xs font-semibold uppercase tracking-wider text-[#b83d28];
+}
+
+.hero-title {
+  @apply mt-1 font-display text-2xl font-bold text-stone-900 sm:text-3xl;
+}
+
+.hero-desc {
+  @apply mt-2 max-w-xl text-sm text-stone-600;
+}
+
+.ai-banner {
+  @apply mt-6 flex flex-col items-start gap-4 rounded-2xl border border-amber-200/70 bg-gradient-to-r from-amber-50 to-orange-50/70 p-5 shadow-xs sm:flex-row sm:items-center sm:p-6 sm:mt-8;
+}
+
+.ai-icon-bubble {
+  @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-sm;
+}
+
+.ai-banner-title {
+  @apply font-display text-base font-bold text-stone-900 sm:text-lg;
+}
+
+.section-container {
+  @apply mt-10;
+}
+
+.section-title {
+  @apply font-display text-xl font-bold text-stone-900;
+}
+
+.quotes-grid {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2;
+}
+
+.quote-card {
+  @apply flex flex-col justify-between rounded-2xl border border-stone-200/80 bg-white p-5 shadow-xs transition-shadow hover:shadow-md;
+}
+
+.quote-title {
+  @apply font-display text-base font-bold text-stone-900;
+}
+
+.quote-details {
+  @apply my-4 flex flex-wrap gap-4 text-xs text-stone-600;
+}
+
+.empty-state {
+  @apply flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-300 bg-white/60 p-8 text-center;
+}
+
+.packages-grid {
+  @apply grid grid-cols-1 gap-6 sm:grid-cols-3;
+}
+
+.pkg-card {
+  @apply relative flex flex-col justify-between rounded-3xl border border-stone-200/80 bg-white p-6 shadow-xs transition-all hover:border-[#dc8878]/50 hover:shadow-md;
+}
+
+.pkg-card-popular {
+  @apply border-[#c34e3a]/40 shadow-sm ring-2 ring-[#c34e3a]/20;
+}
+
+.pkg-popular-badge {
+  @apply absolute -top-3 right-6 flex items-center gap-1 rounded-full bg-[#c34e3a] px-3 py-0.5 text-xs font-bold text-white shadow-xs;
+}
+
+.pkg-title {
+  @apply font-display text-lg font-bold text-stone-900;
+}
+
+.pkg-price {
+  @apply font-display text-2xl font-black text-[#b83d28];
+}
