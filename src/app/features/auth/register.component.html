@@ -1,0 +1,147 @@
+<div class="register-page">
+  <!-- Top decorative accent line -->
+  <div class="top-accent-bar"></div>
+
+  <!-- Decorative soft organic background shapes -->
+  <div class="bg-shape bg-shape-top"></div>
+  <div class="bg-shape bg-shape-middle"></div>
+  <div class="bg-shape bg-shape-bottom"></div>
+
+  <!-- Main Register Container -->
+  <main class="register-container">
+    <app-main-logo />
+
+    <!-- Register Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <!-- Email Fieldset -->
+      <fieldset class="fieldset w-full">
+        <label class="label form-label" for="email"> Email </label>
+        <div class="input-wrapper">
+          <span class="input-icon-left">
+            <ng-icon size="1.5rem" name="heroEnvelope" />
+          </span>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="input form-input"
+            placeholder="es. mario.rossi@email.com"
+            autocomplete="email"
+          />
+        </div>
+        @if (emailError()) {
+          <span class="form-error">{{ emailError() }}</span>
+        }
+      </fieldset>
+
+      <!-- Username Fieldset (Optional) -->
+      <fieldset class="fieldset w-full">
+        <div class="flex items-center justify-between">
+          <label class="label form-label" for="username"> Nome utente </label>
+          <span class="form-hint">Opzionale</span>
+        </div>
+        <div class="input-wrapper">
+          <span class="input-icon-left">
+            <ng-icon size="1.5rem" name="heroUser" />
+          </span>
+          <input
+            type="text"
+            id="username"
+            formControlName="username"
+            class="input form-input"
+            placeholder="uguale all'email se vuoto"
+            autocomplete="username"
+          />
+        </div>
+        @if (usernameError()) {
+          <span class="form-error">{{ usernameError() }}</span>
+        }
+      </fieldset>
+
+      <!-- Password Fieldset -->
+      <fieldset class="fieldset w-full">
+        <label class="label form-label" for="password"> Password </label>
+        <div class="input-wrapper">
+          <span class="input-icon-left">
+            <ng-icon size="1.5rem" name="heroLockClosed" />
+          </span>
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            class="input form-input form-input-password"
+            placeholder="••••••••"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            (click)="togglePassword()"
+            class="password-toggle-btn"
+            [attr.aria-label]="showPassword() ? 'Nascondi password' : 'Mostra password'"
+          >
+            @if (showPassword()) {
+              <ng-icon size="1.25rem" name="heroEyeSlash" class="field-icon" />
+            } @else {
+              <ng-icon size="1.25rem" name="heroEye" class="field-icon" />
+            }
+          </button>
+        </div>
+        @if (passwordError()) {
+          <span class="form-error">{{ passwordError() }}</span>
+        }
+      </fieldset>
+
+      <!-- Confirm Password Fieldset -->
+      <fieldset class="fieldset w-full">
+        <label class="label form-label" for="confirmPassword"> Conferma Password </label>
+        <div class="input-wrapper">
+          <span class="input-icon-left">
+            <ng-icon size="1.5rem" name="heroLockClosed" />
+          </span>
+          <input
+            [type]="showConfirmPassword() ? 'text' : 'password'"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            class="input form-input form-input-password"
+            placeholder="••••••••"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            (click)="toggleConfirmPassword()"
+            class="password-toggle-btn"
+            [attr.aria-label]="showConfirmPassword() ? 'Nascondi conferma password' : 'Mostra conferma password'"
+          >
+            @if (showConfirmPassword()) {
+              <ng-icon size="1.25rem" name="heroEyeSlash" class="field-icon" />
+            } @else {
+              <ng-icon size="1.25rem" name="heroEye" class="field-icon" />
+            }
+          </button>
+        </div>
+        @if (confirmPasswordError()) {
+          <span class="form-error">{{ confirmPasswordError() }}</span>
+        }
+      </fieldset>
+
+      <!-- Submit Button -->
+      <button type="submit" [disabled]="isLoading()" class="submit-btn">
+        @if (isLoading()) {
+          <span class="loading loading-spinner loading-sm" aria-hidden="true"></span>
+          <span>Registrazione in corso...</span>
+        } @else {
+          <span>Registrati</span>
+          <ng-icon size="1.25rem" name="heroArrowRight" class="btn-arrow-icon" />
+        }
+      </button>
+    </form>
+
+    <!-- Navigation back to Login -->
+    <div class="secondary-actions">
+      <div class="login-row">
+        <span>Hai già un account?</span>
+        <button type="button" (click)="onLogin()" class="login-link-btn">Accedi</button>
+      </div>
+    </div>
+  </main>
+</div>

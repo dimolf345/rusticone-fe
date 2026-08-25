@@ -1,9 +1,16 @@
-export type UserRole = 'admin' | 'cliente';
+import { AuthProvider } from "./auth.model";
+
+export type UserRole = 'admin' | 'customer';
 
 export interface User {
+  authProvider: AuthProvider;
+  authProviderUserID: string;
+  email?: string;
+  emailVerified: boolean;
+  googleId?: string | null;
   id: string;
-  username: string;
+  lastLoginAt: string;
   name: string;
   role: UserRole;
-  email?: string;
+  username: string;
 }

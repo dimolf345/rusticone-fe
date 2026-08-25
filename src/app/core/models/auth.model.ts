@@ -5,3 +5,8 @@ export interface IAuthResponse {
     refreshToken: string;
     user: User;
 }
+
+export enum AuthProvider {
+    Local = 'local',
+    Google = 'google'
+}
