@@ -57,6 +57,8 @@ describe('AuthService', () => {
     expect(service.isLoading()).toBe(false);
   });
 
+
+
   describe('login', () => {
     it('should send POST request to /auth/login with credentials and update memory state', () => {
       let result: IAuthResponse | undefined;

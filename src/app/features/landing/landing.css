@@ -1,0 +1,73 @@
+@reference "../../../styles.css";
+
+:host {
+  @apply block min-h-screen w-full;
+}
+
+.splash-screen {
+  @apply relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#fbf8f3] via-[#f7f0e6] to-[#eee2d3] px-4 py-8 select-none;
+}
+
+.top-accent-bar {
+  @apply absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#b83d28] via-[#e27d60] to-[#c34e3a];
+}
+
+.bg-shape {
+  @apply pointer-events-none absolute rounded-full blur-3xl opacity-40;
+}
+
+.bg-shape-top {
+  @apply -top-24 -left-24 h-96 w-96 bg-[#e27d60]/20 animate-pulse;
+}
+
+.bg-shape-bottom {
+  @apply -bottom-24 -right-24 h-96 w-96 bg-[#c34e3a]/15 animate-pulse;
+}
+
+.splash-card {
+  @apply relative z-10 flex w-full max-w-sm flex-col items-center justify-center rounded-3xl border border-[#eedecf] bg-white/80 p-8 shadow-2xl shadow-[#b83d28]/10 backdrop-blur-md transition-all sm:max-w-md sm:p-10;
+}
+
+.loader-section {
+  @apply mt-8 flex flex-col items-center justify-center gap-4;
+}
+
+.loader-spinner-wrapper {
+  @apply relative flex h-12 w-12 items-center justify-center;
+}
+
+.loading-ring {
+  @apply absolute h-12 w-12 rounded-full border-3 border-[#eedecf] border-t-[#b83d28] animate-spin;
+}
+
+.loading-dot {
+  @apply h-3.5 w-3.5 rounded-full bg-[#b83d28] shadow-md shadow-[#b83d28]/40 animate-ping;
+}
+
+.loader-text-wrapper {
+  @apply flex items-center justify-center text-sm font-medium tracking-wide text-stone-600 sm:text-base;
+}
+
+.loader-primary-text {
+  @apply font-body text-stone-700 font-semibold;
+}
+
+.loader-dots {
+  @apply inline-flex ml-0.5 text-[#b83d28] font-bold;
+}
+
+.dot {
+  @apply inline-block animate-bounce;
+}
+
+.dot-1 {
+  animation-delay: 0ms;
+}
+
+.dot-2 {
+  animation-delay: 150ms;
+}
+
+.dot-3 {
+  animation-delay: 300ms;
+}

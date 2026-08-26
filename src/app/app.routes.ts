@@ -1,11 +1,14 @@
 import { Routes } from '@angular/router';
-import { App } from './app';
 
 export const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
-    component: App,
+    redirectTo: 'landing',
+    pathMatch: 'full'
+  },
+  {
+    path: 'landing',
+    loadComponent: () => import('./features/landing/landing')
   },
   {
     path: 'login',

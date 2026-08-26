@@ -1,0 +1,35 @@
+<div class="splash-screen" role="status" aria-live="polite">
+  <!-- Top decorative accent line -->
+  <div class="top-accent-bar"></div>
+
+  <!-- Soft organic ambient glows -->
+  <div class="bg-shape bg-shape-top"></div>
+  <div class="bg-shape bg-shape-bottom"></div>
+
+  <div class="splash-card">
+    <app-main-logo />
+    @if (isLoading()) {
+      <div class="loader-section">
+        <!-- Visual ring spinner loader -->
+        <div class="loader-spinner-wrapper">
+          <span class="loading-ring"></span>
+          <span class="loading-dot"></span>
+        </div>
+
+        <!-- Animated text loader -->
+        <div class="loader-text-wrapper">
+          <p class="loader-primary-text">Caricamento in corso</p>
+          <span class="loader-dots">
+            <span class="dot dot-1">.</span>
+            <span class="dot dot-2">.</span>
+            <span class="dot dot-3">.</span>
+          </span>
+        </div>
+      </div>
+    } @else {
+      <div class="loader-section">
+        <a routerLink="/login" class="btn btn-soft">Vai al login</a>
+      </div>
+    }
+  </div>
+</div>

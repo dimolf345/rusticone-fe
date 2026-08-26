@@ -1,9 +1,9 @@
 /// <reference types="google.accounts" />
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpStatusCode } from '@angular/common/http';
 import { computed, inject, Service, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@env/environment';
-import { firstValueFrom, Observable, tap } from 'rxjs';
+import { firstValueFrom, Observable, take, tap } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constant';
 import {
   IAuthResponse,
@@ -72,7 +72,7 @@ export class AuthService {
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);
-        this.redirectUserByRole(response.user).catch(() => {});
+        this.redirectUserByRole(response.user).catch(() => { });
       }),
     );
   }
@@ -101,14 +101,16 @@ export class AuthService {
    * Rotates the refresh token and updates the in-memory access token.
    * Coalesces concurrent calls via a single shared promise.
    */
-  refreshAccess(): Promise<boolean> {
+  async refreshAccess(): Promise<boolean> {
     if (this.#refreshPromise) {
       return this.#refreshPromise;
     }
 
+    this.#isLoading.set(true);
+
     const url = `${environment.apiUrl}${API_ENDPOINTS.AUTH.REFRESH}`;
     this.#refreshPromise = firstValueFrom(
-      this.#http.post<IRefreshTokenResponse>(url, {}, this.#httpOptions),
+      this.#http.post<IRefreshTokenResponse>(url, {}, this.#httpOptions).pipe(take(1)),
     )
       .then((response) => {
         if (response?.accessToken) {
@@ -118,17 +120,20 @@ export class AuthService {
         this.setAnonymous();
         return false;
       })
-      .catch(() => {
+      .catch((err: HttpErrorResponse) => {
         this.setAnonymous();
+        if (err.status === HttpStatusCode.Unauthorized) {
+          this.#router.navigate(['/login']);
+        }
         return false;
       })
       .finally(() => {
         this.#refreshPromise = null;
+        this.#isLoading.set(false);
       });
 
     return this.#refreshPromise;
   }
-
 
   /**
    * Initializes authentication on application bootstrap.
@@ -165,7 +170,7 @@ export class AuthService {
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);
-        this.redirectUserByRole(response.user).catch(() => {});
+        this.redirectUserByRole(response.user).catch(() => { });
       }),
     );
   }
@@ -184,7 +189,7 @@ export class AuthService {
       if (typeof google !== 'undefined' && google?.accounts?.id) {
         google.accounts.id.disableAutoSelect();
       }
-      await this.#router.navigate(['/login']).catch(() => {});
+      await this.#router.navigate(['/login']).catch(() => { });
     }
   }
 
@@ -250,11 +255,8 @@ export class AuthService {
    */
   #verifyGoogleTokenOnBackend(idToken: string): Promise<IAuthResponse> {
     const url = `${environment.apiUrl}${API_ENDPOINTS.AUTH.SIGN_IN_WITH_GOOGLE}`;
-    return firstValueFrom(
-      this.#http.post<IAuthResponse>(url, { idToken }, this.#httpOptions),
-    );
+    return firstValueFrom(this.#http.post<IAuthResponse>(url, { idToken }, this.#httpOptions));
   }
-
 
   /**
    * Redirects the user according to their role.
@@ -272,4 +274,3 @@ export class AuthService {
     return this.#router.navigate(['/customer']);
   }
 }
-
