@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter, Router } from '@angular/router';
+import { of } from 'rxjs';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../core/services/auth.service';
+
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -81,7 +83,7 @@ describe('RegisterComponent', () => {
   });
 
   it('should fallback username to email if left empty upon submission', () => {
-    vi.spyOn(authService, 'register').mockResolvedValue({} as any);
+    vi.spyOn(authService, 'register').mockReturnValue(of({} as any));
 
     component.registerForm.patchValue({
       email: 'mario.rossi@example.com',
@@ -101,7 +103,7 @@ describe('RegisterComponent', () => {
   });
 
   it('should use explicit username if provided upon submission', () => {
-    vi.spyOn(authService, 'register').mockResolvedValue({} as any);
+    vi.spyOn(authService, 'register').mockReturnValue(of({} as any));
 
     component.registerForm.patchValue({
       email: 'mario.rossi@example.com',
@@ -119,6 +121,7 @@ describe('RegisterComponent', () => {
       confirmPassword: 'secretPassword123',
     });
   });
+
 
   it('should navigate to login when onLogin is called', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true as never);

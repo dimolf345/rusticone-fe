@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { FormValidationService } from './form-validation.service';
+import { FormValidationService } from '../form-validation.service';
+
 
 describe('FormValidationService', () => {
   let service: FormValidationService;
@@ -95,10 +96,11 @@ describe('FormValidationService', () => {
       const minControl = new FormControl('ab', Validators.minLength(5));
       const customFnMessage = service.getErrorMessage(minControl, {
         customMessages: {
-          minlength: (err) => `Minimo ${err.requiredLength} caratteri richiesti`,
+          minlength: (err: any) => `Minimo ${err.requiredLength} caratteri richiesti`,
         },
       });
       expect(customFnMessage).toBe('Minimo 5 caratteri richiesti');
+
     });
   });
 

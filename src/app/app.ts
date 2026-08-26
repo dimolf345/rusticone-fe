@@ -1,6 +1,5 @@
-import { Component, effect, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
-import { LOCAL_STORAGE_KEYS } from './core/constants/local-storage.constants';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
 
 @Component({
@@ -8,19 +7,13 @@ import { AuthService } from './core/services/auth.service';
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {
+export class App implements OnInit {
   #authService = inject(AuthService);
-  #router = inject(Router);
 
-  redirectToRouteEffect = effect(() => {
-    const currentUser = this.#authService.currentUser();
-    const accessToken = localStorage.getItem(LOCAL_STORAGE_KEYS.ACCESS_TOKEN);
-    const refreshToken = localStorage.getItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN);
-
-    if (!accessToken && !refreshToken) {
-      return this.#router.navigate(['login']);
-    }
-    return;
-  });
+  ngOnInit(): void {
+    this.#authService.initializeAuth().catch(() => {});
+  }
 }
+

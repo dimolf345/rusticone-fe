@@ -19,6 +19,7 @@ import {
 import { AuthService } from '../../core/services/auth.service';
 import { FormValidationService } from '../../core/services/form-validation.service';
 import { MainLogo } from '../../components/main-logo/main-logo';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -134,20 +135,14 @@ export class RegisterComponent {
     };
 
     this.isLoading.set(true);
-    this.#authService
-      .register(payload)
-      .then((authResponse) => {
-        this.#authService.redirectUserByRole(authResponse.user).catch(() => {});
-      })
-      .catch((error) => {
-        console.error('Registration error:', error);
-      })
-      .finally(() => {
-        this.isLoading.set(false);
-      });
+    this.#authService.register(payload)
+      .pipe(
+        take(1)
+      )
+      .subscribe().add(() => this.isLoading.set(false));
   }
 
   onLogin(): void {
-    this.#router.navigate(['/login']).catch(() => {});
+    this.#router.navigate(['/login']).catch(() => { });
   }
 }

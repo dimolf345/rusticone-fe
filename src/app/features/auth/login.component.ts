@@ -1,11 +1,12 @@
 import {
   afterNextRender,
+  ChangeDetectionStrategy,
   Component,
   computed,
   ElementRef,
   inject,
   signal,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,15 +18,17 @@ import {
   heroLockClosed,
   heroUser,
 } from '@ng-icons/heroicons/outline';
+import { take } from 'rxjs';
+import { MainLogo } from '../../components/main-logo/main-logo';
 import { AuthService } from '../../core/services/auth.service';
 import { FormValidationService } from '../../core/services/form-validation.service';
-import { MainLogo } from '../../components/main-logo/main-logo';
 
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule, NgIcon, MainLogo],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     provideIcons({
       heroUser,
@@ -78,7 +81,7 @@ export class LoginComponent {
       if (container) {
         this.#authService.renderGoogleButton(container, {
           onSuccess: (authResponse) => {
-            this.#authService.redirectUserByRole(authResponse.user).catch(() => { });
+            this.#authService.redirectUserByRole(authResponse.user).catch(() => {});
           },
           onError: (error) => {
             console.error('Google Sign-in failed:', error);
@@ -101,11 +104,22 @@ export class LoginComponent {
     }
 
     const { username, password } = this.loginForm.getRawValue();
-    // HTTP authentication call will be integrated here
+    this.isLoading.set(true);
+    this.#authService
+      .login({ email: username.trim(), password })
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+        },
+      });
   }
 
   onRegister(): void {
-    // Navigation or handler for manual registration
-    this.#router.navigate(['/register']).catch(() => { });
+    this.#router.navigate(['/register']).catch(() => {});
   }
 }
+

@@ -107,7 +107,9 @@ export class FormValidationService {
         control.updateValueAndValidity({ onlySelf: true });
       }
     });
+    formGroup.updateValueAndValidity();
   }
+
 
   /**
    * Custom validator: ensures the input string is not just whitespace.
