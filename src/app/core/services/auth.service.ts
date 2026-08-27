@@ -91,8 +91,9 @@ export class AuthService {
         headers,
       })
       .pipe(
-        tap((response) => {
-          this.#currentUser.set(response.user);
+        tap(({ user }) => {
+          this.#currentUser.set(user);
+          this.redirectUserByRole(user);
         }),
       );
   }
@@ -166,7 +167,7 @@ export class AuthService {
    */
   register(payload: IRegisterRequest): Observable<IAuthResponse> {
     const url = `${environment.apiUrl}${API_ENDPOINTS.AUTH.REGISTER}`;
-    return this.#http.post<IAuthResponse>(url, payload, this.#httpOptions).pipe(
+    return this.#http.post<IAuthResponse>(url, { ...payload, name: 'Test-amento' }, this.#httpOptions).pipe(
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);

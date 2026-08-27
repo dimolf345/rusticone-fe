@@ -18,7 +18,7 @@ import {
   heroLockClosed,
   heroUser,
 } from '@ng-icons/heroicons/outline';
-import { take } from 'rxjs';
+import { catchError, take } from 'rxjs';
 import { MainLogo } from '../../components/main-logo/main-logo';
 import { AuthService } from '../../core/services/auth.service';
 import { FormValidationService } from '../../core/services/form-validation.service';
@@ -81,7 +81,7 @@ export class LoginComponent {
       if (container) {
         this.#authService.renderGoogleButton(container, {
           onSuccess: (authResponse) => {
-            this.#authService.redirectUserByRole(authResponse.user).catch(() => {});
+            this.#authService.redirectUserByRole(authResponse.user).catch(() => { });
           },
           onError: (error) => {
             console.error('Google Sign-in failed:', error);
@@ -107,19 +107,18 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.#authService
       .login({ email: username.trim(), password })
-      .pipe(take(1))
-      .subscribe({
-        next: () => {
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-        },
-      });
+      .pipe(
+        take(1),
+        catchError((err) => {
+          console.log(err);
+          return [];
+        })
+      )
+      .subscribe().add(() => this.isLoading.set(false));
   }
 
   onRegister(): void {
-    this.#router.navigate(['/register']).catch(() => {});
+    this.#router.navigate(['/register']).catch(() => { });
   }
 }
 
