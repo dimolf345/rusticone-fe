@@ -5,7 +5,7 @@ export type UserRole = 'admin' | 'customer';
 export interface User {
   id: string;
   email: string;
-  name?: string;
+  name: string;
   role: UserRole;
   authProvider: 'local' | 'google' | AuthProvider;
   authProviderUserID?: string;
