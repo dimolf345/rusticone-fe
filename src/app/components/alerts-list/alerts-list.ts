@@ -1,9 +1,20 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { AlertService } from '../../core/services/alert.service';
+import { AlertItemComponent } from './alert-item/alert-item';
 
 @Component({
-  imports: [],
   selector: 'app-alerts-list',
-  styleUrl: './alerts-list.css',
+  imports: [AlertItemComponent],
   templateUrl: './alerts-list.html',
+  styleUrl: './alerts-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AlertsList {}
+export class AlertsList {
+  #alertService = inject(AlertService);
+
+  readonly alerts = this.#alertService.alerts;
+
+  onDismiss(id: string): void {
+    this.#alertService.removeAlert(id);
+  }
+}

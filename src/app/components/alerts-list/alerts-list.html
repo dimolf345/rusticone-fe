@@ -1,1 +1,9 @@
-<p>alerts-list works!</p>
+@if (alerts().length > 0) {
+  <aside class="alerts-container" aria-live="polite" aria-label="Notifiche">
+    @for (alert of alerts(); track alert.id) {
+      <div class="alert-item-wrapper">
+        <app-alert-item [alert]="alert" (dismissed)="onDismiss($event)" />
+      </div>
+    }
+  </aside>
+}

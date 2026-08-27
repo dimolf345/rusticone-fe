@@ -1,0 +1,43 @@
+@reference "../../../styles.css";
+
+:host {
+  display: block;
+}
+
+.alerts-container {
+  @apply fixed z-50 pointer-events-none flex flex-col gap-2.5;
+
+  /* Mobile (Smartphones): Bottom center of viewport */
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
+  max-width: 26rem;
+  bottom: calc(1rem + var(--bottom-menu-offset, 0px) + env(safe-area-inset-bottom, 0px));
+}
+
+/* If bottom menu is present, increase bottom offset on mobile */
+body:has(app-bottom-menu) .alerts-container,
+body:has(.bottom-menu) .alerts-container,
+:host-context(body:has(app-bottom-menu)) .alerts-container {
+  bottom: calc(5rem + var(--bottom-menu-offset, 0px) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Mobile: only display the last/most recent alert */
+@media (max-width: 639.98px) {
+  .alert-item-wrapper:not(:last-child) {
+    display: none;
+  }
+}
+
+/* Tablets and Desktop (>= 640px): Top-right corner of viewport */
+@media (min-width: 640px) {
+  .alerts-container {
+    left: auto;
+    right: 1.5rem;
+    top: 1.5rem;
+    bottom: auto;
+    transform: none;
+    width: 24rem;
+    max-width: calc(100vw - 3rem);
+  }
+}

@@ -1,10 +1,10 @@
 import { ALERT_ICONS } from "../constants/alert-icons.constant";
 
 export const ALERT_TYPES = {
-    info: 'alert-info',
-    success: 'alert-success',
-    warning: 'alert-warning',
-    error: 'alert-error'
+  info: 'alert-info',
+  success: 'alert-success',
+  warning: 'alert-warning',
+  error: 'alert-error'
 } as const;
 
 
@@ -22,6 +22,7 @@ export type AlertIcon = (typeof ALERT_ICONS)[keyof typeof ALERT_ICONS];
 export interface AlertItem {
   type: AlertType;
   message: string;
+  title?: string;
   closeTime: number | AlertDuration;
   icon?: AlertIcon | null;
   id?: string;

@@ -1,0 +1,43 @@
+<div
+  role="alert"
+  class="alert-card"
+  [class]="alertTypeClass()"
+  [class.is-leaving]="isLeaving()"
+>
+  <div class="alert-content-wrapper">
+    <!-- Alert Icon -->
+    @if (alert().icon) {
+      <div class="alert-icon-container">
+        <ng-icon [name]="alert().icon!" size="1.25rem" class="alert-icon" />
+      </div>
+    }
+
+    <!-- Content (Title + Message) -->
+    <div class="alert-text-container">
+      @if (alert().title) {
+        <h4 class="alert-title">{{ alert().title }}</h4>
+      }
+      <p class="alert-message">{{ alert().message }}</p>
+    </div>
+
+    <!-- Dismiss button -->
+    <button
+      type="button"
+      class="alert-close-btn"
+      (click)="onDismiss()"
+      aria-label="Chiudi avviso"
+    >
+      <ng-icon name="heroXMark" size="1.1rem" />
+    </button>
+  </div>
+
+  <!-- Progress Bar Timer -->
+  @if (hasProgress()) {
+    <div class="alert-progress-track">
+      <div
+        class="alert-progress-bar"
+        [style.animation-duration.ms]="alert().closeTime"
+      ></div>
+    </div>
+  }
+</div>
