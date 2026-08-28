@@ -5,7 +5,6 @@ import { of } from 'rxjs';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../core/services/auth.service';
 
-
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
@@ -52,6 +51,7 @@ describe('RegisterComponent', () => {
 
     expect(component.submitted()).toBe(true);
     expect(component.emailError()).toBe("L'email è obbligatoria");
+    expect(component.nameError()).toBe('Il nome è obbligatorio');
     expect(component.passwordError()).toBe('La password è obbligatoria');
     expect(component.confirmPasswordError()).toBe('La conferma password è obbligatoria');
   });
@@ -59,6 +59,7 @@ describe('RegisterComponent', () => {
   it('should validate password mismatch', () => {
     component.registerForm.patchValue({
       email: 'test@example.com',
+      name: 'Mario Rossi',
       password: 'password123',
       confirmPassword: 'differentPassword',
     });
@@ -72,12 +73,14 @@ describe('RegisterComponent', () => {
   it('should be valid when all required fields match and are valid', () => {
     component.registerForm.patchValue({
       email: 'test@example.com',
+      name: 'Mario Rossi',
       password: 'password123',
       confirmPassword: 'password123',
     });
 
     expect(component.registerForm.valid).toBe(true);
     expect(component.emailError()).toBeNull();
+    expect(component.nameError()).toBeNull();
     expect(component.passwordError()).toBeNull();
     expect(component.confirmPasswordError()).toBeNull();
   });
@@ -87,6 +90,7 @@ describe('RegisterComponent', () => {
 
     component.registerForm.patchValue({
       email: 'mario.rossi@example.com',
+      name: 'Mario Rossi',
       username: '',
       password: 'secretPassword123',
       confirmPassword: 'secretPassword123',
@@ -95,6 +99,7 @@ describe('RegisterComponent', () => {
     component.onSubmit();
 
     expect(authService.register).toHaveBeenCalledWith({
+      name: 'Mario Rossi',
       email: 'mario.rossi@example.com',
       username: 'mario.rossi@example.com',
       password: 'secretPassword123',
@@ -107,6 +112,7 @@ describe('RegisterComponent', () => {
 
     component.registerForm.patchValue({
       email: 'mario.rossi@example.com',
+      name: 'Mario Rossi',
       username: 'mariorossi99',
       password: 'secretPassword123',
       confirmPassword: 'secretPassword123',
@@ -115,13 +121,13 @@ describe('RegisterComponent', () => {
     component.onSubmit();
 
     expect(authService.register).toHaveBeenCalledWith({
+      name: 'Mario Rossi',
       email: 'mario.rossi@example.com',
       username: 'mariorossi99',
       password: 'secretPassword123',
       confirmPassword: 'secretPassword123',
     });
   });
-
 
   it('should navigate to login when onLogin is called', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true as never);

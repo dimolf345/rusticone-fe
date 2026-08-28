@@ -72,7 +72,7 @@ export class AuthService {
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);
-        this.redirectUserByRole(response.user).catch(() => { });
+        this.redirectUserByRole(response.user).catch(() => {});
       }),
     );
   }
@@ -167,11 +167,11 @@ export class AuthService {
    */
   register(payload: IRegisterRequest): Observable<IAuthResponse> {
     const url = `${environment.apiUrl}${API_ENDPOINTS.AUTH.REGISTER}`;
-    return this.#http.post<IAuthResponse>(url, { ...payload, name: 'Test-amento' }, this.#httpOptions).pipe(
+    return this.#http.post<IAuthResponse>(url, payload, this.#httpOptions).pipe(
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);
-        this.redirectUserByRole(response.user).catch(() => { });
+        this.redirectUserByRole(response.user).catch(() => {});
       }),
     );
   }
@@ -190,7 +190,7 @@ export class AuthService {
       if (typeof google !== 'undefined' && google?.accounts?.id) {
         google.accounts.id.disableAutoSelect();
       }
-      await this.#router.navigate(['/login']).catch(() => { });
+      await this.#router.navigate(['/login']).catch(() => {});
     }
   }
 

@@ -34,6 +34,27 @@
         }
       </fieldset>
 
+      <!-- Name Fieldset -->
+      <fieldset class="fieldset w-full">
+        <label class="label form-label" for="name"> Nome </label>
+        <div class="input-wrapper">
+          <span class="input-icon-left">
+            <ng-icon size="1.5rem" name="heroUser" />
+          </span>
+          <input
+            type="text"
+            id="name"
+            formControlName="name"
+            class="input form-input"
+            placeholder="es. Mario Rossi"
+            autocomplete="name"
+          />
+        </div>
+        @if (nameError()) {
+          <span class="form-error">{{ nameError() }}</span>
+        }
+      </fieldset>
+
       <!-- Username Fieldset (Optional) -->
       <fieldset class="fieldset w-full">
         <div class="flex items-center justify-between">
@@ -110,7 +131,9 @@
             type="button"
             (click)="toggleConfirmPassword()"
             class="password-toggle-btn"
-            [attr.aria-label]="showConfirmPassword() ? 'Nascondi conferma password' : 'Mostra conferma password'"
+            [attr.aria-label]="
+              showConfirmPassword() ? 'Nascondi conferma password' : 'Mostra conferma password'
+            "
           >
             @if (showConfirmPassword()) {
               <ng-icon size="1.25rem" name="heroEyeSlash" class="field-icon" />

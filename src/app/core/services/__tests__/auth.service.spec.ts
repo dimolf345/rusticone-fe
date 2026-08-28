@@ -57,15 +57,15 @@ describe('AuthService', () => {
     expect(service.isLoading()).toBe(false);
   });
 
-
-
   describe('login', () => {
     it('should send POST request to /auth/login with credentials and update memory state', () => {
       let result: IAuthResponse | undefined;
 
-      service.login({ email: 'mario.rossi@example.com', password: 'password123' }).subscribe((res) => {
-        result = res;
-      });
+      service
+        .login({ email: 'mario.rossi@example.com', password: 'password123' })
+        .subscribe((res) => {
+          result = res;
+        });
 
       const req = httpMock.expectOne(`${environment.apiUrl}${API_ENDPOINTS.AUTH.LOGIN}`);
       expect(req.request.method).toBe('POST');
@@ -93,6 +93,37 @@ describe('AuthService', () => {
 
       expect(service.isAdmin()).toBe(true);
       expect(router.navigate).toHaveBeenCalledWith(['/admin']);
+    });
+  });
+
+  describe('register', () => {
+    it('should send POST request to /auth/register with payload and update memory state', () => {
+      let result: IAuthResponse | undefined;
+
+      const registerPayload = {
+        name: 'Mario Rossi',
+        email: 'mario.rossi@example.com',
+        username: 'mario.rossi@example.com',
+        password: 'password123',
+        confirmPassword: 'password123',
+      };
+
+      service.register(registerPayload).subscribe((res) => {
+        result = res;
+      });
+
+      const req = httpMock.expectOne(`${environment.apiUrl}${API_ENDPOINTS.AUTH.REGISTER}`);
+      expect(req.request.method).toBe('POST');
+      expect(req.request.withCredentials).toBe(true);
+      expect(req.request.body).toEqual(registerPayload);
+
+      req.flush(mockAuthResponse);
+
+      expect(result).toEqual(mockAuthResponse);
+      expect(service.accessToken()).toBe('jwt-access-token-123');
+      expect(service.currentUser()).toEqual(mockUser);
+      expect(service.isAuthenticated()).toBe(true);
+      expect(router.navigate).toHaveBeenCalledWith(['/customer']);
     });
   });
 
@@ -188,7 +219,6 @@ describe('AuthService', () => {
       expect(service.isLoading()).toBe(false);
     });
 
-
     it('should set anonymous if refresh fails', async () => {
       const initPromise = service.initializeAuth();
 
@@ -247,4 +277,3 @@ describe('AuthService', () => {
     });
   });
 });
-

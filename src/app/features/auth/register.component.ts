@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -52,18 +46,18 @@ export class RegisterComponent {
   readonly registerForm = this.#fb.nonNullable.group(
     {
       email: ['', [Validators.required, Validators.email]],
+      name: ['', [Validators.required]],
       username: [''],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]],
     },
     {
-      validators: [
-        this.#validationService.passwordMatchValidator('password', 'confirmPassword'),
-      ],
+      validators: [this.#validationService.passwordMatchValidator('password', 'confirmPassword')],
     },
   );
 
   readonly emailControl = this.registerForm.controls.email;
+  readonly nameControl = this.registerForm.controls.name;
   readonly usernameControl = this.registerForm.controls.username;
   readonly passwordControl = this.registerForm.controls.password;
   readonly confirmPasswordControl = this.registerForm.controls.confirmPassword;
@@ -75,6 +69,16 @@ export class RegisterComponent {
       customMessages: {
         required: "L'email è obbligatoria",
         email: 'Inserisci un indirizzo email valido',
+      },
+    }),
+  );
+
+  readonly nameError = computed(() =>
+    this.#validationService.getControlError(this.nameControl, {
+      isSubmitted: this.submitted(),
+      fieldName: 'Il nome',
+      customMessages: {
+        required: 'Il nome è obbligatorio',
       },
     }),
   );
@@ -124,25 +128,26 @@ export class RegisterComponent {
       return;
     }
 
-    const { email, username, password, confirmPassword } = this.registerForm.getRawValue();
+    const { email, name, username, password, confirmPassword } = this.registerForm.getRawValue();
     const finalUsername = username.trim() || email.trim();
 
     const payload = {
       email: email.trim(),
+      name: name.trim(),
       username: finalUsername,
       password,
       confirmPassword,
     };
 
     this.isLoading.set(true);
-    this.#authService.register(payload)
-      .pipe(
-        take(1)
-      )
-      .subscribe().add(() => this.isLoading.set(false));
+    this.#authService
+      .register(payload)
+      .pipe(take(1))
+      .subscribe()
+      .add(() => this.isLoading.set(false));
   }
 
   onLogin(): void {
-    this.#router.navigate(['/login']).catch(() => { });
+    this.#router.navigate(['/login']).catch(() => {});
   }
 }
