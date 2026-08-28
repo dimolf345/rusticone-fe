@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "star:prod": "ng serve --configuration production",
-    "test": "ng test"
+    "test": "ng test",
+    "build:gh-pages": "ng build --configuration production --base-href /rusticone-fe/"
   },
   "private": true,
   "packageManager": "npm@11.19.0",
