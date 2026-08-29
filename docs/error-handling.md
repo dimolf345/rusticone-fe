@@ -89,9 +89,10 @@ sequenceDiagram
 
 ### Matching Rules:
 1. **Status Code Matching**: `handler.errorStatus.includes(status)` (an empty array `[]` matches any HTTP status).
-2. **Predicate Evaluation**: If a `predicate` function is defined, it receives `(httpError, context)` and must return `true`.
-3. **Priority Ordering**: Handlers are sorted by `priority` descending (`b.priority - a.priority`), ensuring specific rules take precedence over generic rules.
-4. **Fallback**: If no custom action matches, `defaultErrorHandler` is executed.
+2. **Endpoint URL Matching**: If `handler.urls` is specified (e.g. `['/auth/register']`), `httpError.url` must contain at least one of the matching endpoint strings. An empty array or `undefined` matches all URLs.
+3. **Predicate Evaluation**: If a `predicate` function is defined, it receives `(httpError, context)` and must return `true`.
+4. **Priority Ordering**: Handlers are sorted by `priority` descending (`b.priority - a.priority`), ensuring specific rules take precedence over generic rules.
+5. **Fallback**: If no custom action matches, `defaultErrorHandler` is executed.
 
 ---
 

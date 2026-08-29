@@ -12,13 +12,17 @@ import {
  * Abstract base class representing a single error handling strategy.
  *
  * Implements the {@link ErrorAction} interface, providing configurable HTTP status filtering,
- * priority scoring, custom predicates, and optional context storage with a fluent chaining API.
+ * endpoint URL filtering, priority scoring, custom predicates, and optional context storage
+ * with a fluent chaining API.
  *
  * @template TContext The type of contextual metadata accepted by the action.
  */
 export abstract class BaseErrorAction<TContext = unknown> implements ErrorAction<TContext> {
   /** List of HTTP status codes that trigger this action (empty array matches any status). */
   errorStatus: HttpStatusCode[] = [];
+
+  /** Optional list of API endpoint URL substrings that trigger this action (empty array matches any endpoint). */
+  urls: string[] = [];
 
   /** Numeric priority used for sorting multiple matching actions (higher values execute first). Default is 100. */
   priority = 100;
@@ -48,6 +52,7 @@ export abstract class BaseErrorAction<TContext = unknown> implements ErrorAction
    */
   setErrorActionConfig(config: ErrorActionConfig<TContext>): this {
     this.errorStatus = config?.errorStatus ?? [];
+    this.urls = config?.urls ?? [];
     this.priority = config?.priority ?? 100;
     this.predicate = config?.predicate;
     this.description = config?.description;
@@ -74,7 +79,8 @@ export abstract class BaseErrorAction<TContext = unknown> implements ErrorAction
  *
  * Implements the {@link ApiErrorHandler} interface using Angular WritableSignals for reactive
  * error action registration. Matches incoming {@link HttpErrorResponse} errors against registered
- * custom handlers sorted by descending priority, falling back to a default handler if no custom handler matches.
+ * custom handlers sorted by descending priority, filtering by status code, API URL, and predicates,
+ * and falling back to a default handler if no custom handler matches.
  *
  * @template TContext The type of contextual metadata managed by the handler.
  */
@@ -103,9 +109,15 @@ export abstract class BaseErrorHandler<TContext = unknown> implements ApiErrorHa
     const errorHandler = sortedHandlers.find((handler) => {
       const statusMatches =
         handler.errorStatus.length === 0 || handler.errorStatus.includes(status);
+
+      const urlMatches =
+        !handler.urls ||
+        handler.urls.length === 0 ||
+        handler.urls.some((url) => httpError.url?.includes(url));
+
       const predicateMatches = handler.predicate ? handler.predicate(httpError, context) : true;
 
-      return statusMatches && predicateMatches;
+      return statusMatches && urlMatches && predicateMatches;
     });
 
     if (errorHandler) {

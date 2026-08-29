@@ -1,5 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
+import { API_ENDPOINTS } from '../constants/api-endpoints.constant';
 import { AUTH_ERROR_CONSTANTS } from '../constants/error.constant';
 import { ALERT_DURATION, AlertItem } from '../models/alert.model';
 import { AlertService } from './alert.service';
@@ -18,9 +19,10 @@ export class AuthErrorHandlerService extends BaseErrorHandler<Partial<AlertItem>
   /** Default fallback action that displays a generic error banner. */
   defaultAlert = new AlertError(this.#alertService);
 
-  /** Specialized action triggered when an account registration conflicts with an existing email (409 Conflict). */
+  /** Specialized action triggered when an account registration conflicts with an existing email (409 Conflict on /auth/register). */
   alertOnUserAlreadyRegistered = new AlertError(this.#alertService).setErrorActionConfig({
     errorStatus: [HttpStatusCode.Conflict],
+    urls: [API_ENDPOINTS.AUTH.REGISTER],
     predicate: (error: HttpErrorResponse) =>
       error.error?.message === AUTH_ERROR_CONSTANTS.UserExists ||
       error.message === AUTH_ERROR_CONSTANTS.UserExists,
@@ -31,9 +33,10 @@ export class AuthErrorHandlerService extends BaseErrorHandler<Partial<AlertItem>
     },
   });
 
-  /** Specialized action triggered when invalid credentials are provided during login (401 Unauthorized). */
+  /** Specialized action triggered when invalid credentials are provided during login (401 Unauthorized on /auth/login). */
   wrongCredentials = new AlertError(this.#alertService).setErrorActionConfig({
     errorStatus: [HttpStatusCode.Unauthorized],
+    urls: [API_ENDPOINTS.AUTH.LOGIN],
     priority: 1,
     description: 'Runs when user inserts wrong email or password',
     context: {

@@ -88,6 +88,32 @@ describe('Error Handlers', () => {
       expect(handlerConflict.execute).not.toHaveBeenCalled();
     });
 
+    it('should filter custom handlers by endpoint URL', () => {
+      const registerHandler = new MockAction();
+      registerHandler.setErrorActionConfig({
+        errorStatus: [HttpStatusCode.Conflict],
+        urls: ['/auth/register'],
+      });
+      errorHandler.addCustomHandler(registerHandler);
+
+      const registerError = new HttpErrorResponse({
+        status: HttpStatusCode.Conflict,
+        url: 'http://localhost:3000/api/auth/register',
+      });
+
+      const profileError = new HttpErrorResponse({
+        status: HttpStatusCode.Conflict,
+        url: 'http://localhost:3000/api/auth/profile',
+      });
+
+      errorHandler.handle(registerError);
+      expect(registerHandler.execute).toHaveBeenCalledWith(registerError, undefined);
+
+      registerHandler.execute.mockClear();
+      errorHandler.handle(profileError);
+      expect(registerHandler.execute).not.toHaveBeenCalled();
+    });
+
     it('should prioritize higher priority handler when both match', () => {
       const lowPriority = new MockAction();
       lowPriority.setErrorActionConfig({

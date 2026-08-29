@@ -49,6 +49,9 @@ export interface ErrorAction<TContext = unknown> {
   /** Optional pre-configured static context or default values for this action. */
   context?: TContext;
 
+  //** Optional list of api endpoints for which the error handling action should be valid*/
+  urls?: string[];
+
   /**
    * Executes the error handling logic (e.g., displaying an alert, redirecting, logging).
    *

@@ -77,6 +77,7 @@ export class AuthService {
         this.redirectUserByRole(response.user).catch(() => { });
       }),
       catchError((err: HttpErrorResponse) => {
+        console.log(err);
         this.#authErrorHandler.handle(err);
         return throwError(() => err);
       }),
