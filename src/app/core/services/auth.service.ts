@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpStatusCode } from '@ang
 import { computed, inject, Service, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@env/environment';
-import { firstValueFrom, Observable, take, tap } from 'rxjs';
+import { catchError, firstValueFrom, Observable, take, tap, throwError } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constant';
 import {
   IAuthResponse,
@@ -13,6 +13,7 @@ import {
   IRegisterRequest,
 } from '../models/auth.model';
 import { User } from '../models/user.model';
+import { AuthErrorHandlerService } from './auth-error-handler.service';
 
 export interface RenderGoogleButtonOptions {
   onSuccess?: (user: IAuthResponse) => void;
@@ -24,6 +25,7 @@ export interface RenderGoogleButtonOptions {
 export class AuthService {
   #http = inject(HttpClient);
   #router = inject(Router);
+  #authErrorHandler = inject(AuthErrorHandlerService);
 
   #httpOptions = {
     withCredentials: true,
@@ -72,7 +74,11 @@ export class AuthService {
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);
-        this.redirectUserByRole(response.user).catch(() => {});
+        this.redirectUserByRole(response.user).catch(() => { });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        this.#authErrorHandler.handle(err);
+        return throwError(() => err);
       }),
     );
   }
@@ -171,7 +177,11 @@ export class AuthService {
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);
-        this.redirectUserByRole(response.user).catch(() => {});
+        this.redirectUserByRole(response.user).catch(() => { });
+      }),
+      catchError((err: HttpErrorResponse) => {
+        this.#authErrorHandler.handle(err);
+        return throwError(() => err);
       }),
     );
   }
@@ -190,7 +200,7 @@ export class AuthService {
       if (typeof google !== 'undefined' && google?.accounts?.id) {
         google.accounts.id.disableAutoSelect();
       }
-      await this.#router.navigate(['/login']).catch(() => {});
+      await this.#router.navigate(['/login']).catch(() => { });
     }
   }
 
