@@ -8,6 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "star:prod": "ng serve --configuration production",
     "test": "ng test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "build:gh-pages": "ng build --configuration production --base-href /rusticone-fe/"
   },
   "private": true,
@@ -25,17 +27,23 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "@angular-eslint/eslint-plugin": "^22.1.0",
+    "@angular-eslint/eslint-plugin-template": "^22.1.0",
+    "@angular-eslint/template-parser": "^22.1.0",
     "@angular/build": "^22.1.5",
     "@angular/cli": "^22.1.5",
     "@angular/compiler-cli": "^22.1.0",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@tailwindcss/postcss": "^4.1.12",
     "@types/google.accounts": "^0.0.18",
     "daisyui": "^5.7.20",
+    "eslint": "^10.9.1",
     "jsdom": "^28.0.0",
     "postcss": "^8.5.3",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.12",
     "typescript": "~6.0.2",
+    "typescript-eslint": "^8.68.0",
     "vitest": "^4.0.8"
   }
 }
