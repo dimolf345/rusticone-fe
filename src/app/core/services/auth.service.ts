@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpStatusCode } from '@ang
 import { computed, inject, Service, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@env/environment';
-import { catchError, firstValueFrom, Observable, take, tap, throwError } from 'rxjs';
+import { catchError, delay, firstValueFrom, Observable, take, tap, throwError } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constant';
 import {
   IAuthResponse,
@@ -118,7 +118,8 @@ export class AuthService {
 
     const url = `${environment.apiUrl}${API_ENDPOINTS.AUTH.REFRESH}`;
     this.#refreshPromise = firstValueFrom(
-      this.#http.post<IRefreshTokenResponse>(url, {}, this.#httpOptions).pipe(take(1)),
+      this.#http.post<IRefreshTokenResponse>(url, {}, this.#httpOptions).pipe(
+        take(1)),
     )
       .then((response) => {
         if (response?.accessToken) {

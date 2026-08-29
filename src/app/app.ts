@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AlertsList } from './components/alerts-list/alerts-list';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   imports: [RouterOutlet, AlertsList],
@@ -9,4 +10,10 @@ import { AlertsList } from './components/alerts-list/alerts-list';
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class App {}
+export class App {
+  #authService = inject(AuthService);
+
+  constructor() {
+    this.#authService.initializeAuth();
+  }
+}
