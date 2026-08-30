@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { environment } from '@env/environment';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constant';
+import { APP_PATHS } from '../../constants/routes.constant';
 import { IAuthResponse, IMeResponse, IRefreshTokenResponse } from '../../models/auth.model';
 import { User } from '../../models/user.model';
 import { AuthService } from '../auth.service';
@@ -82,17 +83,12 @@ describe('AuthService', () => {
       expect(service.currentUser()).toEqual(mockUser);
       expect(service.isAuthenticated()).toBe(true);
       expect(service.isAdmin()).toBe(false);
-      expect(router.navigate).toHaveBeenCalledWith(['/customer']);
+      expect(router.navigate).toHaveBeenCalledWith([APP_PATHS.DASHBOARD.ROOT]);
     });
 
-    it('should redirect admin to /admin on login', () => {
-      service.login({ email: 'admin@example.com', password: 'password123' }).subscribe();
-
-      const req = httpMock.expectOne(`${environment.apiUrl}${API_ENDPOINTS.AUTH.LOGIN}`);
-      req.flush({ accessToken: 'jwt-admin-token', user: mockAdminUser });
-
-      expect(service.isAdmin()).toBe(true);
-      expect(router.navigate).toHaveBeenCalledWith(['/admin']);
+    it('should redirect admin to admin dashboard on redirectUserByRole', () => {
+      service.redirectUserByRole(mockAdminUser);
+      expect(router.navigate).toHaveBeenCalledWith([APP_PATHS.DASHBOARD.ADMIN]);
     });
   });
 
@@ -123,7 +119,7 @@ describe('AuthService', () => {
       expect(service.accessToken()).toBe('jwt-access-token-123');
       expect(service.currentUser()).toEqual(mockUser);
       expect(service.isAuthenticated()).toBe(true);
-      expect(router.navigate).toHaveBeenCalledWith(['/customer']);
+      expect(router.navigate).toHaveBeenCalledWith([APP_PATHS.DASHBOARD.CUSTOMER]);
     });
   });
 
@@ -251,7 +247,7 @@ describe('AuthService', () => {
       expect(service.accessToken()).toBeNull();
       expect(service.currentUser()).toBeNull();
       expect(service.isAuthenticated()).toBe(false);
-      expect(router.navigate).toHaveBeenCalledWith(['/login']);
+      expect(router.navigate).toHaveBeenCalledWith([APP_PATHS.LOGIN]);
     });
   });
 

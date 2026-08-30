@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { RegisterComponent } from './register.component';
+import { APP_PATHS } from '../../core/constants/routes.constant';
 import { AuthService } from '../../core/services/auth.service';
 
 describe('RegisterComponent', () => {
@@ -132,6 +133,6 @@ describe('RegisterComponent', () => {
   it('should navigate to login when onLogin is called', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true as never);
     component.onLogin();
-    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+    expect(navigateSpy).toHaveBeenCalledWith([APP_PATHS.LOGIN]);
   });
 });

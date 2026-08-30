@@ -10,6 +10,7 @@ import {
   heroLockClosed,
   heroUser,
 } from '@ng-icons/heroicons/outline';
+import { APP_PATHS } from '../../core/constants/routes.constant';
 import { AuthService } from '../../core/services/auth.service';
 import { FormValidationService } from '../../core/services/form-validation.service';
 import { MainLogo } from '../../components/main-logo/main-logo';
@@ -148,6 +149,7 @@ export class RegisterComponent {
   }
 
   onLogin(): void {
-    this.#router.navigate(['/login']).catch(() => {});
+    this.#router.navigate([APP_PATHS.LOGIN]).catch(() => {});
   }
 }
+

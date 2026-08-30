@@ -20,6 +20,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { catchError, take } from 'rxjs';
 import { MainLogo } from '../../components/main-logo/main-logo';
+import { APP_PATHS } from '../../core/constants/routes.constant';
 import { AuthService } from '../../core/services/auth.service';
 import { FormValidationService } from '../../core/services/form-validation.service';
 
@@ -118,7 +119,7 @@ export class LoginComponent {
   }
 
   onRegister(): void {
-    this.#router.navigate(['/register']).catch(() => { });
+    this.#router.navigate([APP_PATHS.REGISTER]).catch(() => { });
   }
 }
 

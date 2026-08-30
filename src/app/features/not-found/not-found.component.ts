@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroArrowLeft, heroHome } from '@ng-icons/heroicons/outline';
 import { MainLogo } from '../../components/main-logo/main-logo';
+import { APP_PATHS } from '../../core/constants/routes.constant';
 
 @Component({
   selector: 'app-not-found',
@@ -17,4 +18,7 @@ import { MainLogo } from '../../components/main-logo/main-logo';
     }),
   ],
 })
-export class NotFoundComponent {}
+export class NotFoundComponent {
+  protected readonly paths = APP_PATHS;
+}
+

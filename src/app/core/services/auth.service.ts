@@ -3,8 +3,9 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpStatusCode } from '@ang
 import { computed, inject, Service, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { environment } from '@env/environment';
-import { catchError, delay, firstValueFrom, Observable, take, tap, throwError } from 'rxjs';
+import { catchError, firstValueFrom, Observable, take, tap, throwError } from 'rxjs';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constant';
+import { APP_PATHS } from '../constants/routes.constant';
 import {
   IAuthResponse,
   ILoginRequest,
@@ -74,7 +75,7 @@ export class AuthService {
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);
-        this.redirectUserByRole(response.user).catch(() => { });
+        this.goToDashBoard().catch(() => { });
       }),
       catchError((err: HttpErrorResponse) => {
         console.log(err);
@@ -100,7 +101,7 @@ export class AuthService {
       .pipe(
         tap(({ user }) => {
           this.#currentUser.set(user);
-          this.redirectUserByRole(user);
+          this.goToDashBoard();
         }),
       );
   }
@@ -132,7 +133,7 @@ export class AuthService {
       .catch((err: HttpErrorResponse) => {
         this.setAnonymous();
         if (err.status === HttpStatusCode.Unauthorized) {
-          this.#router.navigate(['/login']);
+          this.#router.navigate([APP_PATHS.LOGIN]);
         }
         return false;
       })
@@ -202,7 +203,7 @@ export class AuthService {
       if (typeof google !== 'undefined' && google?.accounts?.id) {
         google.accounts.id.disableAutoSelect();
       }
-      await this.#router.navigate(['/login']).catch(() => { });
+      await this.#router.navigate([APP_PATHS.LOGIN]).catch(() => { });
     }
   }
 
@@ -271,19 +272,23 @@ export class AuthService {
     return firstValueFrom(this.#http.post<IAuthResponse>(url, { idToken }, this.#httpOptions));
   }
 
+  goToDashBoard(): Promise<boolean> {
+    return this.#router.navigate([APP_PATHS.DASHBOARD.ROOT]);
+  }
+
   /**
    * Redirects the user according to their role.
    */
   redirectUserByRole(user?: User | null): Promise<boolean> {
     const targetUser = user ?? this.currentUser();
     if (!targetUser) {
-      return this.#router.navigate(['/login']);
+      return this.#router.navigate([APP_PATHS.LOGIN]);
     }
 
     if (targetUser.role === 'admin') {
-      return this.#router.navigate(['/admin']);
+      return this.#router.navigate([APP_PATHS.DASHBOARD.ADMIN]);
     }
 
-    return this.#router.navigate(['/customer']);
+    return this.#router.navigate([APP_PATHS.DASHBOARD.CUSTOMER]);
   }
 }
