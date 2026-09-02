@@ -1,8 +1,14 @@
 export type ScreenSize = 'mobile' | 'tablet' | 'desktop';
 
-export interface LayoutBreakpoint {
+export interface ILayoutBreakpoint {
   name: ScreenSize;
   mediaQuery: string;
+}
+
+export interface INavigationItem {
+  label: string;
+  route: string | string[];
+  exact?: boolean;
 }
 
 export const BREAKPOINTS = {

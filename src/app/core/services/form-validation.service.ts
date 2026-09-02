@@ -7,7 +7,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 
-export interface ValidationErrorMessageOptions {
+export interface IValidationErrorMessageOptions {
   /**
    * Human-friendly name of the field (e.g. "Il nome utente", "La password", "Email").
    */
@@ -19,7 +19,7 @@ export interface ValidationErrorMessageOptions {
   customMessages?: Record<string, string | ((error: any) => string)>;
 }
 
-export interface ValidationControlErrorOptions extends ValidationErrorMessageOptions {
+export interface IValidationControlErrorOptions extends IValidationErrorMessageOptions {
   /**
    * Whether the parent form has been submitted.
    */
@@ -33,7 +33,7 @@ export class FormValidationService {
    */
   getErrorMessage(
     control: AbstractControl | null,
-    options?: ValidationErrorMessageOptions,
+    options?: IValidationErrorMessageOptions,
   ): string | null {
     if (!control || !control.errors) {
       return null;
@@ -66,7 +66,7 @@ export class FormValidationService {
    */
   getControlError(
     control: AbstractControl | null,
-    options?: ValidationControlErrorOptions,
+    options?: IValidationControlErrorOptions,
   ): string | null {
     if (!control) {
       return null;

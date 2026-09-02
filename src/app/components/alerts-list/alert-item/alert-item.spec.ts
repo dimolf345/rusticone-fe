@@ -1,14 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ALERT_ICONS } from '../../../core/constants/alert-icons.constant';
-import { ALERT_DURATION, AlertItem } from '../../../core/models/alert.model';
+import { ALERT_DURATION, IAlertItem } from '../../../core/models/alert.model';
 import { AlertItemComponent } from './alert-item';
 
 describe('AlertItemComponent', () => {
   let component: AlertItemComponent;
   let fixture: ComponentFixture<AlertItemComponent>;
 
-  const mockAlert: AlertItem = {
+  const mockAlert: IAlertItem = {
     id: 'test-123',
     type: 'error',
     title: 'Accesso negato',

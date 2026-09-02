@@ -6,7 +6,7 @@ import { environment } from '@env/environment';
 import { API_ENDPOINTS } from '../../constants/api-endpoints.constant';
 import { APP_PATHS } from '../../constants/routes.constant';
 import { IAuthResponse, IMeResponse, IRefreshTokenResponse } from '../../models/auth.model';
-import { User } from '../../models/user.model';
+import { IUser } from '../../models/user.model';
 import { AuthService } from '../auth.service';
 
 describe('AuthService', () => {
@@ -14,7 +14,7 @@ describe('AuthService', () => {
   let httpMock: HttpTestingController;
   let router: Router;
 
-  const mockUser: User = {
+  const mockUser: IUser = {
     id: 'user-123',
     email: 'mario.rossi@example.com',
     name: 'Mario Rossi',
@@ -22,7 +22,7 @@ describe('AuthService', () => {
     authProvider: 'local',
   };
 
-  const mockAdminUser: User = {
+  const mockAdminUser: IUser = {
     id: 'admin-123',
     email: 'admin@example.com',
     name: 'Admin User',

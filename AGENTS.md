@@ -72,7 +72,7 @@ src/
 - **Tailwind CSS & Component Styling Convention**:
   - **Do NOT write long Tailwind class chains directly in HTML templates** (unless there are only 1 or 2 classes to apply).
   - For a higher number of classes, create meaningful, semantic class names in the component's linked `*.css` file and compose them using Tailwind's `@apply` syntax.
-  - In component `*.css` files, include `@reference "<relative-path>/styles.css";` at the top so Tailwind v4 recognizes custom `@theme` tokens and utilities.
+  - In component `*.css` files, include `@reference "#styles";` at the top (mapped via `package.json` imports) so Tailwind v4 recognizes custom `@theme` tokens and utilities from `styles.css` without fragile relative paths.
 - **Mobile-First & Accessible**:
   - Ensure fully responsive layouts for mobile catering requests.
   - Adhere to WCAG accessibility guidelines (semantic HTML, proper ARIA labels, keyboard navigation).
@@ -99,3 +99,7 @@ src/
 ### 7. Forms & Validation
 
 - Create forms using `FormBuilder` class, don't create directly FormGroups with syntax like form = new FormGroup({})
+
+### 8. Types & Interfaces Naming Conventions
+
+- All TypeScript interfaces must be prefixed with an uppercase `I` (e.g., `INavigationItem`, `IUser`, `IAlertItem`, `IErrorAction`, `IApiErrorHandler`, `ILayoutBreakpoint`).

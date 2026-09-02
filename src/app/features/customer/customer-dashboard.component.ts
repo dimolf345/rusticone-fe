@@ -20,7 +20,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { AuthService } from '../../core/services/auth.service';
 
-interface CustomerQuoteRequest {
+interface ICustomerQuoteRequest {
   id: string;
   packageTitle: string;
   guestCount: number;
@@ -29,7 +29,7 @@ interface CustomerQuoteRequest {
   estimatedCost: number;
 }
 
-interface BuffetPackageShowcase {
+interface IBuffetPackageShowcase {
   id: string;
   title: string;
   description: string;
@@ -65,7 +65,7 @@ export class CustomerDashboardComponent {
 
   readonly currentUser = this.#authService.currentUser;
 
-  readonly activeQuotes = signal<CustomerQuoteRequest[]>([
+  readonly activeQuotes = signal<ICustomerQuoteRequest[]>([
     {
       id: 'QUO-892',
       packageTitle: 'Buffet Compleanno & Pizze alla Pala',
@@ -76,7 +76,7 @@ export class CustomerDashboardComponent {
     },
   ]);
 
-  readonly buffetPackages = signal<BuffetPackageShowcase[]>([
+  readonly buffetPackages = signal<IBuffetPackageShowcase[]>([
     {
       id: 'pkg-rustico',
       title: 'Buffet Classico Rusticone',
@@ -101,7 +101,7 @@ export class CustomerDashboardComponent {
     },
   ]);
 
-  getStatusBadge(status: CustomerQuoteRequest['status']): { label: string; class: string } {
+  getStatusBadge(status: ICustomerQuoteRequest['status']): { label: string; class: string } {
     switch (status) {
       case 'confirmed':
         return { label: 'Confermato', class: 'badge-success' };

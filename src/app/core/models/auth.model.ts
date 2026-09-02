@@ -1,8 +1,8 @@
-import { User } from './user.model';
+import { IUser } from './user.model';
 
 export interface IAuthResponse {
   accessToken: string;
-  user: User;
+  user: IUser;
 }
 
 export interface IRefreshTokenResponse {
@@ -10,7 +10,7 @@ export interface IRefreshTokenResponse {
 }
 
 export interface IMeResponse {
-  user: User;
+  user: IUser;
 }
 
 export interface ILoginRequest {

@@ -22,7 +22,7 @@ import {
 } from '@ng-icons/heroicons/outline';
 import { AuthService } from '../../core/services/auth.service';
 
-interface CateringOrderSummary {
+interface ICateringOrderSummary {
   id: string;
   customerName: string;
   eventType: string;
@@ -61,7 +61,7 @@ export class AdminDashboardComponent {
 
   readonly currentUser = this.#authService.currentUser;
 
-  readonly recentOrders = signal<CateringOrderSummary[]>([
+  readonly recentOrders = signal<ICateringOrderSummary[]>([
     {
       id: 'RUST-2026-081',
       customerName: 'Mario Rossi',
@@ -100,7 +100,7 @@ export class AdminDashboardComponent {
     },
   ]);
 
-  getStatusLabel(status: CateringOrderSummary['status']): string {
+  getStatusLabel(status: ICateringOrderSummary['status']): string {
     switch (status) {
       case 'confirmed':
         return 'Confermato';
@@ -113,7 +113,7 @@ export class AdminDashboardComponent {
     }
   }
 
-  getStatusBadgeClass(status: CateringOrderSummary['status']): string {
+  getStatusBadgeClass(status: ICateringOrderSummary['status']): string {
     switch (status) {
       case 'confirmed':
         return 'badge-success';

@@ -2,7 +2,7 @@ import { AuthProvider } from './auth.model';
 
 export type UserRole = 'admin' | 'customer';
 
-export interface User {
+export interface IUser {
   id: string;
   email: string;
   name: string;

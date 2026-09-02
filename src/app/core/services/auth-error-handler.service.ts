@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { API_ENDPOINTS } from '../constants/api-endpoints.constant';
 import { AUTH_ERROR_CONSTANTS } from '../constants/error.constant';
-import { ALERT_DURATION, AlertItem } from '../models/alert.model';
+import { ALERT_DURATION, IAlertItem } from '../models/alert.model';
 import { AlertService } from './alert.service';
 import { AlertError, BaseErrorHandler } from './error-handlers';
 
@@ -13,7 +13,7 @@ import { AlertError, BaseErrorHandler } from './error-handlers';
  * login, registration, password management, and session refresh errors.
  */
 @Service()
-export class AuthErrorHandlerService extends BaseErrorHandler<Partial<AlertItem>> {
+export class AuthErrorHandlerService extends BaseErrorHandler<Partial<IAlertItem>> {
   #alertService = inject(AlertService);
 
   /** Default fallback action that displays a generic error banner. */

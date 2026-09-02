@@ -1,23 +1,23 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { signal, WritableSignal } from '@angular/core';
 import {
-  ApiErrorHandler,
-  ErrorAction,
   ErrorActionConfig,
   ErrorCallback,
   ErrorPredicate,
+  IApiErrorHandler,
+  IErrorAction,
 } from '../../models/error-handler.model';
 
 /**
  * Abstract base class representing a single error handling strategy.
  *
- * Implements the {@link ErrorAction} interface, providing configurable HTTP status filtering,
+ * Implements the {@link IErrorAction} interface, providing configurable HTTP status filtering,
  * endpoint URL filtering, priority scoring, custom predicates, and optional context storage
  * with a fluent chaining API.
  *
  * @template TContext The type of contextual metadata accepted by the action.
  */
-export abstract class BaseErrorAction<TContext = unknown> implements ErrorAction<TContext> {
+export abstract class BaseErrorAction<TContext = unknown> implements IErrorAction<TContext> {
   /** List of HTTP status codes that trigger this action (empty array matches any status). */
   errorStatus: HttpStatusCode[] = [];
 
@@ -77,19 +77,19 @@ export abstract class BaseErrorAction<TContext = unknown> implements ErrorAction
 /**
  * Abstract base class for managing and dispatching API error actions.
  *
- * Implements the {@link ApiErrorHandler} interface using Angular WritableSignals for reactive
+ * Implements the {@link IApiErrorHandler} interface using Angular WritableSignals for reactive
  * error action registration. Matches incoming {@link HttpErrorResponse} errors against registered
  * custom handlers sorted by descending priority, filtering by status code, API URL, and predicates,
  * and falling back to a default handler if no custom handler matches.
  *
  * @template TContext The type of contextual metadata managed by the handler.
  */
-export abstract class BaseErrorHandler<TContext = unknown> implements ApiErrorHandler<TContext> {
+export abstract class BaseErrorHandler<TContext = unknown> implements IApiErrorHandler<TContext> {
   /** Reactive signal containing the list of registered custom error actions. */
-  customErrorHandlers: WritableSignal<ErrorAction<TContext>[]> = signal([]);
+  customErrorHandlers: WritableSignal<IErrorAction<TContext>[]> = signal([]);
 
   /** Reactive signal containing the default fallback error action. */
-  defaultErrorHandler: WritableSignal<ErrorAction<TContext> | null> = signal(null);
+  defaultErrorHandler: WritableSignal<IErrorAction<TContext> | null> = signal(null);
 
   /**
    * Dispatches an HTTP error response to the highest-priority matching custom handler or default handler.
@@ -136,10 +136,10 @@ export abstract class BaseErrorHandler<TContext = unknown> implements ApiErrorHa
   /**
    * Registers a custom error action in the handler registry.
    *
-   * @param newHandler The ErrorAction instance to add.
+   * @param newHandler The IErrorAction instance to add.
    * @returns `this` instance for method chaining.
    */
-  addCustomHandler(newHandler: ErrorAction<TContext>): this {
+  addCustomHandler(newHandler: IErrorAction<TContext>): this {
     this.customErrorHandlers.update((handlers) => [...handlers, newHandler]);
     return this;
   }
@@ -147,10 +147,10 @@ export abstract class BaseErrorHandler<TContext = unknown> implements ApiErrorHa
   /**
    * Sets or clears the default fallback error action.
    *
-   * @param handler The ErrorAction instance to set as default, or null to clear.
+   * @param handler The IErrorAction instance to set as default, or null to clear.
    * @returns `this` instance for method chaining.
    */
-  setDefaultHandler(handler: ErrorAction<TContext> | null): this {
+  setDefaultHandler(handler: IErrorAction<TContext> | null): this {
     this.defaultErrorHandler.set(handler);
     return this;
   }

@@ -4,15 +4,15 @@ import {
   ALERT_DURATION,
   AlertDuration,
   AlertIcon,
-  AlertItem,
+  IAlertItem,
 } from '../models/alert.model';
 
 @Service()
 export class AlertService {
-  #alertItems = signal<AlertItem[]>([]);
+  #alertItems = signal<IAlertItem[]>([]);
   readonly alerts = this.#alertItems.asReadonly();
 
-  #baseAlert(): AlertItem {
+  #baseAlert(): IAlertItem {
     return {
       type: 'info',
       message: 'Alert!',
@@ -22,8 +22,8 @@ export class AlertService {
     };
   }
 
-  show(alert: Partial<AlertItem>): string {
-    const newAlert: AlertItem = {
+  show(alert: Partial<IAlertItem>): string {
+    const newAlert: IAlertItem = {
       ...this.#baseAlert(),
       ...alert,
       id: alert.id ?? crypto.randomUUID(),
