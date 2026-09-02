@@ -1,4 +1,4 @@
-@reference "../../../styles.css";
+@reference "#styles";
 
 :host {
   @apply block min-h-screen w-full;

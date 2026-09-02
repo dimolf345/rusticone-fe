@@ -1,0 +1,5 @@
+@reference "#styles";
+
+header {
+  @apply text-accent bg-primary h-16;
+}

@@ -1,1 +1,7 @@
-<p>layout works!</p>
+<div class="app-container">
+  <app-header />
+  <app-navbar [screenSize]="layoutService.screenSize()" [navigationItems]="[]" />
+  <main>
+    <router-outlet />
+  </main>
+</div>
