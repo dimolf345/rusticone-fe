@@ -6,6 +6,9 @@ export const ROUTE_SEGMENTS = {
   DASHBOARD: 'dashboard',
   ADMIN: 'admin',
   CUSTOMER: 'customer',
+  MENU: 'menu',
+  QUOTES: 'quotes',
+  SETTINGS: 'settings'
 } as const;
 
 export const APP_PATHS = {
@@ -19,3 +22,11 @@ export const APP_PATHS = {
     CUSTOMER: `/${ROUTE_SEGMENTS.DASHBOARD}/${ROUTE_SEGMENTS.CUSTOMER}`,
   },
 } as const;
+
+export type RouteSegment = keyof typeof ROUTE_SEGMENTS;
+
+export const RoutesIconsMap = new Map<RouteSegment, string>([
+  ['MENU', 'heroBookOpen'],
+  ['QUOTES', 'heroDocumentText'],
+  ['SETTINGS', 'heroCog6Tooth'],
+]);

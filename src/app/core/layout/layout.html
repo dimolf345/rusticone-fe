@@ -1,7 +1,8 @@
-<div class="app-container">
+<div class="app-layout">
   <app-header />
-  <app-navbar [screenSize]="layoutService.screenSize()" [navigationItems]="[]" />
-  <main>
-    <router-outlet />
+  <main class="app-main">
+    <div class="content-viewport">
+      <router-outlet />
+    </div>
   </main>
 </div>

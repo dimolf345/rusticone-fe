@@ -9,6 +9,7 @@ export interface INavigationItem {
   label: string;
   route: string | string[];
   exact?: boolean;
+  icon?: string;
 }
 
 export const BREAKPOINTS = {

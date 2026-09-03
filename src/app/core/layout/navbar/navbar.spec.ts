@@ -11,6 +11,7 @@ describe('Navbar', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(Navbar);
+    fixture.componentRef.setInput('screenSize', 'desktop');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
