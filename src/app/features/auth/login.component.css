@@ -7,11 +7,11 @@
 }
 
 .login-page {
-  @apply relative flex h-dvh max-h-dvh flex-col justify-between overflow-hidden bg-[#faf5ee] font-body text-stone-800 selection:bg-[#c34e3a] selection:text-white;
+  @apply relative flex h-dvh max-h-dvh flex-col justify-between overflow-hidden bg-canvas-warm font-body text-stone-800 selection:bg-terracotta selection:text-white;
 }
 
 .top-accent-bar {
-  @apply h-1.5 w-full shrink-0 bg-[#c34e3a];
+  @apply h-1.5 w-full shrink-0 bg-terracotta;
 }
 
 .bg-shape {
@@ -19,15 +19,15 @@
 }
 
 .bg-shape-top {
-  @apply -top-20 -right-20 h-72 w-72 bg-[#f6dfd2]/60;
+  @apply -top-20 -right-20 h-72 w-72 bg-terracotta-100/60;
 }
 
 .bg-shape-middle {
-  @apply top-1/3 -left-28 h-72 w-72 bg-[#f6dfd2]/50;
+  @apply top-1/3 -left-28 h-72 w-72 bg-terracotta-100/50;
 }
 
 .bg-shape-bottom {
-  @apply -bottom-20 -right-16 h-64 w-64 bg-[#fae8dc]/60;
+  @apply -bottom-20 -right-16 h-64 w-64 bg-terracotta-50/60;
 }
 
 .login-container {
@@ -55,7 +55,7 @@
 }
 
 .form-input {
-  @apply w-full rounded-2xl border border-stone-300/70 bg-[#f0e7dc] py-2.5 pl-10 pr-4 text-sm text-stone-900 placeholder:text-stone-400 transition-all hover:bg-[#eae0d4] focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#c34e3a]/40 sm:py-3 sm:pl-11 sm:text-base;
+  @apply w-full rounded-2xl border border-stone-300/70 bg-input-bg py-2.5 pl-10 pr-4 text-sm text-stone-900 placeholder:text-stone-400 transition-all hover:bg-input-hover focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-terracotta/40 sm:py-3 sm:pl-11 sm:text-base;
 }
 
 .form-input-password {
@@ -71,7 +71,7 @@
 }
 
 .submit-btn {
-  @apply btn btn-neutral cursor-pointer items-center justify-center gap-2 font-bold text-white shadow-md shadow-[#dc8878]/35 transition-all hover:bg-[#cf7b6a] hover:shadow-lg hover:shadow-[#dc8878]/45 active:scale-[0.99] active:bg-[#c26e5d] disabled:cursor-not-allowed disabled:opacity-60 sm:py-3.5 sm:text-lg;
+  @apply btn btn-neutral cursor-pointer items-center justify-center gap-2 font-bold text-white shadow-md shadow-terracotta-300/35 transition-all hover:bg-terracotta-400 hover:shadow-lg hover:shadow-terracotta-300/45 active:scale-[0.99] active:bg-terracotta-500 disabled:cursor-not-allowed disabled:opacity-60 sm:py-3.5 sm:text-lg;
 }
 
 .btn-arrow-icon {
@@ -107,5 +107,5 @@
 }
 
 .register-link-btn {
-  @apply cursor-pointer font-bold text-[#b83d28] underline underline-offset-2 transition-colors hover:text-[#962f1d] focus:outline-hidden;
+  @apply cursor-pointer font-bold text-terracotta-700 underline underline-offset-2 transition-colors hover:text-terracotta-800 focus:outline-hidden;
 }
