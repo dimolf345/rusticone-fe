@@ -1,1 +1,79 @@
-<p>{{ screenSize() }}</p>
+@switch (screenSize()) {
+  @case ('mobile') {
+    <!-- Mobile Fixed Bottom Dock (DaisyUI style) -->
+    <nav class="mobile-dock dock dock-bottom" aria-label="Navigazione principale mobile">
+      @for (item of navigationItems(); track item.route) {
+        <app-navbar-navigation-item
+          [item]="item"
+          [screenSize]="screenSize()"
+        />
+      }
+    </nav>
+  }
+  @case ('tablet') {
+    <!-- Tablet Vertical Stack Sidebar (Fixed width >= 4rem, icon + label stacked) -->
+    <aside class="tablet-navbar" aria-label="Navigazione principale tablet">
+      <nav aria-label="Menu tablet">
+        <ul class="nav-list" role="list">
+          @for (item of navigationItems(); track item.route) {
+            <li class="nav-list-item">
+              <app-navbar-navigation-item
+                [item]="item"
+                [screenSize]="screenSize()"
+              />
+            </li>
+          }
+        </ul>
+      </nav>
+    </aside>
+  }
+  @default {
+    <!-- Desktop Sidebar (Compact & Expanded toggleable states, min-width >= 4rem) -->
+    <aside
+      class="desktop-navbar"
+      [class.is-collapsed]="isSidebarCollapsed()"
+      [class.is-expanded]="!isSidebarCollapsed()"
+      aria-label="Navigazione principale desktop"
+    >
+      <!-- Sidebar Collapse/Expand Toggle Button (Desktop top) -->
+      <div class="collapse-header">
+        <button
+          type="button"
+          (click)="toggleSidebar()"
+          class="collapse-btn"
+          tabindex="0"
+          [attr.aria-expanded]="!isSidebarCollapsed()"
+          [attr.aria-label]="isSidebarCollapsed() ? 'Espandi barra laterale' : 'Comprimi barra laterale'"
+          [class.tooltip]="isSidebarCollapsed()"
+          [class.tooltip-right]="isSidebarCollapsed()"
+          [class.focus-visible:tooltip-open]="isSidebarCollapsed()"
+          [attr.data-tip]="isSidebarCollapsed() ? 'Espandi barra' : null"
+        >
+          <ng-icon
+            [name]="isSidebarCollapsed() ? 'heroChevronRight' : 'heroChevronLeft'"
+            class="collapse-icon"
+            aria-hidden="true"
+          />
+          @if (!isSidebarCollapsed()) {
+            <span class="collapse-label">Comprimi</span>
+          }
+        </button>
+      </div>
+
+      <nav aria-label="Menu desktop">
+        <ul class="nav-list" role="list">
+          @for (item of navigationItems(); track item.route) {
+            <li class="nav-list-item">
+              <app-navbar-navigation-item
+                [item]="item"
+                [screenSize]="screenSize()"
+                [isCollapsed]="isSidebarCollapsed()"
+              />
+            </li>
+          }
+        </ul>
+      </nav>
+    </aside>
+  }
+}
+

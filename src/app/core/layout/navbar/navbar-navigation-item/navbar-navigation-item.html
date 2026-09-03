@@ -1,0 +1,36 @@
+<a
+  [routerLink]="item().route"
+  #rla="routerLinkActive"
+  [routerLinkActive]="activeClass()"
+  [routerLinkActiveOptions]="{ exact: item().exact ?? false }"
+  [attr.aria-current]="rla.isActive ? 'page' : null"
+  tabindex="0"
+  [class.dock-item]="isMobile()"
+  [class.tablet-nav-link]="isTablet()"
+  [class.desktop-nav-link]="isDesktop()"
+  [class.is-collapsed]="isDesktop() && isCollapsed()"
+  [class.is-expanded]="isDesktop() && !isCollapsed()"
+  [class.tooltip]="isDesktop() && isCollapsed()"
+  [class.tooltip-right]="isDesktop() && isCollapsed()"
+  [class.focus-visible:tooltip-open]="isDesktop() && isCollapsed()"
+  [attr.data-tip]="isDesktop() && isCollapsed() ? item().label : null"
+  [attr.aria-label]="item().label"
+>
+  @if (item().icon) {
+    <ng-icon
+      [name]="item().icon!"
+      [class.dock-icon]="isMobile()"
+      [class.nav-icon]="!isMobile()"
+      aria-hidden="true"
+    />
+  }
+  @if (showLabel()) {
+    <span
+      [class.dock-label]="isMobile()"
+      [class.tablet-nav-label]="isTablet()"
+      [class.desktop-nav-label]="isDesktop()"
+    >
+      {{ item().label }}
+    </span>
+  }
+</a>

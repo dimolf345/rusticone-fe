@@ -29,6 +29,8 @@
   --font-display: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
 
+  --grid-cols-layout: 1fr 1fr; /* or 1fr 1fr, 240px 1fr, etc. */
+
   /* Semantic Canvas & Surface colors matching artisanal warm aesthetic */
   --color-canvas: #fae8d2;
   --color-canvas-subtle: #f5dcbe;
