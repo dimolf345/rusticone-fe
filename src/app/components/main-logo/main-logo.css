@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+@reference "#styles";
+
+.logo-squircle-sm {
+  @apply flex h-10 w-10 items-center justify-center rounded-xl bg-terracotta p-1 shadow-sm shadow-terracotta/20 ring-2 ring-terracotta-200 hover:scale-105 transition-transform duration-300 sm:h-11 sm:w-11;
+}
+
+.logo-inner-sm {
+  @apply flex h-full w-full items-center justify-center overflow-hidden rounded-lg bg-white p-0.5 shadow-inner;
+}
+
+.logo-squircle-md {
+  @apply flex h-16 w-16 items-center justify-center rounded-2xl bg-terracotta p-1.5 shadow-md shadow-terracotta/20 ring-3 ring-terracotta-200 hover:scale-105 transition-transform duration-300;
+}
+
+.logo-inner-md {
+  @apply flex h-full w-full items-center justify-center overflow-hidden rounded-xl bg-white p-1 shadow-inner;
+}
+
+.logo-squircle-lg {
+  @apply flex h-24 w-24 items-center justify-center rounded-3xl bg-terracotta p-2 shadow-lg shadow-terracotta/25 ring-4 ring-terracotta-200 hover:scale-105 transition-transform duration-300 sm:h-28 sm:w-28;
+}
+
+.logo-inner-lg {
+  @apply flex h-full w-full items-center justify-center overflow-hidden rounded-2xl bg-white p-1 shadow-inner;
+}
+
+.logo-image {
+  @apply h-full w-full object-contain;
+}
+
+.logo-header {
+  @apply mt-3 text-center sm:mt-4;
+}
+
+.brand-title {
+  @apply font-display text-3xl font-black leading-tight tracking-tight text-terracotta-700 sm:text-4xl;
+}
+
+.brand-tagline {
+  @apply mt-0.5 flex items-center justify-center gap-1.5 text-xs font-medium text-stone-600 sm:text-sm;
+}

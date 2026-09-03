@@ -1,36 +1,12 @@
 <div class="dashboard-page">
-  <!-- Top Navigation Header -->
-  <header class="dashboard-navbar">
-    <div class="navbar-brand">
-      <div class="brand-badge">
-        <ng-icon size="1.25rem" name="heroShieldCheck" />
-      </div>
-      <div>
-        <h1 class="brand-title">Il Rusticone</h1>
-        <span class="brand-subtitle">Pannello Amministrazione Buffet & Catering</span>
-      </div>
-    </div>
-
-    <div class="navbar-actions">
-      <div class="user-chip">
-        <ng-icon size="1.1rem" name="heroUser" />
-        <span class="font-medium">{{ currentUser()?.name || currentUser()?.username || 'Admin' }}</span>
-        <span class="badge badge-error badge-sm uppercase">Admin</span>
-      </div>
-
-      <button (click)="logout()" class="btn btn-ghost btn-sm btn-logout" aria-label="Esci">
-        <ng-icon size="1.25rem" name="heroArrowRightOnRectangle" />
-        <span class="hidden sm:inline">Esci</span>
-      </button>
-    </div>
-  </header>
-
   <!-- Main Content Body -->
   <main class="dashboard-content">
     <!-- Welcome banner -->
     <div class="welcome-banner">
       <div class="welcome-text">
-        <h2 class="welcome-title">Bentornato, {{ currentUser()?.name || currentUser()?.username || 'Admin' }}! 👋</h2>
+        <h2 class="welcome-title">
+          Bentornato, {{ currentUser()?.name || currentUser()?.username || 'Admin' }}! 👋
+        </h2>
         <p class="welcome-desc">
           Ecco il riepilogo delle richieste di catering, preventivi buffet e ordini in preparazione.
         </p>
@@ -99,7 +75,9 @@
       <div class="section-header">
         <div>
           <h3 class="section-title">Richieste Catering & Buffet Recenti</h3>
-          <p class="section-subtitle">Gestisci lo stato delle conferme e la preparazione delle portate</p>
+          <p class="section-subtitle">
+            Gestisci lo stato delle conferme e la preparazione delle portate
+          </p>
         </div>
       </div>
 

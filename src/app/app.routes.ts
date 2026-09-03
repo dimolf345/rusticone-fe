@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { ROUTE_SEGMENTS } from './core/constants/routes.constant';
+import { isNotLoggedGuard } from './core/guards';
 import { Layout } from './core/layout/layout';
 
 export const routes: Routes = [
@@ -15,6 +16,7 @@ export const routes: Routes = [
   {
     path: ROUTE_SEGMENTS.LOGIN,
     loadComponent: () => import('./features/auth/login.component').then((m) => m.LoginComponent),
+    canActivate: [isNotLoggedGuard]
   },
   {
     path: ROUTE_SEGMENTS.REGISTER,

@@ -22,18 +22,18 @@ export type ErrorPredicate<TContext = unknown> = (
 export type ErrorCallback = (error: HttpErrorResponse) => void;
 
 /**
- * Configuration options for initializing or updating an ErrorAction.
+ * Configuration options for initializing or updating an IErrorAction.
  *
  * @template TContext The type of additional context used by the action.
  */
-export type ErrorActionConfig<TContext = unknown> = Partial<Omit<ErrorAction<TContext>, 'execute'>>;
+export type ErrorActionConfig<TContext = unknown> = Partial<Omit<IErrorAction<TContext>, 'execute'>>;
 
 /**
  * Represents an individual error action strategy designed to handle specific HTTP errors.
  *
  * @template TContext The type of contextual metadata accepted by the action.
  */
-export interface ErrorAction<TContext = unknown> {
+export interface IErrorAction<TContext = unknown> {
   /** List of HTTP status codes that trigger this action (empty array matches any status). */
   errorStatus: HttpStatusCode[];
 
@@ -66,12 +66,12 @@ export interface ErrorAction<TContext = unknown> {
  *
  * @template TContext The type of contextual metadata managed by the handler.
  */
-export interface ApiErrorHandler<TContext = unknown> {
+export interface IApiErrorHandler<TContext = unknown> {
   /** Reactive signal containing the list of registered custom error actions. */
-  customErrorHandlers: WritableSignal<ErrorAction<TContext>[]>;
+  customErrorHandlers: WritableSignal<IErrorAction<TContext>[]>;
 
   /** Reactive signal containing the fallback error action when no custom action matches. */
-  defaultErrorHandler: WritableSignal<ErrorAction<TContext> | null>;
+  defaultErrorHandler: WritableSignal<IErrorAction<TContext> | null>;
 
   /**
    * Dispatches an HTTP error to the highest-priority matching custom action or default fallback.
@@ -85,16 +85,16 @@ export interface ApiErrorHandler<TContext = unknown> {
   /**
    * Registers a custom error action in the handler's registry.
    *
-   * @param handler The ErrorAction instance to add.
+   * @param handler The IErrorAction instance to add.
    * @returns The handler instance for method chaining.
    */
-  addCustomHandler(handler: ErrorAction<TContext>): ApiErrorHandler<TContext>;
+  addCustomHandler(handler: IErrorAction<TContext>): IApiErrorHandler<TContext>;
 
   /**
    * Sets or clears the default fallback error action.
    *
-   * @param handler The fallback ErrorAction instance, or null to clear.
+   * @param handler The fallback IErrorAction instance, or null to clear.
    * @returns The handler instance for method chaining.
    */
-  setDefaultHandler?(handler: ErrorAction<TContext> | null): ApiErrorHandler<TContext>;
+  setDefaultHandler?(handler: IErrorAction<TContext> | null): IApiErrorHandler<TContext>;
 }

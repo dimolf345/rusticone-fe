@@ -1,0 +1,17 @@
+@reference "#styles";
+
+.header {
+  @apply flex h-14 sm:h-16 w-full shrink-0 items-center bg-primary px-4 text-primary-content transition-all sm:px-6;
+}
+
+.header-container {
+  @apply mx-auto flex w-full items-center justify-between;
+}
+
+.brand-link {
+  @apply flex items-center gap-3 transition-transform duration-200 hover:scale-[1.02] focus:outline-hidden;
+}
+
+.brand-title {
+  @apply font-display text-xl font-bold tracking-tight text-white sm:text-2xl;
+}

@@ -5,12 +5,87 @@
   themes: caramellatte --default;
 }
 
+@plugin 'daisyui/theme' {
+  name: 'caramellatte';
+  default: true;
+  --color-primary: #8b3a16;
+  --color-primary-content: #ffffff;
+  --color-secondary: #c2410c;
+  --color-secondary-content: #ffffff;
+  --color-accent: #d97706;
+  --color-accent-content: #ffffff;
+  --color-neutral: #4a2818;
+  --color-neutral-content: #fffdfa;
+  --color-base-100: #ffffff;
+  --color-base-200: #fffdfa;
+  --color-base-300: #fae8d2;
+  --color-base-content: #34180e;
+  --radius-selector: 1rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1.25rem;
+}
+
 @theme {
   --font-display: 'Playfair Display', serif;
   --font-body: 'DM Sans', sans-serif;
+
+  --grid-cols-layout: 1fr 1fr; /* or 1fr 1fr, 240px 1fr, etc. */
+
+  /* Semantic Canvas & Surface colors matching artisanal warm aesthetic */
+  --color-canvas: #fae8d2;
+  --color-canvas-subtle: #f5dcbe;
+  --color-canvas-warm: #faf5ee;
+  --color-surface-light: #fffdfa;
+  --color-surface-warm: #faf5ee;
+  --color-input-bg: #f0e7dc;
+  --color-input-hover: #eae0d4;
+
+  /* Rust scale */
+  --color-rust-900: #34180e;
+  --color-rust-800: #562512;
+  --color-rust-700: #783317;
+  --color-rust-600: #8b3a16;
+  --color-rust-500: #b34a1d;
+  --color-rust-100: #fbeae2;
+
+  /* Terracotta & Warm Accent palette */
+  --color-terracotta: #c34e3a;
+  --color-terracotta-50: #fae8dc;
+  --color-terracotta-100: #f6dfd2;
+  --color-terracotta-200: #f4dbcf;
+  --color-terracotta-300: #dc8878;
+  --color-terracotta-400: #cf7b6a;
+  --color-terracotta-500: #c26e5d;
+  --color-terracotta-600: #c34e3a;
+  --color-terracotta-700: #b83d28;
+  --color-terracotta-800: #962f1d;
 }
 
-
 button {
-  @apply rounded-2xl text-base 
+  @apply rounded-2xl text-base;
+}
+
+/* Global sleek custom scrollbar matching warm artisanal palette */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(195, 78, 58, 0.35) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(195, 78, 58, 0.3);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(195, 78, 58, 0.65);
 }

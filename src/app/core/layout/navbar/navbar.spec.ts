@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
-import { Layout } from './layout';
+import { Navbar } from './navbar';
 
-describe('Layout', () => {
-  let component: Layout;
-  let fixture: ComponentFixture<Layout>;
+describe('Navbar', () => {
+  let component: Navbar;
+  let fixture: ComponentFixture<Navbar>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Layout],
-      providers: [provideRouter([]), provideHttpClient()],
+      imports: [Navbar],
+      providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Layout);
+    fixture = TestBed.createComponent(Navbar);
+    fixture.componentRef.setInput('screenSize', 'desktop');
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

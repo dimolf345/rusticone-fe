@@ -6,7 +6,6 @@ import { AuthService } from './core/services/auth.service';
 @Component({
   imports: [RouterOutlet, AlertsList],
   selector: 'app-root',
-  styles: ``,
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

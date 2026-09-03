@@ -1,0 +1,65 @@
+@reference "#styles";
+
+:host {
+  display: block;
+}
+
+/* Mobile Fixed Bottom Dock */
+.mobile-dock {
+  @apply fixed bottom-0 inset-x-0 z-50 flex items-center justify-around border-t border-white/10 bg-primary/95 text-primary-content backdrop-blur-lg shadow-2xl;
+}
+
+/* Tablet Vertical Stack Navbar (min-width >= 4rem) */
+.tablet-navbar {
+  @apply flex h-full w-18 min-w-16 flex-col justify-between py-3 px-1.5 bg-primary text-primary-content;
+}
+
+/* Desktop Sidebar (min-width >= 4rem, compact & expanded) */
+.desktop-navbar {
+  @apply flex h-full flex-col py-3 px-2 bg-primary text-primary-content transition-all duration-300 ease-in-out;
+}
+
+.desktop-navbar.is-collapsed {
+  @apply w-16 min-w-16;
+}
+
+.desktop-navbar.is-expanded {
+  @apply w-56 min-w-[14rem];
+}
+
+.nav-list {
+  @apply flex flex-col gap-1.5 list-none m-0 p-0;
+}
+
+.nav-list-item {
+  @apply list-none m-0 p-0;
+}
+
+/* Collapse Header & Button (Desktop only) */
+.collapse-header {
+  @apply pb-2 mb-1.5 border-b border-white/10;
+}
+
+.collapse-btn {
+  @apply flex items-center rounded-2xl text-primary-content/75 transition-all duration-200 hover:bg-white/10 hover:text-white cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary;
+}
+
+.desktop-navbar.is-collapsed .collapse-btn {
+  @apply h-12 w-12 justify-center mx-auto;
+}
+
+.desktop-navbar.is-expanded .collapse-btn {
+  @apply gap-3 px-3.5 py-3 w-full;
+}
+
+.collapse-icon {
+  @apply h-5 w-5 shrink-0;
+}
+
+.collapse-label {
+  @apply text-sm font-medium tracking-wide whitespace-nowrap;
+}
+
+
+
+

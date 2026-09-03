@@ -14,7 +14,7 @@ import {
   heroXCircle,
   heroXMark,
 } from '@ng-icons/heroicons/outline';
-import { AlertItem } from '../../../core/models/alert.model';
+import { IAlertItem } from '../../../core/models/alert.model';
 
 @Component({
   selector: 'app-alert-item',
@@ -33,7 +33,7 @@ import { AlertItem } from '../../../core/models/alert.model';
   ],
 })
 export class AlertItemComponent {
-  readonly alert = input.required<AlertItem>();
+  readonly alert = input.required<IAlertItem>();
   readonly dismissed = output<string>();
 
   readonly isLeaving = signal(false);

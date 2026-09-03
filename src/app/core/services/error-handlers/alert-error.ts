@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ALERT_DURATION, AlertItem } from '../../models/alert.model';
+import { ALERT_DURATION, IAlertItem } from '../../models/alert.model';
 import { AlertService } from '../alert.service';
 import { BaseErrorAction } from './base-error';
 
@@ -9,10 +9,10 @@ import { BaseErrorAction } from './base-error';
  * Merges default settings, static pre-configured action context, and dynamic runtime context to display
  * contextual alert banners (e.g. error, warning, info) with customizable durations and icons.
  */
-export class AlertError extends BaseErrorAction<Partial<AlertItem>> {
+export class AlertError extends BaseErrorAction<Partial<IAlertItem>> {
   #alertService: AlertService;
 
-  override context: AlertItem = {
+  override context: IAlertItem = {
     type: 'error',
     message: 'Si è verificato un errore',
     closeTime: ALERT_DURATION.DEFAULT,
@@ -25,7 +25,7 @@ export class AlertError extends BaseErrorAction<Partial<AlertItem>> {
    * @param alertService The injected {@link AlertService} used to render alert banners.
    * @param defaultContext Optional base alert parameters to override defaults upon instantiation.
    */
-  constructor(alertService: AlertService, defaultContext?: Partial<AlertItem>) {
+  constructor(alertService: AlertService, defaultContext?: Partial<IAlertItem>) {
     super();
     this.#alertService = alertService;
     if (defaultContext) {
@@ -40,8 +40,8 @@ export class AlertError extends BaseErrorAction<Partial<AlertItem>> {
    * @param error The HTTP error response.
    * @param context Optional runtime context provided at the dispatch callsite.
    */
-  override execute(error: HttpErrorResponse, context?: Partial<AlertItem>): void {
-    const mergedContext: Partial<AlertItem> = {
+  override execute(error: HttpErrorResponse, context?: Partial<IAlertItem>): void {
+    const mergedContext: Partial<IAlertItem> = {
       ...this.context,
       ...context,
     };

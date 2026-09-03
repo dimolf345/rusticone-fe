@@ -10,9 +10,9 @@
     "editor.formatOnSave": true
   },
   "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
     "source.fixAll.eslint": "explicit"
   },
   "javascript.format.semicolons": "insert",
   "typescript.format.semicolons": "insert"
 }
-

@@ -49,10 +49,10 @@ The error-handling system is built on two complementary design patterns:
 
 | Class / Interface | Location | Responsibility |
 | :--- | :--- | :--- |
-| **`ErrorAction<TContext>`** | `models/error-handler.model.ts` | Interface defining an individual error strategy (status codes, priority, predicate, context, execute). |
-| **`BaseErrorAction<TContext>`** | `services/error-handlers/base-error.ts` | Abstract base class implementing `ErrorAction` with fluent method chaining (`setErrorActionConfig`, `setContext`). |
+| **`IErrorAction<TContext>`** | `models/error-handler.model.ts` | Interface defining an individual error strategy (status codes, priority, predicate, context, execute). |
+| **`BaseErrorAction<TContext>`** | `services/error-handlers/base-error.ts` | Abstract base class implementing `IErrorAction` with fluent method chaining (`setErrorActionConfig`, `setContext`). |
 | **`AlertError`** | `services/error-handlers/alert-error.ts` | Concrete action that displays notifications using `AlertService`. |
-| **`ApiErrorHandler<TContext>`** | `models/error-handler.model.ts` | Interface defining the error registry and dispatch contract. |
+| **`IApiErrorHandler<TContext>`** | `models/error-handler.model.ts` | Interface defining the error registry and dispatch contract. |
 | **`BaseErrorHandler<TContext>`** | `services/error-handlers/base-error.ts` | Abstract base class managing reactive signal registries and priority dispatching. |
 | **`AuthErrorHandlerService`** | `services/auth-error-handler.service.ts` | Domain-specific singleton service configured with authentication error rules. |
 
@@ -136,12 +136,12 @@ To create an error handler for a new domain (e.g. `BuffetErrorHandlerService`):
 ```typescript
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
-import { ALERT_DURATION, AlertItem } from '../models/alert.model';
+import { ALERT_DURATION, IAlertItem } from '../models/alert.model';
 import { AlertService } from './alert.service';
 import { AlertError, BaseErrorHandler } from './error-handlers';
 
 @Service()
-export class BuffetErrorHandlerService extends BaseErrorHandler<Partial<AlertItem>> {
+export class BuffetErrorHandlerService extends BaseErrorHandler<Partial<IAlertItem>> {
   #alertService = inject(AlertService);
 
   // 1. Default fallback alert
@@ -214,7 +214,7 @@ export class BuffetService {
 
 ---
 
-### 3. Creating a Custom `ErrorAction` Strategy
+### 3. Creating a Custom `IErrorAction` Strategy
 
 You are not limited to `AlertError`. You can create any custom strategy by extending `BaseErrorAction`:
 
@@ -223,11 +223,11 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BaseErrorAction } from './base-error';
 
-export interface RedirectContext {
+export interface IRedirectContext {
   route: string[];
 }
 
-export class RedirectErrorAction extends BaseErrorAction<RedirectContext> {
+export class RedirectErrorAction extends BaseErrorAction<IRedirectContext> {
   #router: Router;
 
   constructor(router: Router, defaultRoute: string[] = ['/login']) {

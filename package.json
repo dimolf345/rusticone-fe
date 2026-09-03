@@ -13,6 +13,9 @@
     "build:gh-pages": "ng build --configuration production --base-href /rusticone-fe/"
   },
   "private": true,
+  "imports": {
+    "#styles": "./src/styles.css"
+  },
   "packageManager": "npm@11.19.0",
   "dependencies": {
     "@angular/common": "^22.1.0",

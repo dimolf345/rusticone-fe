@@ -13,10 +13,10 @@ import {
   IRefreshTokenResponse,
   IRegisterRequest,
 } from '../models/auth.model';
-import { User } from '../models/user.model';
+import { IUser } from '../models/user.model';
 import { AuthErrorHandlerService } from './auth-error-handler.service';
 
-export interface RenderGoogleButtonOptions {
+export interface IRenderGoogleButtonOptions {
   onSuccess?: (user: IAuthResponse) => void;
   onError?: (err: unknown) => void;
   customOptions?: google.accounts.id.GsiButtonConfiguration;
@@ -33,7 +33,7 @@ export class AuthService {
   };
 
   #accessToken = signal<string | null>(null);
-  #currentUser = signal<User | null>(null);
+  #currentUser = signal<IUser | null>(null);
   #isLoading = signal<boolean>(false);
   #refreshPromise: Promise<boolean> | null = null;
 
@@ -53,7 +53,7 @@ export class AuthService {
   /**
    * Sets the current logged-in user.
    */
-  setCurrentUser(user: User | null): void {
+  setCurrentUser(user: IUser | null): void {
     this.#currentUser.set(user);
   }
 
@@ -210,7 +210,7 @@ export class AuthService {
   /**
    * Initializes Google Identity Services and renders the official Google button inside the container.
    */
-  renderGoogleButton(container: HTMLElement, options?: RenderGoogleButtonOptions): void {
+  renderGoogleButton(container: HTMLElement, options?: IRenderGoogleButtonOptions): void {
     const initAndRender = () => {
       if (typeof google === 'undefined' || !google?.accounts?.id) {
         options?.onError?.(new Error('Google Identity Services SDK non caricato.'));
@@ -279,7 +279,7 @@ export class AuthService {
   /**
    * Redirects the user according to their role.
    */
-  redirectUserByRole(user?: User | null): Promise<boolean> {
+  redirectUserByRole(user?: IUser | null): Promise<boolean> {
     const targetUser = user ?? this.currentUser();
     if (!targetUser) {
       return this.#router.navigate([APP_PATHS.LOGIN]);

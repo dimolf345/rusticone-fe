@@ -1,1 +1,14 @@
-<p>layout works!</p>
+<div class="app-layout">
+  <app-header class="app-header-area" />
+  <app-navbar
+    class="app-navbar-area"
+    [screenSize]="layoutService.screenSize()"
+    [navigationItems]="navigationItems()"
+  />
+  <main class="app-main">
+    <div class="content-viewport">
+      <router-outlet />
+    </div>
+  </main>
+</div>
+

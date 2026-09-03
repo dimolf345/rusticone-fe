@@ -19,7 +19,7 @@ export type AlertType = keyof typeof ALERT_TYPES;
 export type AlertDuration = (typeof ALERT_DURATION)[keyof typeof ALERT_DURATION];
 export type AlertIcon = (typeof ALERT_ICONS)[keyof typeof ALERT_ICONS];
 
-export interface AlertItem {
+export interface IAlertItem {
   type: AlertType;
   message: string;
   title?: string;
