@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { ROUTE_SEGMENTS } from './core/constants/routes.constant';
-import { isNotLoggedGuard } from './core/guards';
+import { isAdminGuard, isNotLoggedGuard } from './core/guards';
 import { Layout } from './core/layout/layout';
 
 export const routes: Routes = [
@@ -29,8 +29,23 @@ export const routes: Routes = [
     children: [
       {
         path: ROUTE_SEGMENTS.ADMIN,
-        loadComponent: () =>
-          import('./features/admin/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
+        canActivate: [isAdminGuard],
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('./features/admin/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
+          },
+          {
+            path: ROUTE_SEGMENTS.MENU,
+            loadComponent: () => import('./features/admin/admin-menu/admin-menu')
+          },
+          {
+            path: ROUTE_SEGMENTS.QUOTES,
+            loadComponent: () => import('./features/admin/admin-quotes/admin-quotes')
+          }
+        ]
       },
       {
         path: ROUTE_SEGMENTS.CUSTOMER,
@@ -40,8 +55,12 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'not-found',
+    loadComponent: () => import('./features/not-found/not-found.component')
+  },
+  {
     path: '**',
-    loadComponent: () => import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
+    loadComponent: () => import('./features/not-found/not-found.component'),
   },
 ];
 

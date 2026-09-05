@@ -1,5 +1,5 @@
 import { inject } from "@angular/core";
-import { CanActivateFn } from "@angular/router";
+import { CanActivateFn, Router } from "@angular/router";
 import { AuthService } from "../services/auth.service";
 
 export const isNotLoggedGuard: CanActivateFn = () => {
@@ -10,4 +10,12 @@ export const isNotLoggedGuard: CanActivateFn = () => {
     } else {
         return authService.redirectUserByRole();
     }
+};
+
+export const isAdminGuard: CanActivateFn = () => {
+    const authService = inject(AuthService);
+    const router = inject(Router);
+    const isAdmin = authService.isAdmin();
+
+    return isAdmin || router.createUrlTree(['/not-found']);
 };

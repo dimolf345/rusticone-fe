@@ -12,9 +12,8 @@ import { BaseErrorAction } from './base-error';
 export class AlertError extends BaseErrorAction<Partial<IAlertItem>> {
   #alertService: AlertService;
 
-  override context: IAlertItem = {
+  override context: Partial<IAlertItem> = {
     type: 'error',
-    message: 'Si è verificato un errore',
     closeTime: ALERT_DURATION.DEFAULT,
     icon: null,
   };
@@ -42,12 +41,14 @@ export class AlertError extends BaseErrorAction<Partial<IAlertItem>> {
    */
   override execute(error: HttpErrorResponse, context?: Partial<IAlertItem>): void {
     const mergedContext: Partial<IAlertItem> = {
+      icon: null,
       ...this.context,
       ...context,
     };
 
     const message =
-      mergedContext.message ||
+      context?.message ||
+      this.context?.message ||
       error.error?.message ||
       (typeof error.error === 'string' ? error.error : null) ||
       error.message ||

@@ -1,5 +1,5 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, computed, effect, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { ADMIN_NAVITEMS, CUSTOMER_NAVITEMS } from '../constants/routes.constant';
 import { INavigationItem } from '../models/layout.model';
 import { AuthService } from '../services/auth.service';
@@ -13,8 +13,9 @@ import { Navbar } from './navbar/navbar';
   styleUrl: './layout.css',
   templateUrl: './layout.html',
 })
-export class Layout implements OnInit {
+export class Layout {
   #authService = inject(AuthService);
+  #router = inject(Router);
   layoutService = inject(LayoutService);
 
   readonly navigationItems = computed<INavigationItem[]>(() => {
@@ -25,8 +26,13 @@ export class Layout implements OnInit {
     return CUSTOMER_NAVITEMS;
   });
 
-  ngOnInit(): void {
-    this.#authService.redirectUserByRole();
-  }
+  redirectEffect = effect(() => {
+    const user = this.#authService.currentUser();
+    if (user) {
+      this.#authService.redirectUserByRole();
+    } else {
+      this.#router.navigate(['/login']);
+    }
+  });
 }
 

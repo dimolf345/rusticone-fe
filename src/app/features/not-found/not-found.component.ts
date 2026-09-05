@@ -18,7 +18,7 @@ import { APP_PATHS } from '../../core/constants/routes.constant';
     }),
   ],
 })
-export class NotFoundComponent {
+export default class NotFoundComponent {
   protected readonly paths = APP_PATHS;
 }
 
