@@ -1,5 +1,5 @@
-import '@angular/compiler';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AUTH_ERROR_CONSTANTS } from '../../constants/error.constant';
 import { ALERT_DURATION } from '../../models/alert.model';
@@ -7,11 +7,15 @@ import { AlertService } from '../alert.service';
 import { AuthErrorHandlerService } from '../auth-error-handler.service';
 import { AlertError, BaseErrorAction, BaseErrorHandler } from '../error-handlers';
 
-class MockAction extends BaseErrorAction<{ custom?: string }> {
+class MockAction extends BaseErrorAction<{ custom?: string; }> {
   override execute = vi.fn();
 }
 
-class TestErrorHandler extends BaseErrorHandler<{ custom?: string }> {}
+class TestErrorHandler extends BaseErrorHandler<{ custom?: string; }> { }
+
+const mockAlertService = {
+  show: vi.fn(),
+} as unknown as AlertService;
 
 describe('Error Handlers', () => {
   describe('BaseErrorAction', () => {
@@ -219,38 +223,23 @@ describe('Error Handlers', () => {
   });
 
   describe('AuthErrorHandlerService', () => {
-    it('should correctly handle user already registered conflict (409)', () => {
-      const mockAlertService = {
-        show: vi.fn(),
-      } as unknown as AlertService;
+    let authErrorHandler: AuthErrorHandlerService;
 
-      const authErrorHandler = new AuthErrorHandlerService();
-      // Inject mock alert service into private handler instances
-      (authErrorHandler as unknown as { defaultAlert: AlertError }).defaultAlert = new AlertError(
-        mockAlertService,
-      );
-      (
-        authErrorHandler as unknown as { alertOnUserAlreadyRegistered: AlertError }
-      ).alertOnUserAlreadyRegistered = new AlertError(mockAlertService).setErrorActionConfig({
-        errorStatus: [HttpStatusCode.Conflict],
-        predicate: (error: HttpErrorResponse) =>
-          error.error?.message === AUTH_ERROR_CONSTANTS.UserExists ||
-          error.message === AUTH_ERROR_CONSTANTS.UserExists,
-        priority: 10,
-        context: {
-          message: "L' utente risulta già registrato!",
-        },
+    beforeEach(() => {
+      vi.clearAllMocks();
+      TestBed.configureTestingModule({
+        providers: [
+          AuthErrorHandlerService,
+          { provide: AlertService, useValue: mockAlertService },
+        ],
       });
-      authErrorHandler.setDefaultHandler(
-        (authErrorHandler as unknown as { defaultAlert: AlertError }).defaultAlert,
-      );
-      authErrorHandler.addCustomHandler(
-        (authErrorHandler as unknown as { alertOnUserAlreadyRegistered: AlertError })
-          .alertOnUserAlreadyRegistered,
-      );
+      authErrorHandler = TestBed.inject(AuthErrorHandlerService);
+    });
 
+    it('should correctly handle user already registered conflict (409)', () => {
       const error409 = new HttpErrorResponse({
         status: HttpStatusCode.Conflict,
+        url: '/auth/register',
         error: { message: AUTH_ERROR_CONSTANTS.UserExists },
       });
 
@@ -259,6 +248,39 @@ describe('Error Handlers', () => {
       expect(mockAlertService.show).toHaveBeenCalledWith({
         type: 'error',
         message: "L' utente risulta già registrato!",
+        closeTime: ALERT_DURATION.DEFAULT,
+        icon: null,
+      });
+    });
+
+    it('should correctly handle wrong credentials unauthorized (401)', () => {
+      const error401 = new HttpErrorResponse({
+        status: HttpStatusCode.Unauthorized,
+        url: '/auth/login',
+        error: { message: 'Invalid credentials' },
+      });
+
+      authErrorHandler.handle(error401);
+
+      expect(mockAlertService.show).toHaveBeenCalledWith({
+        type: 'error',
+        message: 'Le credenziali inserite non sono valide!',
+        closeTime: ALERT_DURATION.SHORT,
+        icon: null,
+      });
+    });
+
+    it('should fallback to default error alert on unhandled error', () => {
+      const genericError = new HttpErrorResponse({
+        status: HttpStatusCode.InternalServerError,
+        error: { message: 'Internal Server Error' },
+      });
+
+      authErrorHandler.handle(genericError);
+
+      expect(mockAlertService.show).toHaveBeenCalledWith({
+        type: 'error',
+        message: 'Internal Server Error',
         closeTime: ALERT_DURATION.DEFAULT,
         icon: null,
       });

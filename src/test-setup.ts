@@ -1,4 +1,6 @@
-import { vi, beforeEach } from 'vitest';
+import '@angular/compiler';
+import { beforeEach, vi } from 'vitest';
+
 
 // 1. In-memory Mock Storage for localStorage & sessionStorage
 class MemoryStorage implements Storage {

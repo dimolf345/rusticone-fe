@@ -1,7 +1,13 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { Layout } from './layout';
+
+@Component({
+  template: '',
+})
+class DummyComponent {}
 
 describe('Layout', () => {
   let component: Layout;
@@ -10,7 +16,10 @@ describe('Layout', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Layout],
-      providers: [provideRouter([]), provideHttpClient()],
+      providers: [
+        provideRouter([{ path: 'login', component: DummyComponent }, { path: '**', component: DummyComponent }]),
+        provideHttpClient(),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Layout);
@@ -22,3 +31,4 @@ describe('Layout', () => {
     expect(component).toBeTruthy();
   });
 });
+
