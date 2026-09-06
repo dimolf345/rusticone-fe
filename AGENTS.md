@@ -103,3 +103,30 @@ src/
 ### 8. Types & Interfaces Naming Conventions
 
 - All TypeScript interfaces must be prefixed with an uppercase `I` (e.g., `INavigationItem`, `IUser`, `IAlertItem`, `IErrorAction`, `IApiErrorHandler`, `ILayoutBreakpoint`).
+
+### 9. Unit Testing Standards & Conventions
+
+All Angular component unit tests (`*.spec.ts`) must follow this consistent structure:
+
+- **Component & Test Variables**:
+  - Always declare `component`, `fixture`, `template` (`DebugElement`), and `_componentRef` (`ComponentRef<T>`).
+  - Define `const testIdPrefix = '<Component Name> - ';` at the top of the test suite (e.g., `const testIdPrefix = 'Not Found - ';`).
+  - In `beforeEach`, compile components and assign:
+    ```typescript
+    fixture = TestBed.createComponent(MyComponent);
+    component = fixture.componentInstance;
+    template = fixture.debugElement;
+    _componentRef = fixture.componentRef;
+    fixture.detectChanges();
+    ```
+
+- **DOM Queries with `getByTestId`**:
+  - Import `getByTestId` from `@core`.
+  - Query DOM elements using `getByTestId(template, 'Element Name', { prefix: testIdPrefix })`.
+  - Ensure HTML templates use corresponding `data-testid` attributes (e.g. `data-testid="Not Found - Card container"`).
+
+- **Test Suite Organization & Describe Blocks**:
+  - **Instantiation**: Top-level `it('should create the ... component', () => { expect(component).toBeTruthy(); });`.
+  - **`describe('Layout', () => { ... })`**: Tests for UI structure, visible cards, headings, and static elements.
+  - **`describe('Behavior', () => { ... })`**: Tests for user interactions, navigation/redirects, dynamic states, and service calls.
+  - In the `Behavior` block, inject service doubles/mocks in a local `beforeEach` (e.g., `beforeEach(() => { authService = TestBed.inject(AuthService); });`).
