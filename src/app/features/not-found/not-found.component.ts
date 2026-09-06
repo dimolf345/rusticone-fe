@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroArrowLeft, heroHome } from '@ng-icons/heroicons/outline';
 import { MainLogo } from '../../components/main-logo/main-logo';
 import { APP_PATHS } from '../../core/constants/routes.constant';
+import { AuthService } from '../../core/services/auth.service';
+
 
 @Component({
   selector: 'app-not-found',
@@ -18,7 +20,13 @@ import { APP_PATHS } from '../../core/constants/routes.constant';
     }),
   ],
 })
-export default class NotFoundComponent {
+export class NotFoundComponent {
+  #authService = inject(AuthService);
   protected readonly paths = APP_PATHS;
+
+  redirectUrl = computed(() => {
+    const isLoggedIn = !!this.#authService.currentUser();
+    return isLoggedIn ? this.paths.DASHBOARD.ROOT : this.paths.LANDING;
+  });
 }
 

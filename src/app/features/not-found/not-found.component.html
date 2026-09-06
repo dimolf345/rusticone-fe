@@ -10,17 +10,19 @@
   <div class="hero-content not-found-content">
     <app-main-logo />
 
-    <div class="message-card">
+    <div class="message-card" data-testId="Not Found - Card container">
       <div class="status-code">404</div>
 
-      <h2 class="error-title">Ooops, hai sbagliato pagina!</h2>
+      <h2 data-testId="Not Found - Error Title" class="error-title">
+        Ooops, hai sbagliato pagina!
+      </h2>
 
       <p class="error-description">
         Sembra che tu sia finito fuori menù. La pagina che cerchi non esiste o è stata spostata.
       </p>
 
       <div class="action-wrapper">
-        <a [routerLink]="paths.ROOT" class="home-btn">
+        <a data-testId="Not Found - Redirect url" [routerLink]="redirectUrl()" class="home-btn">
           <ng-icon size="1.25rem" name="heroHome" class="btn-icon" />
           <span>Torna alla Home</span>
         </a>

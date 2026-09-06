@@ -14,5 +14,13 @@
     "source.fixAll.eslint": "explicit"
   },
   "javascript.format.semicolons": "insert",
-  "typescript.format.semicolons": "insert"
+  "typescript.format.semicolons": "insert",
+  "vitestRunner.framework": "auto",
+  "vitestRunner.vitestCommand": "npx vitest",
+  "vitestRunner.jestCommand": "npx jest",
+  "vitestRunner.baseCommand": "npx vitest",
+  "vitestRunner.defaultArgs": [
+    "--run"
+  ],
+  "vitestRunner.enableCodeLens": true
 }

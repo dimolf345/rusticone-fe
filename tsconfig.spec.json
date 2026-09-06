@@ -1,16 +1,41 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "paths": {
+      "@core": [
+        "./src/app/core"
+      ],
+      "@core/*": [
+        "./src/app/core/*"
+      ],
+      "@env/*": [
+        "./src/environments/*"
+      ],
+      "@env": [
+        "./src/environments/environment"
+      ],
+      "@mocks/*": [
+        "./src/app/core/mocks/*"
+      ],
+      "@mocks": [
+        "./src/app/core/mocks"
+      ],
+      "@src/*": [
+        "./src/*"
+      ]
+    },
     "types": [
       "vitest/globals",
       "google.accounts"
-    ]
+    ],
+    "target": "es2022"
   },
   "include": [
     "src/**/*.d.ts",
     "src/**/*.spec.ts",
+    "src/test-setup.ts"
+  ],
+  "files": [
     "src/test-setup.ts"
   ]
 }

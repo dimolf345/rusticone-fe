@@ -13,8 +13,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@core/': `${path.resolve(__dirname, 'src/app/core')}/`,
+      '@core': path.resolve(__dirname, 'src/app/core'),
       '@env/': `${path.resolve(__dirname, 'src/environments')}/`,
       '@env': path.resolve(__dirname, 'src/environments/environment'),
+      '@mocks/': `${path.resolve(__dirname, 'src/app/core/mocks')}/`,
+      '@mocks': path.resolve(__dirname, 'src/app/core/mocks'),
       '#styles': path.resolve(__dirname, 'src/styles.css'),
     },
   },

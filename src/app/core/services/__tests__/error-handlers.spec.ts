@@ -2,20 +2,21 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AUTH_ERROR_CONSTANTS } from '../../constants/error.constant';
+import {
+  createMockAlertService,
+  MockAlertService,
+  MockErrorAction,
+  MockErrorHandler,
+} from '@mocks';
 import { ALERT_DURATION } from '../../models/alert.model';
 import { AlertService } from '../alert.service';
 import { AuthErrorHandlerService } from '../auth-error-handler.service';
-import { AlertError, BaseErrorAction, BaseErrorHandler } from '../error-handlers';
+import { AlertError } from '../error-handlers';
 
-class MockAction extends BaseErrorAction<{ custom?: string; }> {
-  override execute = vi.fn();
-}
+class MockAction extends MockErrorAction<{ custom?: string }> {}
+class TestErrorHandler extends MockErrorHandler<{ custom?: string }> {}
 
-class TestErrorHandler extends BaseErrorHandler<{ custom?: string; }> { }
-
-const mockAlertService = {
-  show: vi.fn(),
-} as unknown as AlertService;
+let mockAlertService: MockAlertService;
 
 describe('Error Handlers', () => {
   describe('BaseErrorAction', () => {
@@ -153,17 +154,12 @@ describe('Error Handlers', () => {
   });
 
   describe('AlertError', () => {
-    let mockAlertService: AlertService;
-
     beforeEach(() => {
-      mockAlertService = {
-        show: vi.fn(),
-        error: vi.fn(),
-      } as unknown as AlertService;
+      mockAlertService = createMockAlertService();
     });
 
     it('should trigger AlertService show with backend error payload message and default settings', () => {
-      const alertError = new AlertError(mockAlertService);
+      const alertError = new AlertError(mockAlertService as unknown as AlertService);
       const error = new HttpErrorResponse({
         status: HttpStatusCode.Unauthorized,
         error: { message: 'Credenziali non valide' },
@@ -180,7 +176,7 @@ describe('Error Handlers', () => {
     });
 
     it('should respect action-configured context with custom closeTime and message', () => {
-      const alertError = new AlertError(mockAlertService).setErrorActionConfig({
+      const alertError = new AlertError(mockAlertService as unknown as AlertService).setErrorActionConfig({
         context: {
           message: 'Errore personalizzato',
           closeTime: ALERT_DURATION.SHORT,
@@ -200,7 +196,7 @@ describe('Error Handlers', () => {
     });
 
     it('should allow runtime context overrides at execution callsite', () => {
-      const alertError = new AlertError(mockAlertService, {
+      const alertError = new AlertError(mockAlertService as unknown as AlertService, {
         message: 'Default msg',
         closeTime: ALERT_DURATION.DEFAULT,
       });
@@ -227,6 +223,7 @@ describe('Error Handlers', () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
+      mockAlertService = createMockAlertService();
       TestBed.configureTestingModule({
         providers: [
           AuthErrorHandlerService,

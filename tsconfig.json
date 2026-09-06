@@ -4,6 +4,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
+      "@core": ["./src/app/core"],
+      "@core/*": ["./src/app/core/*"],
       "@env/*": ["./src/environments/*"],
       "@env": ["./src/environments/environment"]
     },
