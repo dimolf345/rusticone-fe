@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AuthService, getByTestId } from '@core';
 import { MockAuthService, mockUser } from '@core/mocks';
-import { NotFoundComponent } from './not-found.component';
+import NotFoundComponent from './not-found.component';
 
 describe('NotFoundComponent', () => {
   let component: NotFoundComponent;

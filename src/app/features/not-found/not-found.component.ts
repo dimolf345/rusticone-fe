@@ -20,7 +20,7 @@ import { AuthService } from '../../core/services/auth.service';
     }),
   ],
 })
-export class NotFoundComponent {
+export default class NotFoundComponent {
   #authService = inject(AuthService);
   protected readonly paths = APP_PATHS;
 
