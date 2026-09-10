@@ -63,7 +63,7 @@
 }
 
 .btn-primary-action {
-  @apply gap-2 font-semibold text-white shadow-sm shadow-[#dc8878]/30 transition-transform hover:scale-[1.02] active:scale-[0.98];
+  @apply btn-scale gap-2 font-semibold text-white shadow-sm shadow-[#dc8878]/30;
 }
 
 .btn-secondary-action {

@@ -1,0 +1,38 @@
+@reference "#styles";
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.menu-page {
+  @apply mx-auto flex max-w-7xl flex-col gap-4 px-4 pt-2 pb-6 font-body sm:gap-5 sm:px-6 sm:pt-4 sm:pb-8;
+}
+
+.menu-header {
+  @apply flex items-center justify-between gap-3;
+}
+
+.menu-title {
+  @apply font-body text-xl font-bold tracking-tight text-rust-900 sm:text-2xl;
+}
+
+.add-btn {
+  @apply btn btn-primary btn-sm btn-scale gap-1 rounded-xl shadow-xs sm:btn-md;
+}
+
+.search-section {
+  @apply w-full;
+}
+
+.search-preview-section {
+  @apply flex items-center rounded-2xl border border-rust-900/10 bg-white/75 px-4 py-3 text-xs text-rust-900/80 shadow-xs backdrop-blur-xs sm:text-sm;
+}
+
+.search-preview-text {
+  @apply flex items-center gap-2;
+}
+
+.search-query-highlight {
+  @apply font-semibold text-primary;
+}

@@ -1,1 +1,31 @@
-<p>admin-menu works!</p>
+<div class="menu-page" data-testId="Admin Menu - Page container">
+  <div class="menu-header">
+    <h2 class="menu-title" data-testId="Admin Menu - Main title">Gestione Menu</h2>
+    <a
+      [routerLink]="paths.DASHBOARD.ADMIN_NEW_MENU_ITEM"
+      class="add-btn"
+      data-testId="Admin Menu - Add button"
+    >
+      + Aggiungi
+    </a>
+  </div>
+
+  <!-- Searchbar Section -->
+  <div class="search-section" data-testId="Admin Menu - Search container">
+    <app-searchbar
+      autoFocus
+      [size]="layoutService.screenSize()"
+      [(search)]="searchQuery"
+      placeholder="Cerca pietanze nel menu..."
+      data-testId="Admin Menu - Searchbar"
+    />
+  </div>
+
+  <!-- Search Query Value Reflection -->
+  <div class="search-preview-section" data-testId="Admin Menu - Search preview container">
+    <p class="search-preview-text" data-testId="Admin Menu - Search preview text">
+      Valore ricerca:
+      <span class="search-query-highlight">"{{ debouncedQuery.value() }}"</span>
+    </p>
+  </div>
+</div>
