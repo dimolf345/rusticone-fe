@@ -1,6 +1,13 @@
 <div class="menu-page" data-testId="Admin Menu - Page container">
   <div class="menu-header">
     <h2 class="menu-title" data-testId="Admin Menu - Main title">Gestione Menu</h2>
+    <a
+      [routerLink]="paths.DASHBOARD.ADMIN_NEW_MENU_ITEM"
+      class="add-btn"
+      data-testId="Admin Menu - Add button"
+    >
+      + Aggiungi
+    </a>
   </div>
 
   <!-- Searchbar Section -->

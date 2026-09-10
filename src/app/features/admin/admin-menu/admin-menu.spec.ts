@@ -1,7 +1,8 @@
 import { ComponentRef, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { getByTestId, LayoutService } from '@core';
+import { provideRouter } from '@angular/router';
+import { APP_PATHS, getByTestId, LayoutService } from '@core';
 import { MockLayoutService } from '@core/mocks';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Searchbar } from '../../../components/searchbar/searchbar';
@@ -19,7 +20,10 @@ describe('AdminMenu', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AdminMenu],
-      providers: [{ provide: LayoutService, useClass: MockLayoutService }],
+      providers: [
+        provideRouter([]),
+        { provide: LayoutService, useClass: MockLayoutService },
+      ],
     }).compileComponents();
 
     layoutService = TestBed.inject(LayoutService) as unknown as MockLayoutService;
@@ -45,6 +49,15 @@ describe('AdminMenu', () => {
       expect(mainTitle).toBeTruthy();
       expect(mainTitle?.nativeElement.tagName.toLowerCase()).toBe('h2');
       expect(mainTitle?.nativeElement.textContent.trim()).toBe('Gestione Menu');
+    });
+
+    it('should display the "+ Aggiungi" button linking to ADMIN_NEW_MENU_ITEM route', () => {
+      const addBtn = getByTestId(template, 'Add button', { prefix: testIdPrefix });
+      expect(addBtn).toBeTruthy();
+      expect(addBtn?.nativeElement.textContent.trim()).toBe('+ Aggiungi');
+      expect(addBtn?.attributes['href'] || addBtn?.nativeElement.getAttribute('href')).toBe(
+        APP_PATHS.DASHBOARD.ADMIN_NEW_MENU_ITEM,
+      );
     });
 
     it('should display the searchbar below the title', () => {

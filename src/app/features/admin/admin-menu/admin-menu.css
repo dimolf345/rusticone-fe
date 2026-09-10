@@ -10,11 +10,15 @@
 }
 
 .menu-header {
-  @apply flex flex-col;
+  @apply flex items-center justify-between gap-3;
 }
 
 .menu-title {
   @apply font-body text-xl font-bold tracking-tight text-rust-900 sm:text-2xl;
+}
+
+.add-btn {
+  @apply btn btn-primary btn-sm btn-scale gap-1 rounded-xl shadow-xs sm:btn-md;
 }
 
 .search-section {

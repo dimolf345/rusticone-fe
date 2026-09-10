@@ -39,7 +39,17 @@ export const routes: Routes = [
           },
           {
             path: ROUTE_SEGMENTS.MENU,
-            loadComponent: () => import('./features/admin/admin-menu/admin-menu')
+            children: [
+              {
+                path: '',
+                pathMatch: 'full',
+                loadComponent: () => import('./features/admin/admin-menu/admin-menu')
+              },
+              {
+                path: 'new',
+                loadComponent: () => import('./features/not-found/not-found.component'),
+              }
+            ]
           },
           {
             path: ROUTE_SEGMENTS.QUOTES,
