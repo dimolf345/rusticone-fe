@@ -1,7 +1,10 @@
 import { ComponentRef, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { getByTestId } from '@core';
+import { By } from '@angular/platform-browser';
+import { getByTestId, LayoutService } from '@core';
+import { MockLayoutService } from '@core/mocks';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Searchbar } from '../../../components/searchbar/searchbar';
 import AdminMenu from './admin-menu';
 
 describe('AdminMenu', () => {
@@ -9,14 +12,17 @@ describe('AdminMenu', () => {
   let fixture: ComponentFixture<AdminMenu>;
   let template: DebugElement;
   let _componentRef: ComponentRef<AdminMenu>;
+  let layoutService: MockLayoutService;
 
   const testIdPrefix = 'Admin Menu - ';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AdminMenu],
+      providers: [{ provide: LayoutService, useClass: MockLayoutService }],
     }).compileComponents();
 
+    layoutService = TestBed.inject(LayoutService) as unknown as MockLayoutService;
     fixture = TestBed.createComponent(AdminMenu);
     component = fixture.componentInstance;
     template = fixture.debugElement;
@@ -34,9 +40,10 @@ describe('AdminMenu', () => {
       expect(pageContainer).toBeTruthy();
     });
 
-    it('should display the main title "Gestione Menu"', () => {
+    it('should display the main title "Gestione Menu" as an h2 element', () => {
       const mainTitle = getByTestId(template, 'Main title', { prefix: testIdPrefix });
       expect(mainTitle).toBeTruthy();
+      expect(mainTitle?.nativeElement.tagName.toLowerCase()).toBe('h2');
       expect(mainTitle?.nativeElement.textContent.trim()).toBe('Gestione Menu');
     });
 
@@ -66,6 +73,23 @@ describe('AdminMenu', () => {
 
     it('should initialize searchQuery with an empty string', () => {
       expect(component.searchQuery()).toBe('');
+    });
+
+    it('should bind layoutService screenSize to searchbar size input', () => {
+      const searchbarDebugEl = template.query(By.directive(Searchbar));
+      const searchbarInstance = searchbarDebugEl.componentInstance as Searchbar;
+
+      layoutService.setScreenSize('mobile');
+      fixture.detectChanges();
+      expect(searchbarInstance.size()).toBe('mobile');
+
+      layoutService.setScreenSize('tablet');
+      fixture.detectChanges();
+      expect(searchbarInstance.size()).toBe('tablet');
+
+      layoutService.setScreenSize('desktop');
+      fixture.detectChanges();
+      expect(searchbarInstance.size()).toBe('desktop');
     });
 
     it('should reflect the updated searchQuery in the preview paragraph after debounce time', async () => {

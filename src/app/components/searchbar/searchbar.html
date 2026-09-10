@@ -6,6 +6,7 @@
     #searchInput
     type="search"
     class="input searchbar-input"
+    [class]="sizeClass()"
     [placeholder]="placeholder()"
     [(ngModel)]="search"
     (keydown.enter)="submitSearch($event)"

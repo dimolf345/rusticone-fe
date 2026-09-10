@@ -1,6 +1,6 @@
 import { ComponentRef, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { getByTestId } from '@core';
+import { getByTestId, ScreenSize } from '@core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Searchbar } from './searchbar';
 
@@ -53,6 +53,26 @@ describe('Searchbar', () => {
       const input = getByTestId(template, 'Input', { prefix: testIdPrefix });
       expect(input?.nativeElement.placeholder).toBe('Cerca pizze o rustici...');
       expect(input?.nativeElement.getAttribute('aria-label')).toBe('Cerca pizze o rustici...');
+    });
+
+    it('should apply input-md size class by default (mobile)', () => {
+      const input = getByTestId(template, 'Input', { prefix: testIdPrefix });
+      expect(input?.nativeElement.classList.contains('input-md')).toBe(true);
+    });
+
+    it('should apply corresponding DaisyUI size classes based on ScreenSize input', () => {
+      const input = getByTestId(template, 'Input', { prefix: testIdPrefix });
+      const sizeCases: Array<[ScreenSize, string]> = [
+        ['mobile', 'input-md'],
+        ['tablet', 'input-lg'],
+        ['desktop', 'input-xl'],
+      ];
+
+      for (const [size, expectedClass] of sizeCases) {
+        fixture.componentRef.setInput('size', size);
+        fixture.detectChanges();
+        expect(input?.nativeElement.classList.contains(expectedClass)).toBe(true);
+      }
     });
 
     it('should not display the clear button when search is empty', () => {

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, debounced, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  debounced,
+  inject,
+  signal
+} from '@angular/core';
+import { LayoutService } from '@core';
 import { Searchbar } from '../../../components/searchbar/searchbar';
 
 @Component({
@@ -9,9 +16,10 @@ import { Searchbar } from '../../../components/searchbar/searchbar';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class AdminMenu {
+  readonly layoutService = inject(LayoutService);
   readonly searchQuery = signal<string>('');
+  readonly debouncedQuery = debounced(this.searchQuery, 1000);
 
-  debouncedQuery = debounced(this.searchQuery, 1000);
 }
 
 export { AdminMenu };

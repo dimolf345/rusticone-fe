@@ -2,6 +2,7 @@ import {
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   ElementRef,
   input,
@@ -10,8 +11,10 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ScreenSize } from '@core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass, heroXMark } from '@ng-icons/heroicons/outline';
+
 
 @Component({
   selector: 'app-searchbar',
@@ -31,10 +34,25 @@ export class Searchbar {
   readonly search = model<string>('');
   readonly placeholder = input<string>('Cerca...');
   readonly autoFocus = input(false, { transform: booleanAttribute });
+  readonly size = input<ScreenSize>('mobile');
+
   // Outputs
   readonly startSearch = output<void>();
+
   // Viewchild
   readonly inputRef = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+
+  readonly sizeClass = computed(() => {
+    switch (this.size()) {
+      case 'desktop':
+        return 'input-xl';
+      case 'tablet':
+        return 'input-lg';
+      case 'mobile':
+      default:
+        return 'input-md';
+    }
+  });
 
   readonly #autoFocusEffect = effect(() => {
     if (this.autoFocus() && this.inputRef()) {
