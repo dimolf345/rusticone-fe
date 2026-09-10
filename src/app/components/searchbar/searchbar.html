@@ -1,0 +1,28 @@
+<div class="searchbar-container" data-testId="Searchbar - Container">
+  <span class="searchbar-icon-wrapper" data-testId="Searchbar - Icon wrapper">
+    <ng-icon name="heroMagnifyingGlass" class="searchbar-icon" />
+  </span>
+  <input
+    #searchInput
+    type="search"
+    class="input searchbar-input"
+    [placeholder]="placeholder()"
+    [(ngModel)]="search"
+    (keydown.enter)="submitSearch($event)"
+    role="searchbox"
+    [attr.aria-label]="placeholder()"
+    data-testId="Searchbar - Input"
+  />
+  @if (search()) {
+    <button
+      type="button"
+      class="searchbar-clear-btn"
+      (click)="onClear()"
+      aria-label="Cancella ricerca"
+      tabindex="0"
+      data-testId="Searchbar - Clear button"
+    >
+      <ng-icon name="heroXMark" class="searchbar-clear-icon" />
+    </button>
+  }
+</div>
