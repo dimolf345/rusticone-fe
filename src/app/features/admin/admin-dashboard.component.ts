@@ -62,42 +62,7 @@ export class AdminDashboardComponent {
   readonly currentUser = this.#authService.currentUser;
 
   readonly recentOrders = signal<ICateringOrderSummary[]>([
-    {
-      id: 'RUST-2026-081',
-      customerName: 'Mario Rossi',
-      eventType: 'Festa di Laurea (Buffet Rustico)',
-      guestsCount: 45,
-      eventDate: '28 Ago 2026',
-      totalAmount: 675,
-      status: 'confirmed',
-    },
-    {
-      id: 'RUST-2026-082',
-      customerName: 'Azienda Innova SRL',
-      eventType: 'Aperitivo Aziendale & Pizze Gourmet',
-      guestsCount: 80,
-      eventDate: '30 Ago 2026',
-      totalAmount: 1450,
-      status: 'pending',
-    },
-    {
-      id: 'RUST-2026-083',
-      customerName: 'Chiara Bianchi',
-      eventType: 'Compleanno 18 Anni (Buffet Pizza & Fritti)',
-      guestsCount: 60,
-      eventDate: '02 Set 2026',
-      totalAmount: 890,
-      status: 'in_preparation',
-    },
-    {
-      id: 'RUST-2026-084',
-      customerName: 'Studio Legale Verdi',
-      eventType: 'Coffee Break & Focacce Artigianali',
-      guestsCount: 25,
-      eventDate: '05 Set 2026',
-      totalAmount: 380,
-      status: 'pending',
-    },
+
   ]);
 
   getStatusLabel(status: ICateringOrderSummary['status']): string {

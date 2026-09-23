@@ -1,7 +1,10 @@
+import { HttpEventType } from '@angular/common/http';
 import { ComponentRef, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
-import { APP_PATHS, getByTestId } from '@core';
+import { APP_PATHS, PRODUCT_CATEGORIES, getByTestId } from '@core';
+import { ProductsService } from '@core/services/products.service';
+import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import AddProduct from './add-product';
 
@@ -11,6 +14,7 @@ describe('AddProduct', () => {
   let template: DebugElement;
   let _componentRef: ComponentRef<AddProduct>;
   let router: Router;
+  let mockProductsService: { uploadProductImages: ReturnType<typeof vi.fn> };
 
   const testIdPrefix = 'Add Product - ';
 
@@ -26,9 +30,21 @@ describe('AddProduct', () => {
       globalThis.URL.revokeObjectURL = vi.fn();
     }
 
+    mockProductsService = {
+      uploadProductImages: vi.fn().mockReturnValue(
+        of({
+          type: HttpEventType.Response,
+          body: { uploadSessionId: 'mock-session-123' },
+        }),
+      ),
+    };
+
     await TestBed.configureTestingModule({
       imports: [AddProduct],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        { provide: ProductsService, useValue: mockProductsService },
+      ],
     }).compileComponents();
 
     router = TestBed.inject(Router);
@@ -73,7 +89,7 @@ describe('AddProduct', () => {
         prefix: testIdPrefix,
       });
       expect(availabilityToggle).toBeTruthy();
-      expect(availabilityToggle?.nativeElement.textContent).toContain('Disponibile');
+      expect(availabilityToggle?.nativeElement.textContent.toLowerCase()).toContain('disponibile');
     });
 
     it('should display the scrollable form container and image dropzone', () => {
@@ -127,7 +143,7 @@ describe('AddProduct', () => {
     it('should initialize form with default values', () => {
       expect(component.productForm.value).toEqual({
         name: '',
-        category: 'pizze',
+        category: PRODUCT_CATEGORIES.Pizza,
         basePrice: 0,
         suggestedQuantity: 1,
         addons: '',
@@ -146,13 +162,13 @@ describe('AddProduct', () => {
       fixture.detectChanges();
 
       expect(component.isAvailable()).toBe(false);
-      expect(availabilityToggle?.nativeElement.textContent).toContain('Non disponibile');
+      expect(availabilityToggle?.nativeElement.textContent.toLowerCase()).toContain('non disponibile');
 
       availabilityToggle?.nativeElement.click();
       fixture.detectChanges();
 
       expect(component.isAvailable()).toBe(true);
-      expect(availabilityToggle?.nativeElement.textContent).toContain('Disponibile');
+      expect(availabilityToggle?.nativeElement.textContent.toLowerCase()).toContain('disponibile');
     });
 
     it('should manage product sizes via preset buttons and custom input', () => {
@@ -212,32 +228,8 @@ describe('AddProduct', () => {
       expect(router.navigate).not.toHaveBeenCalled();
     });
 
-    it('should stage dropped images and show previews and the upload images button', () => {
+    it('should stage dropped images with initial null uploadSessionId in uploadedImagesUrls and staged badge', () => {
       const mockFile = new File(['mock content'], 'margherita.jpg', { type: 'image/jpeg' });
-      const dragEvent = {
-        preventDefault: vi.fn(),
-        stopPropagation: vi.fn(),
-        dataTransfer: {
-          files: [mockFile],
-        },
-      } as unknown as DragEvent;
-
-      component.onFileDrop(dragEvent);
-      fixture.detectChanges();
-
-      expect(component.stagedImages().length).toBe(1);
-      expect(component.stagedImages()[0].name).toBe('margherita.jpg');
-
-      const stagedList = getByTestId(template, 'Staged images list', { prefix: testIdPrefix });
-      const uploadBtn = getByTestId(template, 'Upload images button', { prefix: testIdPrefix });
-
-      expect(stagedList).toBeTruthy();
-      expect(uploadBtn).toBeTruthy();
-      expect(uploadBtn?.nativeElement.textContent).toContain('Carica immagini');
-    });
-
-    it('should remove staged image when clicking remove button', () => {
-      const mockFile = new File(['mock content'], 'test.png', { type: 'image/png' });
       component.onFileDrop({
         preventDefault: vi.fn(),
         stopPropagation: vi.fn(),
@@ -246,18 +238,21 @@ describe('AddProduct', () => {
       fixture.detectChanges();
 
       expect(component.stagedImages().length).toBe(1);
+      expect(component.stagedImages()[0].status).toBe('staged');
+      expect(component.uploadedImagesUrls()).toEqual({ 'margherita.jpg': null });
+      expect(component.areAllImagesUploaded()).toBe(false);
 
-      const removeBtn = getByTestId(template, 'Remove image button', { prefix: testIdPrefix });
-      removeBtn?.nativeElement.click();
-      fixture.detectChanges();
+      const statusBadge = getByTestId(template, 'Image status staged', { prefix: testIdPrefix });
+      expect(statusBadge).toBeTruthy();
+      expect(statusBadge?.nativeElement.textContent).toContain('Da caricare');
 
-      expect(component.stagedImages().length).toBe(0);
       const uploadBtn = getByTestId(template, 'Upload images button', { prefix: testIdPrefix });
-      expect(uploadBtn).toBeFalsy();
+      expect(uploadBtn).toBeTruthy();
+      expect(uploadBtn?.nativeElement.disabled).toBe(false);
+      expect(uploadBtn?.nativeElement.textContent).toContain('Carica immagini');
     });
 
-    it('should simulate upload when clicking upload images button', async () => {
-      vi.useFakeTimers();
+    it('should upload images, store uploadSessionId, update badge to uploaded, and disable upload button', () => {
       const mockFile = new File(['mock content'], 'pizza.png', { type: 'image/png' });
       component.onFileDrop({
         preventDefault: vi.fn(),
@@ -267,21 +262,80 @@ describe('AddProduct', () => {
       fixture.detectChanges();
 
       component.onUploadImages();
-      expect(component.isUploadingImages()).toBe(true);
-
-      await vi.advanceTimersByTimeAsync(700);
       fixture.detectChanges();
 
       expect(component.isUploadingImages()).toBe(false);
-      expect(component.uploadedImageUrls().length).toBe(1);
-      vi.useRealTimers();
+      expect(component.stagedImages()[0].status).toBe('uploaded');
+      expect(component.uploadedImagesUrls()).toEqual({ 'pizza.png': 'mock-session-123' });
+      expect(component.areAllImagesUploaded()).toBe(true);
+
+      const statusBadge = getByTestId(template, 'Image status uploaded', { prefix: testIdPrefix });
+      expect(statusBadge).toBeTruthy();
+      expect(statusBadge?.nativeElement.textContent).toContain('Caricata');
+
+      const uploadBtn = getByTestId(template, 'Upload images button', { prefix: testIdPrefix });
+      expect(uploadBtn?.nativeElement.disabled).toBe(true);
+      expect(uploadBtn?.nativeElement.textContent).toContain('Immagini caricate');
+    });
+
+    it('should re-enable upload button when a new unuploaded image is added', () => {
+      const file1 = new File(['content 1'], 'img1.png', { type: 'image/png' });
+      component.onFileDrop({
+        preventDefault: vi.fn(),
+        stopPropagation: vi.fn(),
+        dataTransfer: { files: [file1] },
+      } as unknown as DragEvent);
+      fixture.detectChanges();
+
+      component.onUploadImages();
+      fixture.detectChanges();
+
+      expect(component.areAllImagesUploaded()).toBe(true);
+
+      const file2 = new File(['content 2'], 'img2.png', { type: 'image/png' });
+      component.onFileDrop({
+        preventDefault: vi.fn(),
+        stopPropagation: vi.fn(),
+        dataTransfer: { files: [file2] },
+      } as unknown as DragEvent);
+      fixture.detectChanges();
+
+      expect(component.uploadedImagesUrls()).toEqual({
+        'img1.png': 'mock-session-123',
+        'img2.png': null,
+      });
+      expect(component.areAllImagesUploaded()).toBe(false);
+
+      const uploadBtn = getByTestId(template, 'Upload images button', { prefix: testIdPrefix });
+      expect(uploadBtn?.nativeElement.disabled).toBe(false);
+    });
+
+    it('should remove image from stagedImages and uploadedImagesUrls when clicking remove button', () => {
+      const mockFile = new File(['mock content'], 'test.png', { type: 'image/png' });
+      component.onFileDrop({
+        preventDefault: vi.fn(),
+        stopPropagation: vi.fn(),
+        dataTransfer: { files: [mockFile] },
+      } as unknown as DragEvent);
+      fixture.detectChanges();
+
+      expect(component.uploadedImagesUrls()).toEqual({ 'test.png': null });
+
+      const removeBtn = getByTestId(template, 'Remove image button', { prefix: testIdPrefix });
+      removeBtn?.nativeElement.click();
+      fixture.detectChanges();
+
+      expect(component.stagedImages().length).toBe(0);
+      expect(component.uploadedImagesUrls()).toEqual({});
+      const uploadBtn = getByTestId(template, 'Upload images button', { prefix: testIdPrefix });
+      expect(uploadBtn).toBeFalsy();
     });
 
     it('should submit valid form with sizes, suggestedQuantity, and addons, navigating to ADMIN_MENU route', () => {
       component.sizes.set([1, 6, 12]);
       component.productForm.setValue({
         name: 'Teglia Rustica Margherita',
-        category: 'pizze',
+        category: PRODUCT_CATEGORIES.Pizza,
         basePrice: 18.0,
         suggestedQuantity: 2,
         addons: 'Senza glutine, Mozzarella di bufala',

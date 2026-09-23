@@ -82,7 +82,7 @@ classDiagram
 | `name` | `string` | Required, min 5 chars, non-whitespace | The public title of the product (e.g., "Pizza Margherita DOC"). |
 | `basePrice` | `number` | Required, min `0.00` | Base selling price in Euros (€). |
 | `size` | `number[]` | Required, at least 1 item, values $\ge 1$ | Available portion/cut sizes (e.g. `[1]` for single, `[1, 6, 12, 24]` for baking pans). |
-| `categories` | `string[]` | Required (mapped to category enum) | Product classification (Pizze, Rustici, Fritti, Dolci, Bevande). |
+| `categories` | `string[]` | Required (mapped to category enum) | Product classification (`Pizza`, `Rustici`, `Fritti`, `Cotti al forno`, `Dolci`, `Bevande`). |
 | `available` | `boolean` | Boolean flag (default: `true`) | Controls live visibility on the customer menu and quote builder. |
 | `productImages` | `string[]` | Array of image URLs / storage paths | Product photography uploaded via the dropzone. |
 | `description` | `string` | Optional text | Ingredients, origin, allergens, and preparation details. |
@@ -130,7 +130,7 @@ The page layout is engineered for both desktop and mobile viewports with a split
 ```
 
 ### Key UI Features:
-1. **Fixed Header**: Stays pinned at the top. Contains the back button (`routerLink` to `/dashboard/admin/menu`) and the `Disponibile` / `Non disponibile` interactive toggle pill.
+1. **Fixed Header**: Stays pinned at the top. Contains the back button (`routerLink` to `/dashboard/admin/menu`) and the `Disponibile` / `Non disponibile` interactive toggle switch with status indicator.
 2. **Scrollable Form Container**: Houses all form controls in a centralized, responsive grid with full vertical scroll support on small screens (`overflow-y-auto`).
 3. **Fixed Footer**: Pinned at the bottom with the `"✓ Aggiungi al listino"` button, ensuring the primary CTA is always visible without scrolling to the bottom.
 
@@ -138,11 +138,13 @@ The page layout is engineered for both desktop and mobile viewports with a split
 
 ## ⚙️ 5. Detailed Sub-Feature Logics
 
-### 5.1 Image Dropzone & Dynamic Upload Action
+### 5.1 Image Dropzone, Per-Image Status & Upload Action
 - **Drag & Drop / File Browser**: Supports selecting or dragging image files (`image/png`, `image/jpeg`, `image/webp`).
-- **Object URL Staging**: Generates lightweight preview thumbnails via `URL.createObjectURL(file)`.
+- **Object URL Staging & Unique Client IDs**: Generates lightweight preview thumbnails via `URL.createObjectURL(file)` and assigns a unique client `id` (`crypto.randomUUID()`) to prevent filename collisions.
 - **Memory Safety**: Revokes object URLs via `URL.revokeObjectURL(url)` when images are deleted from the staged list to prevent browser memory leaks.
-- **Dynamic Action Button**: The **"Carica immagini"** (`heroArrowUpTray`) button remains hidden until 1 or more images are staged. When clicked, it simulates/triggers the backend storage upload and tracks loading state.
+- **Single Source of Truth (`IProductUploadImage`)**: Each staged image item encapsulates its own `status` (`'staged' | 'uploading' | 'uploaded' | 'error'`) and optional `uploadSessionId`.
+- **Per-Image Status Badges**: Each image preview card in the grid renders real-time visual status badges (`Da caricare`, `In caricamento`, `Caricata`, or `Errore`).
+- **Dynamic Action Button & Duplicate Prevention**: The **"Carica immagini"** (`heroArrowUpTray`) button remains hidden until 1 or more images are staged. When clicked, it uploads only pending un-uploaded files to `/uploads/temp` and records their `uploadSessionId`. The button is disabled while uploading or whenever every staged image is uploaded (`areAllImagesUploaded()`), preventing redundant uploads. Staging new images automatically re-enables the button for the new items.
 
 ### 5.2 Size / Portion Multiples Manager (`size`)
 - **Use Case**: Differentiates between single-serving items (e.g. 1 panzerotto) and multi-portion items (e.g. a baking pan that can be ordered in 6, 12, or 24 slices).

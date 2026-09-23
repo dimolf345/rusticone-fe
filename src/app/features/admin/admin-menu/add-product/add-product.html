@@ -11,28 +11,35 @@
         <ng-icon name="heroArrowLeft" size="1.25rem" />
       </a>
       <div class="header-titles">
-        <h2 class="header-title" data-testid="Add Product - Title">Nuovo prodotto</h2>
-        <span class="header-subtitle">—</span>
+        <h2 class="header-title" data-testid="Add Product - Title">{{ productName() }}</h2>
+        <span class="header-subtitle">{{ productDescription() }}</span>
       </div>
     </div>
 
-    <div class="header-right">
-      <button
-        type="button"
-        (click)="toggleAvailability()"
-        class="availability-pill"
-        [class.is-available]="isAvailable()"
-        [class.is-unavailable]="!isAvailable()"
+    <div class="header-right" data-testid="Add Product - Availability container">
+      <label
+        for="availability-switch"
+        class="availability-toggler"
+        [class.is-active]="isAvailable()"
         data-testid="Add Product - Availability toggle"
-        aria-label="Modifica stato disponibilità"
       >
         <span class="status-indicator"></span>
-        @if (isAvailable()) {
-          <span>Disponibile</span>
-        } @else {
-          <span>Non disponibile</span>
-        }
-      </button>
+        <span class="availability-label">
+          @if (isAvailable()) {
+            Prodotto disponibile
+          } @else {
+            Prodotto non disponibile
+          }
+        </span>
+        <input
+          type="checkbox"
+          id="availability-switch"
+          [checked]="isAvailable()"
+          (change)="toggleAvailability()"
+          class="toggle toggle-success availability-switch"
+          aria-label="Disponibilità prodotto"
+        />
+      </label>
     </div>
   </header>
 
@@ -82,12 +89,51 @@
         @if (hasStagedImages()) {
           <div class="staged-images-section" data-testid="Add Product - Staged images list">
             <div class="images-preview-grid">
-              @for (img of stagedImages(); track $index) {
+              @for (img of stagedImages(); track img.id) {
                 <div class="image-preview-card" data-testid="Add Product - Image item">
                   <img [src]="img.previewUrl" [alt]="img.name" class="preview-thumbnail" />
                   <div class="image-meta">
                     <span class="image-name" [title]="img.name">{{ img.name }}</span>
-                    <span class="image-size">{{ (img.size / 1024).toFixed(0) }} KB</span>
+                    <div class="image-meta-sub">
+                      <span class="image-size">{{ (img.size / 1024).toFixed(0) }} KB</span>
+                      <span class="image-status-badge">
+                        @switch (img.status) {
+                          @case ('uploaded') {
+                            <span
+                              class="badge badge-success badge-xs gap-1"
+                              data-testid="Add Product - Image status uploaded"
+                            >
+                              <ng-icon name="heroCheck" size="0.75rem" /> Caricata
+                            </span>
+                          }
+                          @case ('uploading') {
+                            <span
+                              class="badge badge-info badge-xs gap-1"
+                              data-testid="Add Product - Image status uploading"
+                            >
+                              <span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
+                              In caricamento
+                            </span>
+                          }
+                          @case ('error') {
+                            <span
+                              class="badge badge-error badge-xs"
+                              data-testid="Add Product - Image status error"
+                            >
+                              Errore
+                            </span>
+                          }
+                          @default {
+                            <span
+                              class="badge badge-warning badge-xs"
+                              data-testid="Add Product - Image status staged"
+                            >
+                              Da caricare
+                            </span>
+                          }
+                        }
+                      </span>
+                    </div>
                   </div>
                   <button
                     type="button"
@@ -107,13 +153,16 @@
               <button
                 type="button"
                 (click)="onUploadImages()"
-                [disabled]="isUploadingImages()"
+                [disabled]="isUploadingImages() || areAllImagesUploaded()"
                 class="btn btn-secondary btn-sm btn-scale upload-action-btn"
                 data-testid="Add Product - Upload images button"
               >
                 @if (isUploadingImages()) {
                   <span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
                   <span>Caricamento immagini...</span>
+                } @else if (areAllImagesUploaded()) {
+                  <ng-icon name="heroCheck" size="1.15rem" />
+                  <span>Immagini caricate</span>
                 } @else {
                   <ng-icon name="heroArrowUpTray" size="1.15rem" />
                   <span>Carica immagini</span>
@@ -184,13 +233,18 @@
             />
           </div>
           @if (priceError()) {
-            <span class="form-error" data-testid="Add Product - Price error">{{ priceError() }}</span>
+            <span class="form-error" data-testid="Add Product - Price error">{{
+              priceError()
+            }}</span>
           }
         </fieldset>
       </div>
 
       <!-- Size / Porzioni per preventivo Field -->
-      <fieldset class="fieldset form-fieldset size-management-fieldset" data-testid="Add Product - Size container">
+      <fieldset
+        class="fieldset form-fieldset size-management-fieldset"
+        data-testid="Add Product - Size container"
+      >
         <div class="size-header-row">
           <label class="label form-label" for="custom-size-input">
             Porzioni / Taglie disponibili (pz o persone) *
@@ -202,42 +256,17 @@
           <!-- Preset quick toggle chips -->
           <div class="size-presets-row" data-testid="Add Product - Size presets">
             <span class="presets-label">Preset:</span>
-            <button
-              type="button"
-              (click)="togglePresetSize(1)"
-              class="size-preset-btn"
-              [class.is-active]="sizes().includes(1)"
-              data-testid="Add Product - Size preset 1"
-            >
-              1 (Monoporzione)
-            </button>
-            <button
-              type="button"
-              (click)="togglePresetSize(6)"
-              class="size-preset-btn"
-              [class.is-active]="sizes().includes(6)"
-              data-testid="Add Product - Size preset 6"
-            >
-              6 (Media)
-            </button>
-            <button
-              type="button"
-              (click)="togglePresetSize(12)"
-              class="size-preset-btn"
-              [class.is-active]="sizes().includes(12)"
-              data-testid="Add Product - Size preset 12"
-            >
-              12 (Teglia)
-            </button>
-            <button
-              type="button"
-              (click)="togglePresetSize(24)"
-              class="size-preset-btn"
-              [class.is-active]="sizes().includes(24)"
-              data-testid="Add Product - Size preset 24"
-            >
-              24 (Maxi)
-            </button>
+            @for (preset of sizePresets(); track preset.value) {
+              <button
+                type="button"
+                (click)="togglePresetSize(preset.value)"
+                class="size-preset-btn"
+                [class.is-active]="sizes().includes(preset.value)"
+                [attr.data-testid]="'Add Product - Size preset ' + preset.value"
+              >
+                {{ preset.label }}
+              </button>
+            }
           </div>
 
           <!-- Active Selected Sizes Chips -->
@@ -318,9 +347,7 @@
 
         <!-- Addons Free Text Field -->
         <fieldset class="fieldset form-fieldset">
-          <label class="label form-label" for="product-addons">
-            Opzioni & Aggiunte (Addons)
-          </label>
+          <label class="label form-label" for="product-addons"> Opzioni & Aggiunte (Addons) </label>
           <div class="input-wrapper">
             <input
               id="product-addons"
