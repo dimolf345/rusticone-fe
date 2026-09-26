@@ -1,0 +1,345 @@
+<div class="add-product-page" data-testid="Add Product - Page container">
+  <!-- Top Header Section (Fixed at top) -->
+  <header class="page-header" data-testid="Add Product - Header container">
+    <div class="header-left">
+      <a
+        [routerLink]="paths.DASHBOARD.ADMIN_MENU"
+        class="back-btn"
+        data-testid="Add Product - Back button"
+        aria-label="Torna al menu"
+      >
+        <ng-icon name="heroArrowLeft" size="1.25rem" />
+      </a>
+      <div class="header-titles">
+        <h2 class="header-title" data-testid="Add Product - Title">{{ productName() }}</h2>
+        <span class="header-subtitle">{{ productDescription() }}</span>
+      </div>
+    </div>
+
+    <div class="header-right" data-testid="Add Product - Availability container">
+      <label
+        for="availability-switch"
+        class="availability-toggler"
+        [class.is-active]="isAvailable()"
+        data-testid="Add Product - Availability toggle"
+      >
+        <span class="status-indicator"></span>
+        <span class="availability-label">
+          @if (isAvailable()) {
+            Prodotto disponibile
+          } @else {
+            Prodotto non disponibile
+          }
+        </span>
+        <input
+          type="checkbox"
+          id="availability-switch"
+          [checked]="isAvailable()"
+          (change)="toggleAvailability()"
+          class="toggle toggle-success availability-switch"
+          aria-label="Disponibilità prodotto"
+        />
+      </label>
+    </div>
+  </header>
+
+  <!-- Divider -->
+  <div class="header-divider"></div>
+
+  <!-- Scrollable Form Container -->
+  <main class="scrollable-form-container" data-testid="Add Product - Form scroll container">
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form">
+      <!-- Image Drop Area -->
+      <div
+        class="dropzone-card"
+        [class.is-dragover]="isDragOver()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onFileDrop($event)"
+        data-testid="Add Product - Image dropzone"
+      >
+        <input
+          #fileInput
+          type="file"
+          multiple
+          accept="image/png,image/jpeg,image/webp"
+          (change)="onFileSelected($event)"
+          class="hidden"
+          tabindex="-1"
+          aria-hidden="true"
+        />
+
+        <div
+          class="dropzone-interactive-area"
+          (click)="triggerFileInput()"
+          role="button"
+          tabindex="0"
+          (keydown.enter)="triggerFileInput()"
+          (keydown.space)="triggerFileInput()"
+          data-testid="Add Product - Dropzone trigger"
+        >
+          <div class="dropzone-icon-wrapper">
+            <ng-icon name="heroPhoto" size="2rem" class="dropzone-icon" />
+          </div>
+          <span class="dropzone-title">Carica foto prodotto</span>
+          <span class="dropzone-subtitle">PNG, JPG fino a 5MB</span>
+        </div>
+
+        <!-- Previews & Upload Action when images are staged -->
+        @if (hasStagedImages()) {
+          <div class="staged-images-section" data-testid="Add Product - Staged images list">
+            <div class="images-preview-grid">
+              @for (img of stagedImages(); track img.id) {
+                <app-upload-card [cardInfo]="img" (remove)="removeImage($index)" />
+              }
+            </div>
+
+            <!-- Carica Immagini Button -->
+            <div class="upload-action-row">
+              <button
+                type="button"
+                (click)="onUploadImages()"
+                [disabled]="isUploadingImages() || areAllImagesUploaded()"
+                class="btn btn-secondary btn-sm btn-scale upload-action-btn"
+                data-testid="Add Product - Upload images button"
+              >
+                @if (isUploadingImages()) {
+                  <span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
+                  <span>Caricamento immagini...</span>
+                } @else if (areAllImagesUploaded()) {
+                  <ng-icon name="heroCheck" size="1.15rem" />
+                  <span>Immagini caricate</span>
+                } @else {
+                  <ng-icon name="heroArrowUpTray" size="1.15rem" />
+                  <span>Carica immagini</span>
+                }
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Nome prodotto Field -->
+      <fieldset class="fieldset form-fieldset">
+        <label class="label form-label" for="product-name">Nome prodotto *</label>
+        <div class="input-wrapper">
+          <input
+            id="product-name"
+            type="text"
+            formControlName="name"
+            class="input form-input"
+            placeholder="es. Margherita"
+            data-testid="Add Product - Name input"
+          />
+        </div>
+        @if (nameError()) {
+          <span class="form-error" data-testid="Add Product - Name error">{{ nameError() }}</span>
+        }
+      </fieldset>
+
+      <!-- Categoria & Prezzo Row (2 Columns) -->
+      <div class="form-row-2col">
+        <!-- Categoria Field -->
+        <fieldset class="fieldset form-fieldset">
+          <label class="label form-label" for="product-category">Categoria *</label>
+          <div class="select-wrapper">
+            <select
+              id="product-category"
+              formControlName="category"
+              class="select form-select"
+              data-testid="Add Product - Category select"
+            >
+              @for (cat of categories(); track cat.value) {
+                <option [value]="cat.value">
+                  {{ cat.icon ? cat.icon + ' ' : '' }}{{ cat.label }}
+                </option>
+              }
+            </select>
+          </div>
+          @if (categoryError()) {
+            <span class="form-error" data-testid="Add Product - Category error">{{
+              categoryError()
+            }}</span>
+          }
+        </fieldset>
+
+        <!-- Prezzo (€) Field -->
+        <fieldset class="fieldset form-fieldset">
+          <label class="label form-label" for="product-price">Prezzo (€) *</label>
+          <div class="input-wrapper">
+            <input
+              id="product-price"
+              type="number"
+              step="0.01"
+              min="0"
+              formControlName="basePrice"
+              class="input form-input"
+              placeholder="€ 0.00"
+              data-testid="Add Product - Price input"
+            />
+          </div>
+          @if (priceError()) {
+            <span class="form-error" data-testid="Add Product - Price error">{{
+              priceError()
+            }}</span>
+          }
+        </fieldset>
+      </div>
+
+      <!-- Size / Porzioni per preventivo Field -->
+      <fieldset
+        class="fieldset form-fieldset size-management-fieldset"
+        data-testid="Add Product - Size container"
+      >
+        <div class="size-header-row">
+          <label class="label form-label" for="custom-size-input">
+            Porzioni / Taglie disponibili (pz o persone) *
+          </label>
+          <span class="size-hint">Seleziona i formati ordinabili nel preventivo</span>
+        </div>
+
+        <div class="size-controls-wrapper">
+          <!-- Preset quick toggle chips -->
+          <div class="size-presets-row" data-testid="Add Product - Size presets">
+            <span class="presets-label">Preset:</span>
+            @for (preset of sizePresets(); track preset.value) {
+              <button
+                type="button"
+                (click)="togglePresetSize(preset.value)"
+                class="size-preset-btn"
+                [class.is-active]="sizes().includes(preset.value)"
+                [attr.data-testid]="'Add Product - Size preset ' + preset.value"
+              >
+                {{ preset.label }}
+              </button>
+            }
+          </div>
+
+          <!-- Active Selected Sizes Chips -->
+          <div class="active-sizes-row" data-testid="Add Product - Active sizes list">
+            @for (s of sizes(); track $index) {
+              <div class="size-chip" data-testid="Add Product - Size chip">
+                <span class="size-chip-value">{{ s }} {{ s === 1 ? 'pezzo' : 'pezzi' }}</span>
+                @if (sizes().length > 1) {
+                  <button
+                    type="button"
+                    (click)="removeSize($index)"
+                    class="size-chip-remove"
+                    aria-label="Rimuovi taglia"
+                    data-testid="Add Product - Remove size button"
+                  >
+                    <ng-icon name="heroXMark" size="0.85rem" />
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Add Custom Size Input -->
+          <div class="add-custom-size-row">
+            <div class="custom-size-input-wrapper">
+              <input
+                id="custom-size-input"
+                type="number"
+                min="1"
+                step="1"
+                [value]="customSizeInput()"
+                (input)="onCustomSizeInputChange($event)"
+                (keydown.enter)="$event.preventDefault(); addCustomSize()"
+                class="input custom-size-input"
+                placeholder="es. 8"
+                data-testid="Add Product - Custom size input"
+              />
+            </div>
+            <button
+              type="button"
+              (click)="addCustomSize()"
+              [disabled]="!customSizeInput()"
+              class="btn btn-neutral btn-xs sm:btn-sm btn-scale add-size-btn"
+              data-testid="Add Product - Add custom size button"
+            >
+              <ng-icon name="heroPlus" size="1.1rem" />
+              <span>Aggiungi formato</span>
+            </button>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- Suggested Quantity (per persona) & Addons Row -->
+      <div class="form-row-2col">
+        <!-- Quantità consigliata per persona -->
+        <fieldset class="fieldset form-fieldset">
+          <label class="label form-label" for="product-suggested-quantity">
+            Quantità consigliata per persona *
+          </label>
+          <div class="select-wrapper">
+            <select
+              id="product-suggested-quantity"
+              formControlName="suggestedQuantity"
+              class="select form-select"
+              data-testid="Add Product - Suggested quantity select"
+            >
+              @for (opt of suggestedQuantities(); track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          </div>
+          @if (suggestedQuantityError()) {
+            <span class="form-error" data-testid="Add Product - Suggested quantity error">{{
+              suggestedQuantityError()
+            }}</span>
+          }
+        </fieldset>
+
+        <!-- Addons Free Text Field -->
+        <fieldset class="fieldset form-fieldset">
+          <label class="label form-label" for="product-addons"> Opzioni & Aggiunte (Addons) </label>
+          <div class="input-wrapper">
+            <input
+              id="product-addons"
+              type="text"
+              formControlName="addons"
+              class="input form-input"
+              placeholder="es. Senza glutine, Mozzarella extra..."
+              data-testid="Add Product - Addons input"
+            />
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- Descrizione Field -->
+      <fieldset class="fieldset form-fieldset">
+        <label class="label form-label" for="product-description">Descrizione</label>
+        <div class="textarea-wrapper">
+          <textarea
+            id="product-description"
+            rows="4"
+            formControlName="description"
+            class="textarea form-textarea"
+            placeholder="Ingredienti principali, preparazione, origine..."
+            data-testid="Add Product - Description input"
+          ></textarea>
+        </div>
+      </fieldset>
+    </form>
+  </main>
+
+  <!-- Bottom Action Bar (Fixed at bottom) -->
+  <footer class="page-footer" data-testid="Add Product - Footer container">
+    <button
+      type="button"
+      (click)="onSubmit()"
+      [disabled]="isSubmitting()"
+      class="btn btn-primary btn-scale submit-action-btn"
+      data-testid="Add Product - Submit button"
+    >
+      @if (isSubmitting()) {
+        <span class="loading loading-spinner loading-sm" aria-hidden="true"></span>
+        <span>Salvataggio...</span>
+      } @else {
+        <ng-icon name="heroCheck" size="1.35rem" class="check-icon" />
+        <span>Aggiungi al listino</span>
+      }
+    </button>
+  </footer>
+</div>

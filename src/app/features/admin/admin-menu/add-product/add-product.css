@@ -1,0 +1,220 @@
+@reference "#styles";
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.add-product-page {
+  @apply relative flex h-full w-full flex-col overflow-hidden bg-canvas-warm font-body text-stone-800;
+}
+
+/* Header Area (Fixed) */
+.page-header {
+  @apply flex shrink-0 items-center justify-between px-4 py-3 sm:px-6 sm:py-4;
+}
+
+.header-left {
+  @apply flex items-center gap-3;
+}
+
+.back-btn {
+  @apply flex h-9 w-9 items-center justify-center rounded-full bg-terracotta-100/70 text-stone-800 transition-colors hover:bg-terracotta-200/80 focus:outline-hidden btn-scale;
+}
+
+.header-titles {
+  @apply flex flex-col;
+}
+
+.header-title {
+  @apply text-base font-bold tracking-tight text-rust-900 sm:text-lg;
+}
+
+.header-subtitle {
+  @apply text-xs font-semibold text-stone-400 sm:text-sm;
+}
+
+.header-right {
+  @apply flex items-center;
+}
+
+.availability-toggler {
+  @apply inline-flex items-center gap-2 rounded-2xl border border-stone-300/80 bg-white/90 px-3 py-1.5 text-xs font-semibold text-stone-600 shadow-2xs transition-all cursor-pointer hover:border-stone-400 hover:bg-white sm:px-3.5 sm:py-1.5 sm:text-sm select-none btn-scale;
+}
+
+.availability-toggler.is-active {
+  @apply border-emerald-300 bg-emerald-50/70 text-emerald-900 shadow-xs;
+}
+
+.availability-label {
+  @apply font-semibold;
+}
+
+.status-indicator {
+  @apply h-2 w-2 rounded-full bg-stone-400 transition-colors;
+}
+
+.is-active .status-indicator {
+  @apply bg-emerald-600 shadow-xs shadow-emerald-500/40;
+}
+
+.availability-switch {
+  @apply toggle toggle-success toggle-sm cursor-pointer;
+}
+
+.header-divider {
+  @apply h-px w-full shrink-0 bg-stone-200/80;
+}
+
+/* Scrollable Form Container */
+.scrollable-form-container {
+  @apply flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5;
+}
+
+.product-form {
+  @apply mx-auto flex w-full max-w-4xl flex-col gap-4 sm:gap-5;
+}
+
+/* Image Drop Area */
+.dropzone-card {
+  @apply relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-stone-300/90 bg-terracotta-50/30 p-5 text-center transition-all hover:border-terracotta/60 hover:bg-terracotta-50/50 sm:p-7;
+}
+
+.dropzone-card.is-dragover {
+  @apply border-terracotta bg-terracotta-100/60 ring-2 ring-terracotta/30;
+}
+
+.dropzone-interactive-area {
+  @apply flex w-full cursor-pointer flex-col items-center justify-center gap-1.5 focus:outline-hidden;
+}
+
+.dropzone-icon-wrapper {
+  @apply mb-1 flex h-12 w-12 items-center justify-center rounded-2xl bg-terracotta-100/60 text-stone-700 shadow-xs;
+}
+
+.dropzone-icon {
+  @apply text-stone-700;
+}
+
+.dropzone-title {
+  @apply text-sm font-bold text-rust-900 sm:text-base;
+}
+
+.dropzone-subtitle {
+  @apply text-xs font-medium text-stone-500;
+}
+
+/* Form Fields */
+.form-fieldset {
+  @apply w-full gap-1;
+}
+
+.form-label {
+  @apply pb-0.5 text-xs font-bold text-stone-900 sm:text-sm;
+}
+
+.input-wrapper,
+.select-wrapper,
+.textarea-wrapper {
+  @apply relative w-full;
+}
+
+.form-input {
+  @apply w-full rounded-2xl border border-stone-300/70 bg-input-bg py-2.5 px-4 text-sm text-stone-900 placeholder:text-stone-400 transition-all hover:bg-input-hover focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-terracotta/40 sm:py-3 sm:text-base;
+}
+
+.form-row-2col {
+  @apply grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5;
+}
+
+.form-select {
+  @apply w-full rounded-2xl border border-stone-300/70 bg-input-bg py-2.5 px-4 text-sm text-stone-900 transition-all hover:bg-input-hover focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-terracotta/40 sm:py-3 sm:text-base;
+}
+
+.form-textarea {
+  @apply w-full rounded-2xl border border-stone-300/70 bg-input-bg p-4 text-sm text-stone-900 placeholder:text-stone-400 transition-all hover:bg-input-hover focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-terracotta/40 resize-none sm:text-base;
+}
+
+.form-error {
+  @apply mt-0.5 px-1 text-xs font-medium text-error;
+}
+
+/* Size / Portion Management */
+.size-management-fieldset {
+  @apply flex flex-col gap-1.5;
+}
+
+.size-header-row {
+  @apply flex flex-col justify-between gap-0.5 sm:flex-row sm:items-center;
+}
+
+.size-hint {
+  @apply text-xs text-stone-500;
+}
+
+.size-controls-wrapper {
+  @apply flex flex-col gap-3 rounded-2xl border border-stone-300/70 bg-input-bg/60 p-3.5 sm:p-4;
+}
+
+.size-presets-row {
+  @apply flex flex-wrap items-center gap-2;
+}
+
+.presets-label {
+  @apply text-xs font-bold text-stone-600;
+}
+
+.size-preset-btn {
+  @apply cursor-pointer rounded-xl border border-stone-300/80 bg-white/90 px-2.5 py-1 text-xs font-medium text-stone-700 transition-all hover:bg-white hover:border-terracotta/60 btn-scale;
+}
+
+.size-preset-btn.is-active {
+  @apply border-terracotta bg-terracotta-100/90 font-bold text-terracotta-800 shadow-2xs;
+}
+
+.active-sizes-row {
+  @apply flex flex-wrap items-center gap-2 pt-1;
+}
+
+.size-chip {
+  @apply inline-flex items-center gap-1.5 rounded-xl bg-rust-700 px-3 py-1 text-xs font-semibold text-white shadow-2xs;
+}
+
+.size-chip-value {
+  @apply tracking-wide;
+}
+
+.size-chip-remove {
+  @apply flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/20 hover:text-white;
+}
+
+.add-custom-size-row {
+  @apply flex items-center gap-2 pt-1;
+}
+
+.custom-size-input-wrapper {
+  @apply relative;
+}
+
+.custom-size-input {
+  @apply w-28 rounded-xl border border-stone-300/80 bg-white py-1.5 px-3 text-sm text-stone-900 transition-all focus:outline-hidden focus:ring-2 focus:ring-terracotta/40 placeholder:text-stone-400;
+}
+
+.add-size-btn {
+  @apply gap-1 rounded-xl text-white shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* Bottom Action Footer (Fixed) */
+.page-footer {
+  @apply shrink-0 border-t border-stone-200/80 bg-canvas-warm/95 px-4 py-3 sm:px-6 sm:py-4 backdrop-blur-xs;
+}
+
+.submit-action-btn {
+  @apply mx-auto flex w-full max-w-4xl items-center justify-center gap-2 rounded-2xl py-3 text-base font-bold text-white shadow-md shadow-terracotta-300/30 hover:bg-terracotta-600 active:bg-terracotta-700 disabled:opacity-60 disabled:cursor-not-allowed sm:py-3.5 sm:text-lg;
+}
+
+.check-icon {
+  @apply text-white;
+}

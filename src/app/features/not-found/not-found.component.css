@@ -55,7 +55,7 @@
 }
 
 .home-btn {
-  @apply btn btn-neutral flex w-full cursor-pointer items-center justify-center gap-2 font-bold text-white shadow-md shadow-[#dc8878]/35 transition-all hover:bg-[#cf7b6a] hover:shadow-lg hover:shadow-[#dc8878]/45 active:scale-[0.99] active:bg-[#c26e5d] sm:text-base;
+  @apply btn btn-neutral btn-scale flex w-full cursor-pointer items-center justify-center gap-2 font-bold text-white shadow-md shadow-[#dc8878]/35 hover:bg-[#cf7b6a] hover:shadow-lg hover:shadow-[#dc8878]/45 active:bg-[#c26e5d] sm:text-base;
 }
 
 .btn-icon {

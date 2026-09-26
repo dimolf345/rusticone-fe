@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { ROUTE_SEGMENTS } from './core/constants/routes.constant';
-import { isAdminGuard, isNotLoggedGuard } from './core/guards';
+import { isAdminGuard } from './core/guards';
 import { Layout } from './core/layout/layout';
 
 export const routes: Routes = [
@@ -14,13 +14,8 @@ export const routes: Routes = [
     loadComponent: () => import('./features/landing/landing'),
   },
   {
-    path: ROUTE_SEGMENTS.LOGIN,
-    loadComponent: () => import('./features/auth/login.component').then((m) => m.LoginComponent),
-    canActivate: [isNotLoggedGuard]
-  },
-  {
-    path: ROUTE_SEGMENTS.REGISTER,
-    loadComponent: () => import('./features/auth/register.component').then((m) => m.RegisterComponent),
+    path: '',
+    loadChildren: () => import('./features/auth/auth.routes'),
   },
   {
     path: ROUTE_SEGMENTS.DASHBOARD,
@@ -30,37 +25,20 @@ export const routes: Routes = [
       {
         path: ROUTE_SEGMENTS.ADMIN,
         canActivate: [isAdminGuard],
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            loadComponent: () =>
-              import('./features/admin/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
-          },
-          {
-            path: ROUTE_SEGMENTS.MENU,
-            loadComponent: () => import('./features/admin/admin-menu/admin-menu')
-          },
-          {
-            path: ROUTE_SEGMENTS.QUOTES,
-            loadComponent: () => import('./features/admin/admin-quotes/admin-quotes')
-          }
-        ]
+        loadChildren: () => import('./features/admin/admin.routes'),
       },
       {
         path: ROUTE_SEGMENTS.CUSTOMER,
-        loadComponent: () =>
-          import('./features/customer/customer-dashboard.component').then((m) => m.CustomerDashboardComponent),
+        loadChildren: () => import('./features/customer/customer.routes'),
       },
     ],
   },
   {
     path: 'not-found',
-    loadComponent: () => import('./features/not-found/not-found.component')
+    loadComponent: () => import('./features/not-found/not-found.component'),
   },
   {
     path: '**',
     loadComponent: () => import('./features/not-found/not-found.component'),
   },
 ];
-

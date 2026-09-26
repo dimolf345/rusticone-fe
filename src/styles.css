@@ -61,6 +61,11 @@
   --color-terracotta-800: #962f1d;
 }
 
+/* Reusable button micro-interaction utility */
+@utility btn-scale {
+  @apply transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98];
+}
+
 button {
   @apply rounded-2xl text-base;
 }
