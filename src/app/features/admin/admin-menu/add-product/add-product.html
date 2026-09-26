@@ -90,61 +90,7 @@
           <div class="staged-images-section" data-testid="Add Product - Staged images list">
             <div class="images-preview-grid">
               @for (img of stagedImages(); track img.id) {
-                <div class="image-preview-card" data-testid="Add Product - Image item">
-                  <img [src]="img.previewUrl" [alt]="img.name" class="preview-thumbnail" />
-                  <div class="image-meta">
-                    <span class="image-name" [title]="img.name">{{ img.name }}</span>
-                    <div class="image-meta-sub">
-                      <span class="image-size">{{ (img.size / 1024).toFixed(0) }} KB</span>
-                      <span class="image-status-badge">
-                        @switch (img.status) {
-                          @case ('uploaded') {
-                            <span
-                              class="badge badge-success badge-xs gap-1"
-                              data-testid="Add Product - Image status uploaded"
-                            >
-                              <ng-icon name="heroCheck" size="0.75rem" /> Caricata
-                            </span>
-                          }
-                          @case ('uploading') {
-                            <span
-                              class="badge badge-info badge-xs gap-1"
-                              data-testid="Add Product - Image status uploading"
-                            >
-                              <span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
-                              In caricamento
-                            </span>
-                          }
-                          @case ('error') {
-                            <span
-                              class="badge badge-error badge-xs"
-                              data-testid="Add Product - Image status error"
-                            >
-                              Errore
-                            </span>
-                          }
-                          @default {
-                            <span
-                              class="badge badge-warning badge-xs"
-                              data-testid="Add Product - Image status staged"
-                            >
-                              Da caricare
-                            </span>
-                          }
-                        }
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    (click)="removeImage($index)"
-                    class="remove-image-btn"
-                    aria-label="Rimuovi immagine"
-                    data-testid="Add Product - Remove image button"
-                  >
-                    <ng-icon name="heroXMark" size="1rem" />
-                  </button>
-                </div>
+                <app-upload-card [cardInfo]="img" (remove)="removeImage($index)" />
               }
             </div>
 

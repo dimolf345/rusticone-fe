@@ -1,3 +1,4 @@
+import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,7 +9,6 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -38,10 +38,11 @@ import {
   heroXMark,
 } from '@ng-icons/heroicons/outline';
 import { finalize, map } from 'rxjs';
+import { UploadCard } from './upload-card/upload-card';
 
 @Component({
   selector: 'app-add-product',
-  imports: [ReactiveFormsModule, RouterLink, NgIcon],
+  imports: [ReactiveFormsModule, RouterLink, NgIcon, UploadCard],
   templateUrl: './add-product.html',
   styleUrl: './add-product.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -100,10 +101,17 @@ export default class AddProduct {
   readonly isAvailable = signal(true);
 
   readonly productForm = this.#fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(5), this.#validationService.noWhitespaceValidator()]],
+    name: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(5),
+        this.#validationService.noWhitespaceValidator(),
+      ],
+    ],
     category: [PRODUCT_CATEGORIES.Pizza, [Validators.required]],
     basePrice: [0, [Validators.required, Validators.min(0)]],
-    suggestedQuantity: [1, [Validators.required, Validators.min(1)]],
+    suggestedQuantity: [1, [Validators.required, Validators.min(0.01)]],
     addons: [''],
     description: [''],
     available: [true],
@@ -117,13 +125,15 @@ export default class AddProduct {
   readonly descriptionControl = this.productForm.controls.description;
   readonly availableControl = this.productForm.controls.available;
 
-  readonly productName = toSignal(this.nameControl.valueChanges.pipe(
-    map((value) => value || "Nuovo prodotto")
-  ), { initialValue: "Nuovo prodotto" });
+  readonly productName = toSignal(
+    this.nameControl.valueChanges.pipe(map((value) => value || 'Nuovo prodotto')),
+    { initialValue: 'Nuovo prodotto' },
+  );
 
-  readonly productDescription = toSignal(this.descriptionControl.valueChanges.pipe(
-    map((value) => value || "Inserisci descrizione...")
-  ), { initialValue: "Inserisci descrizione..." });
+  readonly productDescription = toSignal(
+    this.descriptionControl.valueChanges.pipe(map((value) => value || 'Inserisci descrizione...')),
+    { initialValue: 'Inserisci descrizione...' },
+  );
 
   readonly hasStagedImages = computed(() => this.stagedImages().length > 0);
 
@@ -250,9 +260,7 @@ export default class AddProduct {
 
   onUploadImages(): void {
     const pendingImages = this.stagedImages().filter((img) => img.status !== 'uploaded');
-    const files = pendingImages
-      .map((img) => img.file)
-      .filter((file): file is File => !!file);
+    const files = pendingImages.map((img) => img.file).filter((file): file is File => !!file);
 
     if (files.length === 0) return;
 
@@ -371,7 +379,10 @@ export default class AddProduct {
 
     const addonsRaw = formValue.addons.trim();
     const addonsArray = addonsRaw
-      ? addonsRaw.split(',').map((s) => s.trim()).filter(Boolean)
+      ? addonsRaw
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
       : [];
 
     const sessionIds = this.stagedImages()
@@ -393,8 +404,10 @@ export default class AddProduct {
       addons: addonsArray,
     };
 
+    console.log(_productPayload);
+
     // Return to main menu after adding
-    this.#router.navigate([APP_PATHS.DASHBOARD.ADMIN_MENU]).catch(() => { });
+    // this.#router.navigate([APP_PATHS.DASHBOARD.ADMIN_MENU]).catch(() => {});
   }
 
   #processFiles(files: File[]): void {
@@ -416,7 +429,8 @@ export default class AddProduct {
 
     this.stagedImages.update((current) => [...current, ...newItems]);
   }
+
+  #createProductPayload() {}
 }
 
 export { AddProduct };
-
