@@ -13,6 +13,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
+  AlertService,
   APP_PATHS,
   DEFAULT_PRODUCT_CATEGORIES,
   DEFAULT_PRODUCT_SIZE_PRESETS,
@@ -20,6 +21,7 @@ import {
   FormValidationService,
   IProduct,
   IProductCategoryOption,
+  IProductFormRawValue,
   IProductSizePresetOption,
   IProductUploadImage,
   IProductUploadResponse,
@@ -37,7 +39,7 @@ import {
   heroTrash,
   heroXMark,
 } from '@ng-icons/heroicons/outline';
-import { finalize, map } from 'rxjs';
+import { catchError, finalize, map, Observable, take, tap } from 'rxjs';
 import { UploadCard } from './upload-card/upload-card';
 
 @Component({
@@ -59,11 +61,14 @@ import { UploadCard } from './upload-card/upload-card';
   ],
 })
 export default class AddProduct {
+  // #region DEPENDENCIES
   #fb = inject(FormBuilder);
   #router = inject(Router);
   #validationService = inject(FormValidationService);
   #productsService = inject(ProductsService);
+  #alertService = inject(AlertService);
   #destroyRef = inject(DestroyRef);
+  // #endregion
 
   readonly paths = APP_PATHS;
   readonly categories = signal<IProductCategoryOption[]>(DEFAULT_PRODUCT_CATEGORIES);
@@ -373,41 +378,58 @@ export default class AddProduct {
       this.#validationService.markFormGroupTouched(this.productForm);
       return;
     }
+    const productPayload = this.#mapToProductPayload(this.productForm.getRawValue());
+    this.createProductRequest(productPayload).subscribe();
+  }
 
+  createProductRequest(request: IProduct): Observable<unknown> {
     this.isSubmitting.set(true);
-    const formValue = this.productForm.getRawValue();
+    return this.#productsService.createProduct(request).pipe(
+      take(1),
+      tap(() => {
+        this.#alertService.success('Prodotto creato con successo!');
+        this.#router.navigate([APP_PATHS.DASHBOARD.ADMIN_MENU]);
+      }),
+      catchError((err) => {
+        console.log(err);
+        return [];
+      }),
+      finalize(() => {
+        this.isSubmitting.set(false);
+      })
+    );
+  }
 
-    const addonsRaw = formValue.addons.trim();
+  #mapToProductPayload(raw: IProductFormRawValue): IProduct {
+    const addonsRaw = (raw.addons ?? '').trim();
     const addonsArray = addonsRaw
       ? addonsRaw
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
       : [];
 
     const sessionIds = this.stagedImages()
       .map((img) => img.uploadSessionId)
       .filter((val): val is string => !!val);
 
-    const _productPayload: IProduct = {
-      name: formValue.name.trim(),
-      basePrice: Number(formValue.basePrice),
-      size: this.sizes().length > 0 ? this.sizes() : [1],
-      categories: [formValue.category],
-      available: formValue.available,
-      productImages: sessionIds.length
+    const productImages =
+      sessionIds.length > 0
         ? sessionIds
-        : this.stagedImages().map((img) => img.previewUrl),
+        : this.stagedImages().map((img) => img.previewUrl);
+
+    return {
+      name: raw.name.trim(),
+      basePrice: Number(raw.basePrice),
+      size: this.sizes().length > 0 ? this.sizes() : [1],
+      categories: [raw.category],
+      available: raw.available,
+      productImages,
       uploadSessionId: sessionIds[0],
-      description: formValue.description?.trim() || '',
-      suggestedQuantity: Number(formValue.suggestedQuantity),
+      description: raw.description?.trim() || '',
+      suggestedQuantity: Number(raw.suggestedQuantity),
       addons: addonsArray,
     };
-
-    console.log(_productPayload);
-
-    // Return to main menu after adding
-    // this.#router.navigate([APP_PATHS.DASHBOARD.ADMIN_MENU]).catch(() => {});
   }
 
   #processFiles(files: File[]): void {
@@ -429,8 +451,6 @@ export default class AddProduct {
 
     this.stagedImages.update((current) => [...current, ...newItems]);
   }
-
-  #createProductPayload() {}
 }
 
 export { AddProduct };

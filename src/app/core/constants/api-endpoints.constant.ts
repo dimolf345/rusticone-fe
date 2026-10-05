@@ -9,5 +9,8 @@ export const API_ENDPOINTS = {
   },
   UPLOADS: {
     UPLOAD_PRODUCT_IMAGE: '/uploads/temp'
+  },
+  PRODUCTS: {
+    ROOT: '/products'
   }
 };

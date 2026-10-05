@@ -22,6 +22,16 @@ export interface IProductUploadResponse {
   images?: Array<{ name: string; uploadSessionId: string }>;
 }
 
+export interface IProductFormRawValue {
+  name: string;
+  category: string;
+  basePrice: number | string;
+  suggestedQuantity: number | string;
+  addons?: string;
+  description?: string;
+  available: boolean;
+}
+
 export interface IProduct {
   name: string;
   basePrice: number;
