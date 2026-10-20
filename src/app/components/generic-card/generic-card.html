@@ -1,0 +1,43 @@
+<ng-template #inputTemplate>
+  @if (payload(); as data) {
+    @if (data.imageUrl) {
+      <figure class="card-image-wrapper" [attr.data-testid]="composedTestId() + 'Image wrapper'">
+        <img
+          class="card-image"
+          [src]="data.imageUrl"
+          [alt]="data.imageAlt || data.title"
+          loading="lazy"
+          decoding="async"
+          [attr.data-testid]="composedTestId() + 'Image'"
+        />
+      </figure>
+    }
+    <div class="flex flex-col min-w-0 flex-1 justify-center">
+      <h3 class="card-title">{{ data.title }}</h3>
+      <p class="card-description">{{ data.description }}</p>
+    </div>
+    @if (data.footer) {
+      <div
+        class="card-footer"
+        [class]="footerClass()"
+        [attr.data-testid]="composedTestId() + 'Footer'"
+      >
+        {{ data.footer }}
+      </div>
+    }
+  }
+</ng-template>
+
+<ng-template #contentTemplate></ng-template>
+
+<aside
+  class="card card-border shadow-sm border-primary"
+  [class]="cardContainerClasses()"
+  [attr.data-testId]="testId()"
+>
+  @if (showInputBindingTemplate()) {
+    <ng-container [ngTemplateOutlet]="inputTemplate"></ng-container>
+  } @else {
+    <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
+  }
+</aside>

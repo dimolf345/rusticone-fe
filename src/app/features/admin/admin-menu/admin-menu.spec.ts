@@ -1,3 +1,5 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentRef, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -5,6 +7,7 @@ import { provideRouter } from '@angular/router';
 import { APP_PATHS, getByTestId, LayoutService } from '@core';
 import { MockLayoutService } from '@core/mocks';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { CardListContainer } from '../../../components/card-list-container/card-list-container';
 import { Searchbar } from '../../../components/searchbar/searchbar';
 import AdminMenu from './admin-menu';
 
@@ -22,6 +25,8 @@ describe('AdminMenu', () => {
       imports: [AdminMenu],
       providers: [
         provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: LayoutService, useClass: MockLayoutService },
       ],
     }).compileComponents();
@@ -73,6 +78,16 @@ describe('AdminMenu', () => {
       expect(previewText).toBeTruthy();
       expect(previewText?.nativeElement.textContent).toContain('Valore ricerca:');
     });
+
+    it('should display the products card list container', () => {
+      const productsContainer = getByTestId(template, 'Products container', {
+        prefix: testIdPrefix,
+      });
+      const productsList = getByTestId(template, 'Products list', { prefix: testIdPrefix });
+
+      expect(productsContainer).toBeTruthy();
+      expect(productsList).toBeTruthy();
+    });
   });
 
   describe('Behavior', () => {
@@ -86,6 +101,14 @@ describe('AdminMenu', () => {
 
     it('should initialize searchQuery with an empty string', () => {
       expect(component.searchQuery()).toBe('');
+    });
+
+    it('should bind the products resource to the card list container grouped by categories', () => {
+      const listInstance = template.query(By.directive(CardListContainer))
+        .componentInstance as CardListContainer;
+
+      expect(listInstance.httpResource()).toBe(component.productResource);
+      expect(listInstance.groupBy()).toBe('categories');
     });
 
     it('should bind layoutService screenSize to searchbar size input', () => {

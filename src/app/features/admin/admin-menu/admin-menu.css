@@ -36,3 +36,7 @@
 .search-query-highlight {
   @apply font-semibold text-primary;
 }
+
+.products-section {
+  @apply w-full;
+}

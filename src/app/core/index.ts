@@ -6,6 +6,7 @@ export * from './constants/routes.constant';
 export * from './guards';
 export * from './models/alert.model';
 export * from './models/auth.model';
+export * from './models/card.model';
 export * from './models/error-handler.model';
 export * from './models/layout.model';
 export * from './models/product.model';

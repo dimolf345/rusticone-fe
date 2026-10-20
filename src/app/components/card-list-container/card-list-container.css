@@ -1,0 +1,78 @@
+@reference "#styles";
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.card-list-container {
+  @apply flex w-full flex-col gap-6;
+}
+
+.card-grid {
+  @apply grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5;
+}
+
+.grouped-list {
+  @apply flex w-full flex-col gap-4;
+}
+
+.group-collapse {
+  @apply collapse collapse-arrow rounded-2xl border border-stone-200/80 bg-surface-light shadow-xs transition-all duration-200 hover:border-terracotta/30;
+}
+
+.group-summary {
+  @apply collapse-title flex items-center justify-between pr-10 text-lg font-display font-bold text-rust-900;
+}
+
+.group-summary-left {
+  @apply flex items-center gap-3;
+}
+
+.group-title {
+  @apply font-display text-base font-bold text-rust-900 sm:text-lg;
+}
+
+.group-badge {
+  @apply badge badge-sm border-none bg-canvas-subtle font-body font-semibold text-rust-800;
+}
+
+.group-content {
+  @apply collapse-content pt-2 pb-4;
+}
+
+.loading-state {
+  @apply flex w-full flex-col items-center justify-center gap-3 py-16 text-center;
+}
+
+.loading-text {
+  @apply text-sm font-medium font-body text-stone-600;
+}
+
+.error-state {
+  @apply alert alert-error rounded-2xl p-4 shadow-xs font-body text-white;
+}
+
+.error-title {
+  @apply font-semibold text-sm;
+}
+
+.error-subtitle {
+  @apply text-xs opacity-90;
+}
+
+.empty-state {
+  @apply flex w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-stone-300/80 bg-surface-warm/50 py-16 text-center;
+}
+
+.empty-title {
+  @apply font-display text-base font-bold text-rust-900;
+}
+
+.empty-subtitle {
+  @apply mt-1 text-xs font-body text-stone-500;
+}
+
+.hidden-content-slot {
+  @apply hidden;
+}

@@ -114,5 +114,125 @@
         </table>
       </div>
     </div>
+
+    <!-- #region DEV - CARD PLAYGROUND (remove when done) -->
+    <section class="playground-section" data-testid="Admin Dashboard - Card playground">
+      <div class="section-header">
+        <div>
+          <h3 class="section-title">🧪 Card Playground</h3>
+          <p class="section-subtitle">Anteprima delle varianti di app-generic-card</p>
+        </div>
+      </div>
+
+      <!-- 1. Input binding - vertical layout -->
+      <h4 class="playground-subtitle">1 · Payload · layout verticale</h4>
+      <div class="playground-grid">
+        @for (card of mockCards; track card.title) {
+          <div class="playground-cell">
+            <span class="playground-label">
+              1.{{ $index + 1 }} · payload · vertical · regular — {{ card.title }}
+            </span>
+            <app-generic-card
+              [payload]="card"
+              [testId]="'Playground Vertical ' + $index"
+              (action)="onCardAction($event)"
+            />
+          </div>
+        }
+      </div>
+
+      <!-- 2. Input binding - horizontal layout -->
+      <h4 class="playground-subtitle">2 · Payload · layout orizzontale</h4>
+      <div class="playground-grid">
+        @for (card of mockCards.slice(0, 2); track card.title) {
+          <div class="playground-cell">
+            <span class="playground-label">
+              2.{{ $index + 1 }} · payload · horizontal · regular — {{ card.title }}
+            </span>
+            <app-generic-card
+              [payload]="card"
+              layout="horizontal"
+              [testId]="'Playground Horizontal ' + $index"
+              (action)="onCardAction($event)"
+            />
+          </div>
+        }
+      </div>
+
+      <!-- 3. Sizes (vertical + horizontal) -->
+      <h4 class="playground-subtitle">3 · Dimensioni (small · regular · large)</h4>
+      <div class="playground-grid">
+        @for (layout of cardLayouts; track layout; let li = $index) {
+          @for (size of cardSizes; track size) {
+            <div class="playground-cell">
+              <span class="playground-label">
+                3.{{ li * cardSizes.length + $index + 1 }} · payload · {{ layout }} · {{ size }}
+              </span>
+              <app-generic-card
+                [payload]="mockCards[0]"
+                [layout]="layout"
+                [size]="size"
+                [testId]="'Playground Size ' + layout + ' ' + size"
+              />
+            </div>
+          }
+        }
+      </div>
+
+      <!-- 4. No image -->
+      <h4 class="playground-subtitle">4 · Senza immagine</h4>
+      <div class="playground-grid">
+        @for (layout of cardLayouts; track layout) {
+          <div class="playground-cell">
+            <span class="playground-label">
+              4.{{ $index + 1 }} · payload · {{ layout }} · regular · no image
+            </span>
+            <app-generic-card
+              [payload]="mockCardNoImage"
+              [layout]="layout"
+              [testId]="'Playground No Image ' + layout"
+            />
+          </div>
+        }
+      </div>
+
+      <!-- 5. Content projection with selector directives -->
+      <h4 class="playground-subtitle">5 · Content projection (card-image · card-content · card-actions)</h4>
+      <div class="playground-grid">
+        <div class="playground-cell">
+          <span class="playground-label">
+            5.1 · projected · vertical · regular — image + content + actions
+          </span>
+          <app-generic-card testId="Playground Projected">
+            <card-image>
+              <img src="images/mock/rustici-buffet.jpg" alt="Vassoio di rustici e arancini" />
+            </card-image>
+            <card-content>
+              <h3 class="card-title">Pacchetto Aperitivo</h3>
+              <p>Rustici, arancini e pizzette per 20 persone.</p>
+            </card-content>
+            <card-actions>
+              <button type="button" class="btn btn-sm btn-primary">Richiedi preventivo</button>
+            </card-actions>
+          </app-generic-card>
+        </div>
+
+        <div class="playground-cell">
+          <span class="playground-label">
+            5.2 · projected · horizontal · regular — image + content (no actions)
+          </span>
+          <app-generic-card testId="Playground Projected Horizontal" layout="horizontal">
+            <card-image>
+              <img src="images/mock/pizza-taglio.jpg" alt="Teglia di pizza al taglio" />
+            </card-image>
+            <card-content>
+              <h3 class="card-title">Teglie Party</h3>
+              <p>3 teglie a scelta tagliate a quadrotti.</p>
+            </card-content>
+          </app-generic-card>
+        </div>
+      </div>
+    </section>
+    <!-- #endregion -->
   </main>
 </div>
