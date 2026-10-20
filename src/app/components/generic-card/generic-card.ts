@@ -1,4 +1,4 @@
-import { DecimalPipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
@@ -10,12 +10,12 @@ import {
   TemplateRef,
   viewChild
 } from '@angular/core';
-import { CardLayout, CardSize, ICardAction, ICardPayload } from '@core';
+import { CardLayout, CardRound, CardSize, ICardAction, ICardPayload } from '@core';
 import { NgIcon } from '@ng-icons/core';
 
 @Component({
   selector: 'app-generic-card',
-  imports: [DecimalPipe, NgTemplateOutlet, NgIcon],
+  imports: [NgTemplateOutlet, NgIcon],
   templateUrl: './generic-card.html',
   styleUrl: './generic-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,7 +28,7 @@ export class GenericCard {
   readonly size = model<CardSize>('regular');
   readonly layout = model<CardLayout>('vertical');
   readonly testId = input('Generic Card');
-  readonly round = model('');
+  readonly round = model<CardRound>('regular');
   readonly actionAlwaysVisible = input(false, { transform: booleanAttribute });
   readonly actions = input<ICardAction[]>([]);
   readonly showImgeDetail = input(false, { transform: booleanAttribute });
@@ -42,8 +42,10 @@ export class GenericCard {
   readonly composedTestId = computed(() => `${this.testId()} - `);
   readonly cardContainerClasses = computed(() => {
     const cardSizeClass = `card-${this.size()}`;
-    const cardLayoutClss = `card-${this.layout()}`;
-    return [cardSizeClass, cardLayoutClss];
+    const cardLayoutClass = `card-${this.layout()}`;
+    const cardRoundClass = `card-round-${this.round()}`;
+    const noImageClass = !this.payload()?.imageUrl ? 'card-no-image' : '';
+    return [cardSizeClass, cardLayoutClass, cardRoundClass, noImageClass].filter(Boolean);
   });
 
   readonly showInputBindingTemplate = computed(() => this.payload() !== null);

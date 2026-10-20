@@ -1,67 +1,189 @@
 @reference "#styles";
 
-.card-title {
-  @apply truncate;
+/* Base Card */
+.card-base {
+  @apply relative overflow-hidden bg-white border border-stone-200/90 shadow-xs transition-all duration-200 text-stone-800;
 }
 
-.card-description {
-  @apply line-clamp-2 text-sm text-base-content/80;
+.card-base:hover {
+  @apply shadow-md border-stone-300;
 }
 
-.card-footer {
-  @apply text-sm text-base-content/70;
-}
-
-.card-small {
-  @apply card-xs gap-2 p-1 rounded-xl max-h-18;
-}
-
-.card-small .card-title {
-  @apply text-xs font-semibold;
-}
-
-.card-small .card-description {
-  @apply line-clamp-1 text-xs text-base-content/70;
-}
-
-.card-regular {
-  @apply card-sm;
-}
-
-.card-small.card-horizontal .card-image-wrapper {
-  @apply size-14 rounded-xl;
-}
-
-.card-large {
-  @apply card-md;
-}
-
-.card-horizontal {
-  @apply flex flex-row flex-nowrap items-center;
-}
-
+/* ==========================================================================
+   Layouts
+   ========================================================================== */
 .card-vertical {
   @apply flex flex-col;
 }
 
-/* #region IMAGE */
-.card-image-wrapper {
-  @apply relative overflow-hidden bg-base-200;
+.card-horizontal {
+  @apply flex flex-row flex-nowrap items-stretch;
 }
 
-.card-vertical .card-image-wrapper {
-  @apply aspect-video w-full;
+/* ==========================================================================
+   Rounds (3 options: none · regular · full)
+   ========================================================================== */
+.card-round-none {
+  @apply rounded-none;
 }
 
-.card-horizontal .card-image-wrapper {
-  @apply aspect-square w-1/3 shrink-0;
+.card-round-regular {
+  @apply rounded-2xl;
 }
 
-.card-image {
+.card-round-full {
+  @apply rounded-3xl;
+}
+
+/* ==========================================================================
+   Image Wrapper & Image Styles (supporting payload and projected card-image)
+   ========================================================================== */
+.card-image-wrapper,
+card-image {
+  @apply relative overflow-hidden bg-stone-100 block shrink-0;
+}
+
+.card-image,
+card-image img {
   @apply size-full object-cover transition-transform duration-500 ease-out;
 }
 
-.card:hover .card-image {
+.card-base:hover .card-image,
+.card-base:hover card-image img {
   @apply scale-105;
 }
-/* #endregion */
+
+/* ==========================================================================
+   Sizes & Layout combinations
+   ========================================================================== */
+
+/* 1. Small */
+.card-small .card-body {
+  @apply p-2.5 gap-1.5 flex flex-col flex-1 justify-between min-w-0;
+}
+
+.card-small .card-title {
+  @apply font-display text-xs sm:text-sm font-bold text-stone-900 truncate;
+}
+
+.card-small .card-description {
+  @apply line-clamp-1 text-xs text-stone-500;
+}
+
+.card-small .card-footer {
+  @apply text-xs font-semibold text-terracotta-700;
+}
+
+.card-small .badge {
+  @apply text-[10px] px-1.5 py-0.5 h-auto leading-tight;
+}
+
+.card-small.card-vertical .card-image-wrapper,
+.card-small.card-vertical card-image {
+  @apply aspect-[21/9] max-h-24 w-full;
+}
+
+.card-small.card-horizontal .card-image-wrapper,
+.card-small.card-horizontal card-image {
+  @apply w-20 sm:w-24 aspect-square self-stretch;
+}
+
+/* 2. Regular (Default) */
+.card-regular .card-body {
+  @apply p-4 gap-2.5 flex flex-col flex-1 justify-between min-w-0;
+}
+
+.card-regular .card-title {
+  @apply font-display text-base sm:text-lg font-bold text-stone-900 truncate;
+}
+
+.card-regular .card-description {
+  @apply line-clamp-2 text-xs sm:text-sm text-stone-600;
+}
+
+.card-regular .card-footer {
+  @apply text-sm font-bold text-terracotta-700;
+}
+
+.card-regular .badge {
+  @apply text-xs;
+}
+
+.card-regular.card-vertical .card-image-wrapper,
+.card-regular.card-vertical card-image {
+  @apply aspect-video max-h-48 w-full;
+}
+
+.card-regular.card-horizontal .card-image-wrapper,
+.card-regular.card-horizontal card-image {
+  @apply w-32 sm:w-44 aspect-square self-stretch;
+}
+
+/* 3. Large */
+.card-large .card-body {
+  @apply p-5 sm:p-6 gap-3.5 flex flex-col flex-1 justify-between min-w-0;
+}
+
+.card-large .card-title {
+  @apply font-display text-xl sm:text-2xl font-bold text-stone-900 truncate;
+}
+
+.card-large .card-description {
+  @apply line-clamp-3 text-sm sm:text-base text-stone-600;
+}
+
+.card-large .card-footer {
+  @apply text-base sm:text-lg font-bold text-terracotta-700;
+}
+
+.card-large .badge {
+  @apply text-sm;
+}
+
+.card-large.card-vertical .card-image-wrapper,
+.card-large.card-vertical card-image {
+  @apply aspect-[16/10] max-h-64 w-full;
+}
+
+.card-large.card-horizontal .card-image-wrapper,
+.card-large.card-horizontal card-image {
+  @apply w-44 sm:w-56 aspect-square self-stretch;
+}
+
+/* ==========================================================================
+   No-image Modifier
+   ========================================================================== */
+.card-no-image .card-body {
+  @apply w-full;
+}
+
+/* ==========================================================================
+   Internal Sub-elements & Content Projection Selectors
+   ========================================================================== */
+.card-header {
+  @apply flex flex-col gap-1 min-w-0;
+}
+
+.card-title-row {
+  @apply flex items-center gap-2 flex-wrap min-w-0;
+}
+
+.card-badges-wrapper {
+  @apply inline-flex items-center gap-1.5 flex-wrap;
+}
+
+.card-footer {
+  @apply font-semibold;
+}
+
+.card-actions {
+  @apply flex items-center gap-2 mt-auto pt-2 border-t border-stone-100;
+}
+
+card-content {
+  @apply flex flex-col gap-1 min-w-0 flex-1;
+}
+
+card-actions {
+  @apply flex items-center gap-2 mt-auto pt-2 border-t border-stone-100;
+}

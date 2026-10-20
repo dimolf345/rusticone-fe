@@ -20,7 +20,7 @@ import {
   heroUser,
   heroUsers,
 } from '@ng-icons/heroicons/outline';
-import { CardLayout, CardSize, ICardAction, ICardPayload } from '@core';
+import { CardLayout, CardRound, CardSize, ICardAction, ICardPayload } from '@core';
 import { AuthService } from '../../core/services/auth.service';
 import { GenericCard } from '../../components/generic-card/generic-card';
 import { CARD_SELECTORS } from '../../components/generic-card/selectors';
@@ -71,6 +71,7 @@ export class AdminDashboardComponent {
   // #region DEV - CARD PLAYGROUND (remove when done)
   readonly cardSizes: CardSize[] = ['small', 'regular', 'large'];
   readonly cardLayouts: CardLayout[] = ['vertical', 'horizontal'];
+  readonly cardRounds: CardRound[] = ['none', 'regular', 'full'];
 
   readonly mockCards: ICardPayload[] = [
     {

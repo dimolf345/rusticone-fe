@@ -232,6 +232,23 @@
           </app-generic-card>
         </div>
       </div>
+
+      <!-- 6. Arrotondamento (none · regular · full) -->
+      <h4 class="playground-subtitle">6 · Arrotondamento (none · regular · full)</h4>
+      <div class="playground-grid">
+        @for (round of cardRounds; track round) {
+          <div class="playground-cell">
+            <span class="playground-label">
+              6.{{ $index + 1 }} · payload · vertical · regular · round: {{ round }}
+            </span>
+            <app-generic-card
+              [payload]="mockCards[0]"
+              [round]="round"
+              [testId]="'Playground Round ' + round"
+            />
+          </div>
+        }
+      </div>
     </section>
     <!-- #endregion -->
   </main>
