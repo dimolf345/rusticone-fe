@@ -33,6 +33,15 @@ export class AuthErrorHandlerService extends BaseErrorHandler<Partial<IAlertItem
     },
   });
 
+  generalUnauthorized = new AlertError(this.#alertService).setErrorActionConfig({
+    errorStatus: [HttpStatusCode.Unauthorized],
+    priority: 1,
+    description: 'Runs for any general Unauthorized response',
+    context: {
+      message: "L' utente non è autorizzato ad effettuare questa operazione!"
+    }
+  })
+
   /** Specialized action triggered when invalid credentials are provided during login (401 Unauthorized on /auth/login). */
   wrongCredentials = new AlertError(this.#alertService).setErrorActionConfig({
     errorStatus: [HttpStatusCode.Unauthorized],
@@ -50,5 +59,6 @@ export class AuthErrorHandlerService extends BaseErrorHandler<Partial<IAlertItem
     this.setDefaultHandler(this.defaultAlert);
     this.addCustomHandler(this.alertOnUserAlreadyRegistered);
     this.addCustomHandler(this.wrongCredentials);
+    this.addCustomHandler(this.generalUnauthorized);
   }
 }

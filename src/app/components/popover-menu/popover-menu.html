@@ -1,0 +1,45 @@
+<div class="popover-menu-wrapper">
+  <button
+    #menuBtn
+    type="button"
+    class="popover-menu-btn"
+    [class]="buttonClass()"
+    [attr.popovertarget]="popoverId()"
+    [attr.aria-label]="ariaLabel()"
+    [attr.data-testid]="composedTestId() + 'Menu button'"
+    [disabled]="disabled()"
+    (click)="$event.stopPropagation()"
+  >
+    <ng-icon [name]="icon()"></ng-icon>
+  </button>
+
+  <div
+    #menuPopover
+    [id]="popoverId()"
+    popover="auto"
+    class="popover-menu-container"
+    [attr.data-testid]="composedTestId() + 'Popover'"
+    (toggle)="onPopoverToggle($event, menuBtn, menuPopover)"
+    (click)="$event.stopPropagation()"
+  >
+    <ul class="popover-menu-list" [attr.data-testid]="composedTestId() + 'List'">
+      @for (act of actions(); track act.actionName) {
+        <li>
+          <button
+            type="button"
+            class="popover-menu-item"
+            [class]="act.theme"
+            [disabled]="act.disabled"
+            [attr.data-testid]="composedTestId() + 'Item ' + act.actionName"
+            (click)="onActionItemClick(act, menuPopover, $event)"
+          >
+            @if (act.icon) {
+              <ng-icon [name]="act.icon" class="popover-menu-item-icon"></ng-icon>
+            }
+            <span>{{ act.actionName }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+  </div>
+</div>

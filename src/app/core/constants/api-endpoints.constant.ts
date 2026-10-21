@@ -7,4 +7,10 @@ export const API_ENDPOINTS = {
     ME: '/auth/me',
     LOGOUT: '/auth/logout',
   },
+  UPLOADS: {
+    UPLOAD_PRODUCT_IMAGE: '/uploads/temp'
+  },
+  PRODUCTS: {
+    ROOT: '/products'
+  }
 };

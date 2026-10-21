@@ -71,7 +71,7 @@
 }
 
 .submit-btn {
-  @apply btn btn-neutral cursor-pointer items-center justify-center gap-2 font-bold text-white shadow-md shadow-terracotta-300/35 transition-all hover:bg-terracotta-400 hover:shadow-lg hover:shadow-terracotta-300/45 active:scale-[0.99] active:bg-terracotta-500 disabled:cursor-not-allowed disabled:opacity-60 sm:py-3.5 sm:text-lg;
+  @apply btn btn-neutral btn-scale cursor-pointer items-center justify-center gap-2 font-bold text-white shadow-md shadow-terracotta-300/35 hover:bg-terracotta-400 hover:shadow-lg hover:shadow-terracotta-300/45 active:bg-terracotta-500 disabled:cursor-not-allowed disabled:opacity-60 sm:py-3.5 sm:text-lg;
 }
 
 .btn-arrow-icon {

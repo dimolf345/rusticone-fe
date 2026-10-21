@@ -1,0 +1,57 @@
+<div class="card-list-container" data-testId="Card List Container - Main container">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-state" data-testId="Card List Container - Loading container">
+      <span class="loading loading-spinner loading-lg text-terracotta" aria-hidden="true"></span>
+      <p class="loading-text" data-testId="Card List Container - Loading message">
+        {{ loadingMessage() }}
+      </p>
+    </div>
+  }
+  <!-- Error State -->
+  @else if (error()) {
+    <div class="error-state" role="alert" data-testId="Card List Container - Error container">
+      <p class="error-title" data-testId="Card List Container - Error message">
+        Si è verificato un errore nel caricamento dei dati.
+      </p>
+      <p class="error-subtitle">{{ error() }}</p>
+    </div>
+  }
+  <!-- Empty State -->
+  @else if (isEmpty()) {
+    <div class="empty-state" data-testId="Card List Container - Empty container">
+      <p class="empty-title" data-testId="Card List Container - Empty title">
+        {{ emptyTitle() }}
+      </p>
+      <p class="empty-subtitle" data-testId="Card List Container - Empty subtitle">
+        {{ emptySubtitle() }}
+      </p>
+    </div>
+  }
+  <!-- Content State: Grouped -->
+  @else if (isGrouped()) {
+    <app-card-list-grouped
+      [groups]="groupedItems()"
+      [contentGroups]="groupedContentCards()"
+      [hasResolvedItems]="hasResolvedItems()"
+      [actions]="actions()"
+      [initialCollapsed]="initialCollapsed()"
+      [cardTemplate]="cardTemplate()"
+      (cardAction)="onCardAction($event)"
+    >
+      <ng-content />
+    </app-card-list-grouped>
+  }
+  <!-- Content State: Grid (Ungrouped) -->
+  @else {
+    <app-card-list-grid
+      [items]="filteredItems()"
+      [hasResolvedItems]="hasResolvedItems()"
+      [actions]="actions()"
+      [cardTemplate]="cardTemplate()"
+      (cardAction)="onCardAction($event)"
+    >
+      <ng-content />
+    </app-card-list-grid>
+  }
+</div>

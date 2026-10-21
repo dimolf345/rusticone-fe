@@ -1,0 +1,104 @@
+<ng-template #inputTemplate>
+  @if (payload(); as data) {
+    @if (data.imageUrl) {
+      <figure class="card-image-wrapper" [attr.data-testid]="composedTestId() + 'Image wrapper'">
+        <img
+          class="card-image"
+          [src]="data.imageUrl"
+          [alt]="data.imageAlt || data.title"
+          loading="lazy"
+          decoding="async"
+          [attr.data-testid]="composedTestId() + 'Image'"
+        />
+      </figure>
+    }
+    <div class="card-body">
+      <div class="card-main-col">
+        <div class="card-header">
+          <div class="card-title-row">
+            <h3 class="card-title">{{ data.title }}</h3>
+            @if (data.titleBadges && data.titleBadges.length > 0) {
+              <div class="card-badges-wrapper">
+                @for (badge of data.titleBadges; track badge.badgeContent) {
+                  <span class="badge" [class]="badge.badgeVariant">{{ badge.badgeContent }}</span>
+                }
+              </div>
+            }
+          </div>
+          <p class="card-description">{{ data.description }}</p>
+          @if (data.descriptionBadges && data.descriptionBadges.length > 0) {
+            <div class="card-badges-wrapper">
+              @for (badge of data.descriptionBadges; track badge.badgeContent) {
+                <span class="badge" [class]="badge.badgeVariant">{{ badge.badgeContent }}</span>
+              }
+            </div>
+          }
+        </div>
+
+        @if (data.footer) {
+          <div
+            class="card-footer"
+            [class]="footerClass()"
+            [attr.data-testid]="composedTestId() + 'Footer'"
+          >
+            {{ data.footer }}
+          </div>
+        }
+
+        <!-- Standard Bottom Action Buttons for Regular / Large Cards -->
+        @if (showActions() && actions().length > 0 && !isMenuActions()) {
+          <div class="card-bottom">
+            <div class="card-actions" [attr.data-testid]="composedTestId() + 'Actions'">
+              @for (act of actions(); track act.actionName) {
+                <button
+                  type="button"
+                  class="btn btn-sm btn-scale"
+                  [class]="act.theme || 'btn-ghost'"
+                  [disabled]="act.disabled"
+                  (click)="onAction(act.actionName, $event)"
+                >
+                  @if (act.icon) {
+                    <ng-icon [name]="act.icon"></ng-icon>
+                  }
+                  {{ act.actionName }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Small / Mobile Cards Menu Button aligned vertically in the middle -->
+      @if (showActions() && actions().length > 0 && isMenuActions()) {
+        <div class="card-menu-wrapper">
+          <app-popover-menu
+            [actions]="actions()"
+            [ariaLabel]="'Azioni per ' + data.title"
+            [testId]="testId()"
+            (action)="onPopoverAction($event)"
+          />
+        </div>
+      }
+    </div>
+  }
+</ng-template>
+
+<aside
+  class="card card-base"
+  [class]="cardContainerClasses()"
+  [attr.data-testId]="testId()"
+  (click)="onCardClick()"
+>
+  @if (showInputBindingTemplate()) {
+    <ng-container [ngTemplateOutlet]="inputTemplate"></ng-container>
+  } @else {
+    <ng-content select="card-image"></ng-content>
+    <div class="card-body">
+      <ng-content select="card-content"></ng-content>
+      <div class="card-bottom">
+        <ng-content select="card-actions"></ng-content>
+        <ng-content></ng-content>
+      </div>
+    </div>
+  }
+</aside>

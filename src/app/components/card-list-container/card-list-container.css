@@ -1,0 +1,42 @@
+@reference "#styles";
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.card-list-container {
+  @apply flex w-full flex-col gap-6;
+}
+
+.loading-state {
+  @apply flex w-full flex-col items-center justify-center gap-3 py-16 text-center;
+}
+
+.loading-text {
+  @apply text-sm font-medium font-body text-stone-600;
+}
+
+.error-state {
+  @apply alert alert-error rounded-2xl p-4 shadow-xs font-body text-white;
+}
+
+.error-title {
+  @apply font-semibold text-sm;
+}
+
+.error-subtitle {
+  @apply text-xs opacity-90;
+}
+
+.empty-state {
+  @apply flex w-full flex-col items-center justify-center rounded-2xl border-2 border-dashed border-stone-300/80 bg-surface-warm/50 py-16 text-center;
+}
+
+.empty-title {
+  @apply font-display text-base font-bold text-rust-900;
+}
+
+.empty-subtitle {
+  @apply mt-1 text-xs font-body text-stone-500;
+}
