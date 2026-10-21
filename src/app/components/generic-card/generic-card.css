@@ -59,7 +59,11 @@ card-image img {
 
 /* 1. Small */
 .card-small .card-body {
-  @apply p-2.5 gap-1.5 flex flex-col flex-1 justify-between min-w-0;
+  @apply p-2.5 gap-2 flex flex-row items-center justify-between flex-1 min-w-0;
+}
+
+.card-main-col {
+  @apply flex flex-col justify-between flex-1 min-w-0 gap-1;
 }
 
 .card-small .card-title {
@@ -176,8 +180,26 @@ card-image img {
   @apply font-semibold;
 }
 
+/* ==========================================================================
+   Bottom Row (Footer & Actions)
+   ========================================================================== */
+.card-bottom {
+  @apply mt-auto flex items-center justify-between gap-2 pt-2.5 border-t border-stone-100 flex-wrap;
+}
+
+.card-small .card-bottom {
+  @apply pt-1 border-t-0;
+}
+
 .card-actions {
-  @apply flex items-center gap-2 mt-auto pt-2 border-t border-stone-100;
+  @apply flex items-center gap-1.5 flex-wrap;
+}
+
+/* ==========================================================================
+   Popover Menu Wrapper (Small / Mobile Cards)
+   ========================================================================== */
+.card-menu-wrapper {
+  @apply relative inline-flex items-center my-auto self-center shrink-0 ml-2;
 }
 
 card-content {
@@ -185,5 +207,5 @@ card-content {
 }
 
 card-actions {
-  @apply flex items-center gap-2 mt-auto pt-2 border-t border-stone-100;
+  @apply flex items-center gap-2;
 }

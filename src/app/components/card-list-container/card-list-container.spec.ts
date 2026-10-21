@@ -10,18 +10,39 @@ import { CardListContainer, CardResourceRef } from './card-list-container';
   imports: [CardListContainer, GenericCard],
   template: `
     <app-card-list-container [groupBy]="groupBy" [initialCollapsed]="initialCollapsed">
-      <app-generic-card group="Pizza" [item]="pizza1" />
-      <app-generic-card group="Pizza" [item]="pizza2" />
-      <app-generic-card group="Dolci" [item]="dolce1" />
+      <app-generic-card [payload]="pizza1" />
+      <app-generic-card [payload]="pizza2" />
+      <app-generic-card [payload]="dolce1" />
     </app-card-list-container>
   `,
 })
 class TestHostProjectedComponent {
   groupBy: string | null = 'category';
   initialCollapsed = false;
-  pizza1 = { name: 'Margherita', basePrice: 8.5, categories: ['Pizza'] };
-  pizza2 = { name: 'Diavola', basePrice: 9.5, categories: ['Pizza'] };
-  dolce1 = { name: 'Tiramisù', basePrice: 5.0, categories: ['Dolci'] };
+  pizza1 = {
+    title: 'Margherita',
+    description: '',
+    imageUrl: '',
+    imageAlt: '',
+    footer: '8.5',
+    category: 'Pizza',
+  };
+  pizza2 = {
+    title: 'Diavola',
+    description: '',
+    imageUrl: '',
+    imageAlt: '',
+    footer: '9.5',
+    category: 'Pizza',
+  };
+  dolce1 = {
+    title: 'Tiramisù',
+    description: '',
+    imageUrl: '',
+    imageAlt: '',
+    footer: '5.0',
+    category: 'Dolci',
+  };
 }
 
 describe('CardListContainer', () => {
@@ -205,7 +226,7 @@ describe('CardListContainer', () => {
       const firstCardInstance = firstCardDebugEl.componentInstance as GenericCard;
 
       const actionPayload: ICardAction = {
-        action: 'edit',
+        actionName: 'edit',
         item: mockProducts[0],
       };
       firstCardInstance.action.emit(actionPayload);

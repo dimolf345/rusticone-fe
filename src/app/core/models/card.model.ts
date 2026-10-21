@@ -35,5 +35,3 @@ export type CardRound = 'none' | 'regular' | 'full';
 
 export type CardGroupBy<T = unknown> = string | ((item: T) => string | string[]);
 
-export type CardGridCols = 1 | 2 | 3 | 4 | 5 | 'auto' | 'default';
-

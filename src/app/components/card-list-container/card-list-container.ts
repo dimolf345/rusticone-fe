@@ -193,16 +193,6 @@ export class CardListContainer {
   }
 
   #extractCardKeys(card: GenericCard, groupBy: CardGroupBy): string[] {
-    const cardGroup = [] as string[];
-    if (cardGroup !== undefined && cardGroup !== null) {
-      if (Array.isArray(cardGroup)) {
-        return cardGroup.length > 0 ? cardGroup.map(String) : ['Altro'];
-      }
-      if (String(cardGroup).trim() !== '') {
-        return [String(cardGroup)];
-      }
-    }
-
     const cardItem = card.payload();
     if (cardItem) {
       return this.#extractKeys(cardItem, groupBy);

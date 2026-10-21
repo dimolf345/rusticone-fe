@@ -1,8 +1,11 @@
 import { ComponentRef, DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { getByTestId } from '@core';
+import { getByTestId, ICardAction, ICardPayload } from '@core';
+import { provideIcons } from '@ng-icons/core';
+import { heroPencil, heroTrash } from '@ng-icons/heroicons/outline';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { PopoverMenu } from '../popover-menu/popover-menu';
 import { GenericCard } from './generic-card';
 
 describe('GenericCard', () => {
@@ -13,18 +16,25 @@ describe('GenericCard', () => {
 
   const testIdPrefix = 'Generic Card - ';
 
-  const mockProduct = {
-    name: 'Pizza Margherita',
+  const mockPayload: ICardPayload = {
+    title: 'Pizza Margherita',
     description: 'Pomodoro, mozzarella di bufala e basilico fresco',
-    basePrice: 8.5,
-    categories: ['Pizza', 'Cotti al forno'],
-    productImages: ['https://example.com/pizza.jpg'],
-    available: true,
+    imageUrl: 'https://example.com/pizza.jpg',
+    imageAlt: 'Foto Pizza Margherita',
+    footer: '8.50 €',
+    titleBadges: [{ badgeVariant: 'badge-primary', badgeContent: 'Classica' }],
+    descriptionBadges: [{ badgeVariant: 'badge-secondary', badgeContent: 'Vegetariana' }],
   };
+
+  const mockActions: ICardAction[] = [
+    { actionName: 'Modifica', icon: 'heroPencil' },
+    { actionName: 'Elimina', icon: 'heroTrash', theme: 'text-error' },
+  ];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [GenericCard],
+      providers: [provideIcons({ heroPencil, heroTrash })],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GenericCard);
@@ -39,112 +49,99 @@ describe('GenericCard', () => {
   });
 
   describe('Layout', () => {
-    it('should display card container and default title when no item is provided', () => {
-      const container = getByTestId(template, 'Container', { prefix: testIdPrefix });
-      const title = getByTestId(template, 'Title', { prefix: testIdPrefix });
-
-      expect(container).toBeTruthy();
-      expect(title?.nativeElement.textContent.trim()).toBe('Senza titolo');
+    it('should display card container', () => {
+      const card = template.query(By.css('.card-base'));
+      expect(card).toBeTruthy();
     });
 
-    it('should display item details correctly when item is provided', () => {
-      fixture.componentRef.setInput('item', mockProduct);
+    it('should display payload details correctly when payload is provided', () => {
+      fixture.componentRef.setInput('payload', mockPayload);
       fixture.detectChanges();
 
-      const title = getByTestId(template, 'Title', { prefix: testIdPrefix });
-      const description = getByTestId(template, 'Description', { prefix: testIdPrefix });
-      const price = getByTestId(template, 'Price', { prefix: testIdPrefix });
       const image = getByTestId(template, 'Image', { prefix: testIdPrefix });
+      const footer = getByTestId(template, 'Footer', { prefix: testIdPrefix });
+      const title = template.query(By.css('.card-title'));
+      const description = template.query(By.css('.card-description'));
 
       expect(title?.nativeElement.textContent.trim()).toBe('Pizza Margherita');
       expect(description?.nativeElement.textContent.trim()).toBe(
         'Pomodoro, mozzarella di bufala e basilico fresco',
       );
-      expect(price?.nativeElement.textContent.trim()).toContain('8.50 €');
-      expect(image?.attributes['src'] || image?.nativeElement.getAttribute('src')).toBe(
-        'https://example.com/pizza.jpg',
-      );
+      expect(footer?.nativeElement.textContent.trim()).toBe('8.50 €');
+      expect(image?.nativeElement.getAttribute('src')).toBe('https://example.com/pizza.jpg');
     });
 
-    it('should display category badges for each category in item', () => {
-      fixture.componentRef.setInput('item', mockProduct);
+    it('should render standard bottom actions for regular cards with buttons display', () => {
+      fixture.componentRef.setInput('payload', mockPayload);
+      fixture.componentRef.setInput('actions', mockActions);
+      fixture.componentRef.setInput('actionsDisplay', 'buttons');
       fixture.detectChanges();
 
-      const badgesContainer = getByTestId(template, 'Badges container', { prefix: testIdPrefix });
-      expect(badgesContainer).toBeTruthy();
+      const actionsEl = getByTestId(template, 'Actions', { prefix: testIdPrefix });
+      expect(actionsEl).toBeTruthy();
 
-      const badges = template.queryAll(By.css('.category-badge'));
-      expect(badges.length).toBe(2);
-      expect(badges[0].nativeElement.textContent.trim()).toBe('Pizza');
-      expect(badges[1].nativeElement.textContent.trim()).toBe('Cotti al forno');
+      const popoverEl = template.query(By.directive(PopoverMenu));
+      expect(popoverEl).toBeFalsy();
     });
 
-    it('should display unavailable badge when available is false', () => {
-      fixture.componentRef.setInput('item', { ...mockProduct, available: false });
+    it('should render popover-menu for small cards or when actionsDisplay is menu', () => {
+      fixture.componentRef.setInput('payload', mockPayload);
+      fixture.componentRef.setInput('actions', mockActions);
+      fixture.componentRef.setInput('size', 'small');
       fixture.detectChanges();
 
-      const unavailableBadge = getByTestId(template, 'Unavailable badge', {
-        prefix: testIdPrefix,
-      });
-      expect(unavailableBadge).toBeTruthy();
-      expect(unavailableBadge?.nativeElement.textContent.trim()).toBe('Esaurito');
-    });
-
-    it('should display action buttons (edit and delete)', () => {
-      const editBtn = getByTestId(template, 'Edit button', { prefix: testIdPrefix });
-      const deleteBtn = getByTestId(template, 'Delete button', { prefix: testIdPrefix });
-
-      expect(editBtn).toBeTruthy();
-      expect(deleteBtn).toBeTruthy();
+      const popoverEl = template.query(By.directive(PopoverMenu));
+      expect(popoverEl).toBeTruthy();
     });
   });
 
   describe('Behavior', () => {
-    it('should emit action event with "edit" when edit button is clicked', () => {
-      fixture.componentRef.setInput('item', mockProduct);
+    it('should emit cardClick when card is clicked', () => {
+      const clickSpy = vi.fn();
+      component.cardClick.subscribe(clickSpy);
+
+      const card = template.query(By.css('.card-base'));
+      card?.nativeElement.click();
+
+      expect(clickSpy).toHaveBeenCalled();
+    });
+
+    it('should emit action when a button action is clicked', () => {
+      fixture.componentRef.setInput('payload', mockPayload);
+      fixture.componentRef.setInput('actions', mockActions);
+      fixture.componentRef.setInput('actionsDisplay', 'buttons');
       fixture.detectChanges();
 
-      const emitSpy = vi.fn();
-      component.action.subscribe(emitSpy);
+      const actionSpy = vi.fn();
+      component.action.subscribe(actionSpy);
 
-      const editBtn = getByTestId(template, 'Edit button', { prefix: testIdPrefix });
-      editBtn?.nativeElement.click();
+      const firstBtn = template.query(By.css('.card-actions button'));
+      firstBtn?.nativeElement.click();
 
-      expect(emitSpy).toHaveBeenCalledWith({
-        action: 'edit',
-        item: mockProduct,
+      expect(actionSpy).toHaveBeenCalledWith({
+        actionName: 'Modifica',
+        item: mockPayload,
       });
     });
 
-    it('should emit action event with "delete" when delete button is clicked', () => {
-      fixture.componentRef.setInput('item', mockProduct);
+    it('should emit action when popover menu emits an action', () => {
+      fixture.componentRef.setInput('payload', mockPayload);
+      fixture.componentRef.setInput('actions', mockActions);
+      fixture.componentRef.setInput('actionsDisplay', 'menu');
       fixture.detectChanges();
 
-      const emitSpy = vi.fn();
-      component.action.subscribe(emitSpy);
+      const actionSpy = vi.fn();
+      component.action.subscribe(actionSpy);
 
-      const deleteBtn = getByTestId(template, 'Delete button', { prefix: testIdPrefix });
-      deleteBtn?.nativeElement.click();
+      const popoverDebugEl = template.query(By.directive(PopoverMenu));
+      const popoverInstance = popoverDebugEl.componentInstance as PopoverMenu;
 
-      expect(emitSpy).toHaveBeenCalledWith({
-        action: 'delete',
-        item: mockProduct,
-      });
-    });
+      popoverInstance.action.emit(mockActions[0]);
 
-    it('should emit action event with "select" when card container is clicked', () => {
-      fixture.componentRef.setInput('item', mockProduct);
-      fixture.detectChanges();
-
-      const emitSpy = vi.fn();
-      component.action.subscribe(emitSpy);
-
-      const container = getByTestId(template, 'Container', { prefix: testIdPrefix });
-      container?.nativeElement.click();
-
-      expect(emitSpy).toHaveBeenCalledWith({
-        action: 'select',
-        item: mockProduct,
+      expect(actionSpy).toHaveBeenCalledWith({
+        actionName: 'Modifica',
+        icon: 'heroPencil',
+        item: mockPayload,
       });
     });
   });

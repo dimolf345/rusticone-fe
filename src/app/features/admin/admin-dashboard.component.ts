@@ -114,6 +114,11 @@ export class AdminDashboardComponent {
     footer: '€ 4,00 / persona',
   };
 
+  readonly mockActions: ICardAction[] = [
+    { actionName: 'Dettagli', icon: 'heroClipboardDocumentList', theme: 'btn-ghost text-stone-700' },
+    { actionName: 'Rimuovi', icon: 'heroArrowRightOnRectangle', theme: 'btn-ghost text-error' },
+  ];
+
   onCardAction(action: ICardAction): void {
     console.log('[Card playground] action', action);
   }
