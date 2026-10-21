@@ -14,7 +14,10 @@ describe('AddProduct', () => {
   let template: DebugElement;
   let _componentRef: ComponentRef<AddProduct>;
   let router: Router;
-  let mockProductsService: { uploadProductImages: ReturnType<typeof vi.fn> };
+  let mockProductsService: {
+    uploadProductImages: ReturnType<typeof vi.fn>;
+    createProduct: ReturnType<typeof vi.fn>;
+  };
 
   const testIdPrefix = 'Add Product - ';
 
@@ -37,6 +40,7 @@ describe('AddProduct', () => {
           body: { uploadSessionId: 'mock-session-123' },
         }),
       ),
+      createProduct: vi.fn().mockReturnValue(of({ success: true })),
     };
 
     await TestBed.configureTestingModule({

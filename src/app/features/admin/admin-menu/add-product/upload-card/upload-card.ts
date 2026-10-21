@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { IProductUploadImage } from '@core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
@@ -14,7 +14,7 @@ import { heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
     }),
   ],
   template: `
-    <div class="image-preview-card" data-testid="Product Card - Image item">
+    <div class="image-preview-card" [attr.data-testid]="composedTestId() + 'Image item'">
       <img [src]="cardInfo().previewUrl" [alt]="cardInfo().name" class="preview-thumbnail" />
       <div class="image-meta">
         <span class="image-name" [title]="cardInfo().name">{{ cardInfo().name }}</span>
@@ -25,7 +25,7 @@ import { heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
               @case ('uploaded') {
                 <span
                   class="badge badge-success badge-xs gap-1"
-                  data-testid="Product Card - Image status uploaded"
+                  [attr.data-testid]="composedTestId() + 'Image status uploaded'"
                 >
                   <ng-icon name="heroCheck" size="0.75rem" /> Caricata
                 </span>
@@ -33,7 +33,7 @@ import { heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
               @case ('uploading') {
                 <span
                   class="badge badge-info badge-xs gap-1"
-                  data-testid="Product Card - Image status uploading"
+                  [attr.data-testid]="composedTestId() + 'Image status uploading'"
                 >
                   <span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
                   In caricamento
@@ -42,7 +42,7 @@ import { heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
               @case ('error') {
                 <span
                   class="badge badge-error badge-xs"
-                  data-testid="Product Card - Image status error"
+                  [attr.data-testid]="composedTestId() + 'Image status error'"
                 >
                   Errore
                 </span>
@@ -50,7 +50,7 @@ import { heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
               @default {
                 <span
                   class="badge badge-warning badge-xs"
-                  data-testid="Product Card - Image status staged"
+                  [attr.data-testid]="composedTestId() + 'Image status staged'"
                 >
                   Da caricare
                 </span>
@@ -64,7 +64,7 @@ import { heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
         (click)="remove.emit()"
         class="remove-image-btn"
         aria-label="Rimuovi immagine"
-        data-testid="Product Card - Remove image button"
+        [attr.data-testid]="composedTestId() + 'Remove image button'"
       >
         <ng-icon name="heroXMark" size="1rem" />
       </button>
@@ -73,6 +73,8 @@ import { heroCheck, heroXMark } from '@ng-icons/heroicons/outline';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadCard {
+  testId = input('Product Card');
+  composedTestId = computed(() => `${this.testId()} - `);
   cardInfo = input.required<IProductUploadImage>();
   remove = output();
 }

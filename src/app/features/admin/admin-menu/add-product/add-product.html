@@ -90,11 +90,13 @@
           <div class="staged-images-section" data-testid="Add Product - Staged images list">
             <div class="images-preview-grid">
               @for (img of stagedImages(); track img.id) {
-                <app-upload-card [cardInfo]="img" (remove)="removeImage($index)" />
+                <app-upload-card
+                  [cardInfo]="img"
+                  testId="Add Product"
+                  (remove)="removeImage($index)"
+                />
               }
             </div>
-
-            <!-- Carica Immagini Button -->
             <div class="upload-action-row">
               <button
                 type="button"
