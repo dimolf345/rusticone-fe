@@ -1,13 +1,14 @@
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { ComponentRef, DebugElement } from '@angular/core';
+import { type HttpResourceRef } from '@angular/common/http';
+import { ComponentRef, DebugElement, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
-import { APP_PATHS, getByTestId, LayoutService } from '@core';
+import { APP_PATHS, getByTestId, LayoutService, Product } from '@core';
 import { MockLayoutService } from '@core/mocks';
+import { ProductsService } from '@core/services/products.service';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CardListContainer } from '../../../components/card-list-container/card-list-container';
+import { GenericCard } from '../../../components/generic-card/generic-card';
 import { Searchbar } from '../../../components/searchbar/searchbar';
 import AdminMenu from './admin-menu';
 
@@ -20,14 +21,61 @@ describe('AdminMenu', () => {
 
   const testIdPrefix = 'Admin Menu - ';
 
+  const mockProducts: Product[] = [
+    {
+      id: 'p1',
+      name: 'Pizza Margherita',
+      basePrice: 8.5,
+      size: [1],
+      categories: ['Pizza'],
+      available: true,
+      productImages: ['https://example.com/margherita.jpg'],
+      description: 'Pomodoro e mozzarella',
+      suggestedQuantity: 1,
+      addons: [],
+    },
+    {
+      id: 'p2',
+      name: 'Rustico Leccese',
+      basePrice: 3.0,
+      size: [1],
+      categories: ['Rustici'],
+      available: false,
+      productImages: [],
+      description: 'Sfoglia croccante con besciamella e pomodoro',
+      suggestedQuantity: 2,
+      addons: [],
+    },
+  ];
+
+  const valueSig = signal<Product[]>([]);
+  const loadingSig = signal<boolean>(false);
+  const errorSig = signal<unknown>(undefined);
+
+  const mockProductResource = {
+    value: valueSig.asReadonly(),
+    hasValue: () => errorSig() === undefined && valueSig() !== undefined,
+    isLoading: loadingSig.asReadonly(),
+    status: () => (loadingSig() ? 'loading' : errorSig() ? 'error' : 'resolved'),
+    error: errorSig.asReadonly(),
+    reload: vi.fn(),
+  } as unknown as HttpResourceRef<Product[]>;
+
+  const mockProductsService = {
+    getProductsResource: vi.fn(() => mockProductResource),
+  };
+
   beforeEach(async () => {
+    valueSig.set([]);
+    loadingSig.set(false);
+    errorSig.set(undefined);
+
     await TestBed.configureTestingModule({
       imports: [AdminMenu],
       providers: [
         provideRouter([]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
         { provide: LayoutService, useClass: MockLayoutService },
+        { provide: ProductsService, useValue: mockProductsService },
       ],
     }).compileComponents();
 
@@ -103,12 +151,34 @@ describe('AdminMenu', () => {
       expect(component.searchQuery()).toBe('');
     });
 
-    it('should bind the products resource to the card list container grouped by categories', () => {
+    it('should bind the products resource and derived cardItems to the card list container grouped by categories', () => {
+      valueSig.set(mockProducts);
+      fixture.detectChanges();
+
       const listInstance = template.query(By.directive(CardListContainer))
         .componentInstance as CardListContainer;
 
       expect(listInstance.httpResource()).toBe(component.productResource);
+      expect(listInstance.items()).toEqual(component.cardItems());
       expect(listInstance.groupBy()).toBe('categories');
+
+      const genericCards = template.queryAll(By.directive(GenericCard));
+      expect(genericCards.length).toBe(2);
+      expect((genericCards[0].componentInstance as GenericCard).payload()?.title).toBe(
+        'Pizza Margherita',
+      );
+      expect((genericCards[0].componentInstance as GenericCard).payload()?.footer).toBe('€ 8,50');
+    });
+
+    it('should render fallback error UI when productResource is in error state', () => {
+      errorSig.set(new Error('ZodError: Invalid product payload'));
+      fixture.detectChanges();
+
+      const errorContainer = getByTestId(template, 'Error container', {
+        prefix: 'Card List Container - ',
+      });
+      expect(errorContainer).toBeTruthy();
+      expect(component.cardItems()).toEqual([]);
     });
 
     it('should bind layoutService screenSize to searchbar size input', () => {

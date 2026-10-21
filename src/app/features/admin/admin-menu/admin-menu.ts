@@ -1,12 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   debounced,
   inject,
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { APP_PATHS, ICardAction, LayoutService } from '@core';
+import { APP_PATHS, CardItem, ICardAction, LayoutService, productToCardItem } from '@core';
 import { DEFAULT_PRODUCT_CATEGORIES } from '@core/models/product.model';
 import { ProductsService } from '@core/services/products.service';
 import { provideIcons } from '@ng-icons/core';
@@ -35,6 +36,12 @@ export default class AdminMenu {
   // #endregion
 
   readonly productResource = this.#productsService.getProductsResource();
+  readonly cardItems = computed<CardItem[]>(() => {
+    if (!this.productResource.hasValue()) {
+      return [];
+    }
+    return this.productResource.value().map(productToCardItem);
+  });
   protected readonly categoryOrder = DEFAULT_PRODUCT_CATEGORIES.map((c) => c.value);
 
   readonly searchQuery = signal<string>('');

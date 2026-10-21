@@ -13,6 +13,7 @@ export interface ICardBadge {
 }
 
 export interface ICardPayload {
+  id?: string;
   title: string;
   description: string;
   imageUrl: string;
@@ -20,7 +21,12 @@ export interface ICardPayload {
   titleBadges?: ICardBadge[];
   descriptionBadges?: ICardBadge[];
   footer: string;
+  categories?: string[];
 }
+
+export type ICardItem = ICardPayload;
+export type CardItem = ICardPayload;
+export type CardAction<T = unknown> = ICardAction<T>;
 
 export interface ICardGroup<T = unknown> {
   key: string;
@@ -34,4 +40,3 @@ export type CardLayout = 'vertical' | 'horizontal';
 export type CardRound = 'none' | 'regular' | 'full';
 
 export type CardGroupBy<T = unknown> = string | ((item: T) => string | string[]);
-
