@@ -11,6 +11,7 @@ export * from './models/error-handler.model';
 export * from './models/layout.model';
 export * from './models/popover-menu.model';
 export * from './models/product.model';
+export * from './models/product.schema';
 export * from './models/user.model';
 export * from './services/alert.service';
 export * from './services/auth-error-handler.service';

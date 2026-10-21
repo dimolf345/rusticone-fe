@@ -64,8 +64,16 @@ export class CardListContainer {
   });
 
   readonly resolvedItems = computed<unknown[]>(() => {
+    const directItems = this.items();
+    if (Array.isArray(directItems)) {
+      return directItems;
+    }
+
     const res = this.httpResource();
     if (res) {
+      if (res.error?.()) {
+        return [];
+      }
       const val = res.value?.();
       if (Array.isArray(val)) return val;
       if (val && typeof val === 'object') {
@@ -80,8 +88,6 @@ export class CardListContainer {
       return [];
     }
 
-    const directItems = this.items();
-    if (Array.isArray(directItems)) return directItems;
     return [];
   });
 
