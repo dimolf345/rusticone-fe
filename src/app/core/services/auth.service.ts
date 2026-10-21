@@ -22,6 +22,8 @@ export interface IRenderGoogleButtonOptions {
   customOptions?: google.accounts.id.GsiButtonConfiguration;
 }
 
+const LAST_ROUTE_STORAGE_KEY = 'rusticone_last_route';
+
 @Service()
 export class AuthService {
   #http = inject(HttpClient);
@@ -75,7 +77,7 @@ export class AuthService {
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);
-        this.goToDashBoard().catch(() => { });
+        this.goToDashBoard().catch(() => {});
       }),
       catchError((err: HttpErrorResponse) => {
         console.log(err);
@@ -101,7 +103,22 @@ export class AuthService {
       .pipe(
         tap(({ user }) => {
           this.#currentUser.set(user);
-          this.goToDashBoard();
+          const currentPath =
+            typeof window !== 'undefined' ? window.location.pathname : this.#router.url;
+          const savedRoute = this.#getSavedRoute();
+
+          if (savedRoute) {
+            this.#clearSavedRoute();
+            this.#router.navigateByUrl(savedRoute);
+          } else if (
+            currentPath === APP_PATHS.ROOT ||
+            currentPath === APP_PATHS.LANDING ||
+            currentPath === APP_PATHS.LOGIN ||
+            currentPath === APP_PATHS.REGISTER ||
+            currentPath === APP_PATHS.DASHBOARD.ROOT
+          ) {
+            this.redirectUserByRole(user);
+          }
         }),
       );
   }
@@ -119,8 +136,7 @@ export class AuthService {
 
     const url = `${environment.apiUrl}${API_ENDPOINTS.AUTH.REFRESH}`;
     this.#refreshPromise = firstValueFrom(
-      this.#http.post<IRefreshTokenResponse>(url, {}, this.#httpOptions).pipe(
-        take(1)),
+      this.#http.post<IRefreshTokenResponse>(url, {}, this.#httpOptions).pipe(take(1)),
     )
       .then((response) => {
         if (response?.accessToken) {
@@ -151,9 +167,24 @@ export class AuthService {
    */
   async initializeAuth(): Promise<void> {
     this.#isLoading.set(true);
+    if (typeof window !== 'undefined') {
+      const initialPath = window.location.pathname + window.location.search;
+      if (
+        initialPath.startsWith(APP_PATHS.DASHBOARD.ROOT) &&
+        initialPath !== APP_PATHS.DASHBOARD.ROOT
+      ) {
+        try {
+          window.sessionStorage.setItem(LAST_ROUTE_STORAGE_KEY, initialPath);
+        } catch {
+          // Ignore sessionStorage errors
+        }
+      }
+    }
+
     try {
       const refreshed = await this.refreshAccess();
       if (!refreshed) {
+        this.#clearSavedRoute();
         this.setAnonymous();
         return;
       }
@@ -162,9 +193,11 @@ export class AuthService {
       if (meResponse?.user) {
         this.#currentUser.set(meResponse.user);
       } else {
+        this.#clearSavedRoute();
         this.setAnonymous();
       }
     } catch {
+      this.#clearSavedRoute();
       this.setAnonymous();
     } finally {
       this.#isLoading.set(false);
@@ -180,7 +213,7 @@ export class AuthService {
       tap((response) => {
         this.#accessToken.set(response.accessToken);
         this.#currentUser.set(response.user);
-        this.redirectUserByRole(response.user).catch(() => { });
+        this.redirectUserByRole(response.user).catch(() => {});
       }),
       catchError((err: HttpErrorResponse) => {
         this.#authErrorHandler.handle(err);
@@ -199,11 +232,12 @@ export class AuthService {
     } catch {
       // Logout server call is best-effort
     } finally {
+      this.#clearSavedRoute();
       this.setAnonymous();
       if (typeof google !== 'undefined' && google?.accounts?.id) {
         google.accounts.id.disableAutoSelect();
       }
-      await this.#router.navigate([APP_PATHS.LOGIN]).catch(() => { });
+      await this.#router.navigate([APP_PATHS.LOGIN]).catch(() => {});
     }
   }
 
@@ -270,6 +304,28 @@ export class AuthService {
   #verifyGoogleTokenOnBackend(idToken: string): Promise<IAuthResponse> {
     const url = `${environment.apiUrl}${API_ENDPOINTS.AUTH.SIGN_IN_WITH_GOOGLE}`;
     return firstValueFrom(this.#http.post<IAuthResponse>(url, { idToken }, this.#httpOptions));
+  }
+
+  #getSavedRoute(): string | null {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+    try {
+      return window.sessionStorage.getItem(LAST_ROUTE_STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  #clearSavedRoute(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    try {
+      window.sessionStorage.removeItem(LAST_ROUTE_STORAGE_KEY);
+    } catch {
+      // Ignore sessionStorage errors
+    }
   }
 
   goToDashBoard(): Promise<boolean> {
