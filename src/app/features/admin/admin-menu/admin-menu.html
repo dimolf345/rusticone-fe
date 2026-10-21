@@ -33,6 +33,7 @@
   <section class="products-section" data-testId="Admin Menu - Products container">
     <app-card-list-container
       [httpResource]="productResource"
+      [items]="cardItems()"
       [searchTerm]="debouncedQuery.value()"
       [actions]="productActions"
       groupBy="categories"
