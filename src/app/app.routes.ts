@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { ROUTE_SEGMENTS } from './core/constants/routes.constant';
-import { isAdminGuard } from './core/guards';
+import { authGuard, isAdminGuard } from './core/guards';
 import { Layout } from './core/layout/layout';
 
 export const routes: Routes = [
@@ -20,7 +20,7 @@ export const routes: Routes = [
   {
     path: ROUTE_SEGMENTS.DASHBOARD,
     component: Layout,
-    canActivate: [], // place authGuard here
+    canActivate: [authGuard],
     children: [
       {
         path: ROUTE_SEGMENTS.ADMIN,

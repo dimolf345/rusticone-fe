@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { ADMIN_NAVITEMS, CUSTOMER_NAVITEMS } from '../constants/routes.constant';
+import { ADMIN_NAVITEMS, APP_PATHS, CUSTOMER_NAVITEMS } from '../constants/routes.constant';
 import { INavigationItem } from '../models/layout.model';
 import { AuthService } from '../services/auth.service';
 import { LayoutService } from '../services/layout.service';
@@ -28,11 +28,16 @@ export class Layout {
 
   redirectEffect = effect(() => {
     const user = this.#authService.currentUser();
+    if (this.#authService.isLoading()) {
+      return;
+    }
+
     if (user) {
-      this.#authService.redirectUserByRole();
+      if (this.#router.url === APP_PATHS.DASHBOARD.ROOT) {
+        this.#authService.redirectUserByRole(user);
+      }
     } else {
-      this.#router.navigate(['/login']);
+      this.#router.navigate([APP_PATHS.LOGIN]);
     }
   });
 }
-
