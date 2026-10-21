@@ -9,6 +9,8 @@ import { RouterLink } from '@angular/router';
 import { APP_PATHS, ICardAction, LayoutService } from '@core';
 import { DEFAULT_PRODUCT_CATEGORIES } from '@core/models/product.model';
 import { ProductsService } from '@core/services/products.service';
+import { provideIcons } from '@ng-icons/core';
+import { heroPencil, heroTrash } from '@ng-icons/heroicons/outline';
 import { CardListContainer } from '../../../components/card-list-container/card-list-container';
 import { Searchbar } from '../../../components/searchbar/searchbar';
 
@@ -18,6 +20,12 @@ import { Searchbar } from '../../../components/searchbar/searchbar';
   templateUrl: './admin-menu.html',
   styleUrl: './admin-menu.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    provideIcons({
+      heroPencil,
+      heroTrash,
+    }),
+  ],
 })
 export default class AdminMenu {
   // #region DEPENDENCIES
@@ -31,6 +39,11 @@ export default class AdminMenu {
 
   readonly searchQuery = signal<string>('');
   readonly debouncedQuery = debounced(this.searchQuery, 1000);
+
+  readonly productActions: ICardAction[] = [
+    { actionName: 'Modifica', icon: 'heroPencil', theme: 'btn-ghost' },
+    { actionName: 'Elimina', icon: 'heroTrash', theme: 'btn-ghost text-error' },
+  ];
 
   onProductAction(action: ICardAction): void {
     // TODO: handle edit / delete / view actions

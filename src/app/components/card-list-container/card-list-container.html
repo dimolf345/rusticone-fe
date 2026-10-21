@@ -28,134 +28,30 @@
       </p>
     </div>
   }
-  <!-- Content State -->
+  <!-- Content State: Grouped -->
+  @else if (isGrouped()) {
+    <app-card-list-grouped
+      [groups]="groupedItems()"
+      [contentGroups]="groupedContentCards()"
+      [hasResolvedItems]="hasResolvedItems()"
+      [actions]="actions()"
+      [initialCollapsed]="initialCollapsed()"
+      [cardTemplate]="cardTemplate()"
+      (cardAction)="onCardAction($event)"
+    >
+      <ng-content />
+    </app-card-list-grouped>
+  }
+  <!-- Content State: Grid (Ungrouped) -->
   @else {
-    <!-- Grouped Cards -->
-    @if (isGrouped()) {
-      <div class="grouped-list" data-testId="Card List Container - Grouped container">
-        <!-- Branch A: Items from httpResource or items input -->
-        @if (hasResolvedItems()) {
-          @for (group of groupedItems(); track group.key) {
-            <details
-              class="group-collapse"
-              [open]="isGroupOpen(group.key)"
-              (toggle)="onGroupToggle(group.key, $event)"
-              [attr.data-testId]="'Card List Container - Group ' + group.key"
-            >
-              <summary
-                class="group-summary"
-                [attr.data-testId]="'Card List Container - Group summary ' + group.key"
-              >
-                <div class="group-summary-left">
-                  <span class="group-title">{{ group.title }}</span>
-                  <span
-                    class="group-badge"
-                    [attr.data-testId]="'Card List Container - Group count ' + group.key"
-                  >
-                    {{ group.items.length }}
-                  </span>
-                </div>
-                <ng-icon
-                  name="heroChevronDown"
-                  class="group-chevron"
-                  [class.is-open]="isGroupOpen(group.key)"
-                  [attr.data-testId]="'Card List Container - Group chevron ' + group.key"
-                  aria-hidden="true"
-                />
-              </summary>
-              <div class="group-content">
-                <div
-                  class="card-grid"
-                  [attr.data-testId]="'Card List Container - Grid ' + group.key"
-                >
-                  @for (item of group.items; track itemTrackBy(item, $index)) {
-                    @if (cardTemplate(); as tpl) {
-                      <ng-container
-                        *ngTemplateOutlet="tpl; context: { $implicit: item, item: item }"
-                      />
-                    } @else {
-                      <!-- <app-generic-card
-                        [payload]="item"
-                        (action)="onCardAction($event)"
-                        data-testId="Card List Container - Generic card"
-                      /> -->
-                    }
-                  }
-                </div>
-              </div>
-            </details>
-          }
-        }
-        <!-- Branch B: Content Children (GenericCard) -->
-        @else if (groupedContentCards().length > 0) {
-          @for (group of groupedContentCards(); track group.key) {
-            <details
-              class="group-collapse"
-              [open]="isGroupOpen(group.key)"
-              (toggle)="onGroupToggle(group.key, $event)"
-              [attr.data-testId]="'Card List Container - Group ' + group.key"
-            >
-              <summary
-                class="group-summary"
-                [attr.data-testId]="'Card List Container - Group summary ' + group.key"
-              >
-                <div class="group-summary-left">
-                  <span class="group-title">{{ group.title }}</span>
-                  <span
-                    class="group-badge"
-                    [attr.data-testId]="'Card List Container - Group count ' + group.key"
-                  >
-                    {{ group.items.length }}
-                  </span>
-                </div>
-                <ng-icon
-                  name="heroChevronDown"
-                  class="group-chevron"
-                  [class.is-open]="isGroupOpen(group.key)"
-                  [attr.data-testId]="'Card List Container - Group chevron ' + group.key"
-                  aria-hidden="true"
-                />
-              </summary>
-              <div class="group-content">
-                <div
-                  class="card-grid"
-                  [attr.data-testId]="'Card List Container - Grid ' + group.key"
-                >
-                  @for (card of group.items; track $index) {
-                    @if (card.cardTemplate(); as tpl) {
-                      <ng-container *ngTemplateOutlet="tpl" />
-                    }
-                  }
-                </div>
-              </div>
-            </details>
-          }
-          <!-- Hidden slot so content children are instantiated and available to query -->
-          <div class="hidden-content-slot" aria-hidden="true">
-            <ng-content />
-          </div>
-        }
-      </div>
-    }
-    <!-- Ungrouped Responsive Grid -->
-    @else {
-      <div class="card-grid" data-testId="Card List Container - Grid">
-        @if (hasResolvedItems()) {
-          @for (item of resolvedItems(); track itemTrackBy(item, $index)) {
-            @if (cardTemplate(); as tpl) {
-              <ng-container *ngTemplateOutlet="tpl; context: { $implicit: item, item: item }" />
-            } @else {
-              <app-generic-card
-                [payload]="item"
-                (action)="onCardAction($event)"
-                data-testId="Card List Container - Generic card"
-              />
-            }
-          }
-        } @else {
-          <ng-content />
-        }
-      </div>
-    }
+    <app-card-list-grid
+      [items]="filteredItems()"
+      [hasResolvedItems]="hasResolvedItems()"
+      [actions]="actions()"
+      [cardTemplate]="cardTemplate()"
+      (cardAction)="onCardAction($event)"
+    >
+      <ng-content />
+    </app-card-list-grid>
   }
 </div>

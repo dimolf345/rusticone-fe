@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { type HttpResourceRef } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -9,33 +8,29 @@ import {
   input,
   output,
   type ResourceRef,
-  signal,
   TemplateRef,
+  viewChild,
 } from '@angular/core';
 import { CardGroupBy, ICardAction, ICardGroup } from '@core';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroChevronDown, heroChevronUp } from '@ng-icons/heroicons/outline';
 import { GenericCard } from '../generic-card/generic-card';
+import { CardListGrid } from './card-list-grid/card-list-grid';
+import { CardListGrouped } from './card-list-grouped/card-list-grouped';
 
 export type CardResourceRef<T = unknown> = HttpResourceRef<T> | ResourceRef<T>;
 
 @Component({
   selector: 'app-card-list-container',
-  imports: [NgTemplateOutlet, GenericCard, NgIcon],
+  imports: [CardListGrid, CardListGrouped],
   templateUrl: './card-list-container.html',
   styleUrl: './card-list-container.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    provideIcons({
-      heroChevronDown,
-      heroChevronUp,
-    }),
-  ],
 })
 export class CardListContainer {
   // Inputs
   readonly httpResource = input<CardResourceRef<unknown> | null | undefined>(undefined);
   readonly items = input<unknown[] | null | undefined>(undefined);
+  readonly actions = input<ICardAction[]>([]);
+  readonly searchTerm = input<string>('');
   readonly groupBy = input<CardGroupBy | null | undefined>(undefined);
   readonly groupOrder = input<string[] | null | undefined>(undefined);
   readonly initialCollapsed = input<boolean>(false);
@@ -47,13 +42,13 @@ export class CardListContainer {
   readonly cardAction = output<ICardAction>();
   readonly cardActions = output<ICardAction>();
 
+  // Subcomponent child view reference
+  readonly groupedComponent = viewChild(CardListGrouped);
+
   // Content children
   readonly contentCards = contentChildren(GenericCard, { descendants: true });
   readonly cardTemplate =
-    contentChild<TemplateRef<{ $implicit: unknown; item: unknown; }>>('cardTemplate');
-
-  // Group open/collapse manual overrides
-  readonly #groupOpenState = signal<Record<string, boolean>>({});
+    contentChild<TemplateRef<{ $implicit: unknown; item: unknown }>>('cardTemplate');
 
   // Computed state
   readonly hasHttpResource = computed(() => !!this.httpResource());
@@ -68,7 +63,7 @@ export class CardListContainer {
     return res?.error?.();
   });
 
-  readonly resolvedItems = computed<any[]>(() => {
+  readonly resolvedItems = computed<unknown[]>(() => {
     const res = this.httpResource();
     if (res) {
       const val = res.value?.();
@@ -77,7 +72,7 @@ export class CardListContainer {
         const record = val as Record<string, unknown>;
         for (const key of ['data', 'products', 'items', 'results']) {
           if (Array.isArray(record[key])) {
-            return record[key];
+            return record[key] as unknown[];
           }
         }
         return [val];
@@ -90,14 +85,33 @@ export class CardListContainer {
     return [];
   });
 
-  readonly hasResolvedItems = computed(() => this.resolvedItems().length > 0);
+  readonly filteredItems = computed<unknown[]>(() => {
+    const items = this.resolvedItems();
+    const query = this.searchTerm()?.toLowerCase().trim();
+    if (!query) return items;
+
+    return items.filter((item) => {
+      if (!item || typeof item !== 'object') {
+        return String(item).toLowerCase().includes(query);
+      }
+      const it = item as Record<string, unknown>;
+      const name = String(it['name'] ?? it['title'] ?? '').toLowerCase();
+      const desc = String(it['description'] ?? '').toLowerCase();
+      const categories = Array.isArray(it['categories'])
+        ? it['categories'].join(' ').toLowerCase()
+        : '';
+      return name.includes(query) || desc.includes(query) || categories.includes(query);
+    });
+  });
+
+  readonly hasResolvedItems = computed(() => this.filteredItems().length > 0);
 
   readonly isGrouped = computed(() => !!this.groupBy());
 
   readonly isEmpty = computed(() => {
     if (this.isLoading() || this.error()) return false;
     if (this.httpResource() !== undefined || this.items() !== undefined) {
-      return this.resolvedItems().length === 0;
+      return this.filteredItems().length === 0;
     }
     return false;
   });
@@ -105,7 +119,7 @@ export class CardListContainer {
   // Grouped items from httpResource or items array
   readonly groupedItems = computed<ICardGroup<unknown>[]>(() => {
     const groupBy = this.groupBy();
-    const items = this.resolvedItems();
+    const items = this.filteredItems();
     if (!groupBy || items.length === 0) return [];
 
     const map = new Map<string, unknown[]>();
@@ -145,31 +159,12 @@ export class CardListContainer {
   });
 
   isGroupOpen(groupKey: string): boolean {
-    const state = this.#groupOpenState();
-    if (state[groupKey] !== undefined) {
-      return state[groupKey];
-    }
-    return !this.initialCollapsed();
-  }
-
-  onGroupToggle(groupKey: string, event: Event): void {
-    const details = event.target as HTMLDetailsElement;
-    if (details) {
-      this.#groupOpenState.update((prev) => ({
-        ...prev,
-        [groupKey]: details.open,
-      }));
-    }
+    return this.groupedComponent()?.isGroupOpen(groupKey) ?? !this.initialCollapsed();
   }
 
   onCardAction(action: ICardAction): void {
     this.cardAction.emit(action);
     this.cardActions.emit(action);
-  }
-
-  itemTrackBy(item: unknown, index: number): string | number {
-    const it = item as Record<string, unknown> | null | undefined;
-    return (it?.['id'] as string | number) ?? (it?.['_id'] as string | number) ?? (it?.['name'] as string) ?? index;
   }
 
   // #region PRIVATE HELPERS

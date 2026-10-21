@@ -1,0 +1,18 @@
+<div class="card-grid" data-testId="Card List Container - Grid">
+  @if (hasResolvedItems()) {
+    @for (item of items(); track trackBy(item, $index)) {
+      @if (cardTemplate(); as tpl) {
+        <ng-container *ngTemplateOutlet="tpl; context: { $implicit: item, item: item }" />
+      } @else {
+        <app-generic-card
+          [payload]="asPayload(item)"
+          [actions]="actions()"
+          (action)="onCardAction($event)"
+          data-testId="Card List Container - Generic card"
+        />
+      }
+    }
+  } @else {
+    <ng-content />
+  }
+</div>
