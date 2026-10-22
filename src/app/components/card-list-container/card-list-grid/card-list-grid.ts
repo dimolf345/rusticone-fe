@@ -6,7 +6,7 @@ import {
   output,
   TemplateRef,
 } from '@angular/core';
-import { ICardAction, ICardPayload } from '@core';
+import { ICardAction, ICardConfig, ICardPayload } from '@core';
 import { GenericCard } from '../../generic-card/generic-card';
 import { itemTrackBy } from '../card-list.util';
 
@@ -18,9 +18,10 @@ import { itemTrackBy } from '../card-list.util';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardListGrid {
-  readonly items = input<unknown[]>([]);
+  readonly items = input<ICardPayload[]>([]);
   readonly hasResolvedItems = input<boolean>(false);
   readonly actions = input<ICardAction[]>([]);
+  readonly cardConfig = input<ICardConfig | null | undefined>(undefined);
   readonly cardTemplate =
     input<TemplateRef<{ $implicit: unknown; item: unknown }> | null | undefined>(null);
 
@@ -32,7 +33,7 @@ export class CardListGrid {
     this.cardAction.emit(action);
   }
 
-  asPayload(item: unknown): ICardPayload {
-    return item as ICardPayload;
+  asPayload(item: ICardPayload): ICardPayload {
+    return item;
   }
 }

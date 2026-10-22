@@ -20,4 +20,5 @@ export * from './services/error-handlers';
 export * from './services/form-validation.service';
 export * from './services/layout.service';
 export * from './interceptors';
+export * from './mappers';
 export * from './utils';

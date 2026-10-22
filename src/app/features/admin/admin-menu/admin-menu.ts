@@ -7,7 +7,14 @@ import {
   signal,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { APP_PATHS, CardItem, ICardAction, LayoutService, productToCardItem } from '@core';
+import {
+  APP_PATHS,
+  CardItem,
+  ICardAction,
+  ICardConfig,
+  LayoutService,
+  productToCardItem,
+} from '@core';
 import { DEFAULT_PRODUCT_CATEGORIES } from '@core/models/product.model';
 import { ProductsService } from '@core/services/products.service';
 import { provideIcons } from '@ng-icons/core';
@@ -51,6 +58,13 @@ export default class AdminMenu {
     { actionName: 'Modifica', icon: 'heroPencil', theme: 'btn-ghost' },
     { actionName: 'Elimina', icon: 'heroTrash', theme: 'btn-ghost text-error' },
   ];
+
+  readonly cardConfig: ICardConfig = {
+    layout: 'vertical',
+    size: 'regular',
+    round: 'sm',
+    border: 'sm',
+  };
 
   onProductAction(action: ICardAction): void {
     // TODO: handle edit / delete / view actions

@@ -160,6 +160,7 @@ describe('AdminMenu', () => {
 
       expect(listInstance.httpResource()).toBe(component.productResource);
       expect(listInstance.items()).toEqual(component.cardItems());
+      expect(listInstance.cardConfig()).toEqual(component.cardConfig);
       expect(listInstance.groupBy()).toBe('categories');
 
       const genericCards = template.queryAll(By.directive(GenericCard));
@@ -167,7 +168,10 @@ describe('AdminMenu', () => {
       expect((genericCards[0].componentInstance as GenericCard).payload()?.title).toBe(
         'Pizza Margherita',
       );
-      expect((genericCards[0].componentInstance as GenericCard).payload()?.footer).toBe('€ 8,50');
+      expect((genericCards[0].componentInstance as GenericCard).footerClass()).toBe('');
+      expect((genericCards[0].componentInstance as GenericCard).layout()).toBe('vertical');
+      expect((genericCards[0].componentInstance as GenericCard).size()).toBe('regular');
+      expect((genericCards[0].componentInstance as GenericCard).round()).toBe('sm');
     });
 
     it('should render fallback error UI when productResource is in error state', () => {

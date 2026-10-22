@@ -43,6 +43,13 @@
                 <app-generic-card
                   [payload]="asPayload(item)"
                   [actions]="actions()"
+                  [layout]="cardConfig()?.layout ?? 'vertical'"
+                  [size]="cardConfig()?.size ?? 'regular'"
+                  [round]="cardConfig()?.round ?? (cardConfig()?.border === 'sm' ? 'sm' : 'regular')"
+                  [actionsDisplay]="cardConfig()?.actionsDisplay ?? 'auto'"
+                  [actionAlwaysVisible]="cardConfig()?.actionAlwaysVisible ?? false"
+                  [showImgeDetail]="cardConfig()?.showImgeDetail ?? false"
+                  [footerClass]="cardConfig()?.footerClass ?? ''"
                   (action)="onCardAction($event)"
                   data-testId="Card List Container - Generic card"
                 />

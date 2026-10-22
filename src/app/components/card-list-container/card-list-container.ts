@@ -11,7 +11,7 @@ import {
   TemplateRef,
   viewChild,
 } from '@angular/core';
-import { CardGroupBy, ICardAction, ICardGroup } from '@core';
+import { CardGroupBy, ICardAction, ICardConfig, ICardGroup, ICardPayload } from '@core';
 import { GenericCard } from '../generic-card/generic-card';
 import { CardListGrid } from './card-list-grid/card-list-grid';
 import { CardListGrouped } from './card-list-grouped/card-list-grouped';
@@ -28,7 +28,9 @@ export type CardResourceRef<T = unknown> = HttpResourceRef<T> | ResourceRef<T>;
 export class CardListContainer {
   // Inputs
   readonly httpResource = input<CardResourceRef<unknown> | null | undefined>(undefined);
-  readonly items = input<unknown[] | null | undefined>(undefined);
+  readonly httpResourceMappingFn = input<((value: unknown) => ICardPayload[]) | null>(null);
+  readonly items = input<ICardPayload[] | null | undefined>(undefined);
+  readonly cardConfig = input<ICardConfig | null | undefined>(undefined);
   readonly actions = input<ICardAction[]>([]);
   readonly searchTerm = input<string>('');
   readonly groupBy = input<CardGroupBy | null | undefined>(undefined);
@@ -63,50 +65,41 @@ export class CardListContainer {
     return res?.error?.();
   });
 
-  readonly resolvedItems = computed<unknown[]>(() => {
+  readonly resolvedItems = computed<ICardPayload[]>(() => {
     const directItems = this.items();
     if (Array.isArray(directItems)) {
       return directItems;
     }
 
     const res = this.httpResource();
-    if (res) {
-      if (res.error?.()) {
-        return [];
-      }
-      const val = res.value?.();
-      if (Array.isArray(val)) return val;
-      if (val && typeof val === 'object') {
-        const record = val as Record<string, unknown>;
-        for (const key of ['data', 'products', 'items', 'results']) {
-          if (Array.isArray(record[key])) {
-            return record[key] as unknown[];
-          }
-        }
-        return [val];
-      }
+    if (!res || res.error?.()) {
       return [];
     }
 
-    return [];
+    const val = res.value?.();
+    const mappingFn = this.httpResourceMappingFn();
+    if (mappingFn) {
+      if (val === undefined || val === null) {
+        return [];
+      }
+      return mappingFn(val) ?? [];
+    }
+
+    return Array.isArray(val) ? (val as ICardPayload[]) : [];
   });
 
-  readonly filteredItems = computed<unknown[]>(() => {
+  readonly filteredItems = computed<ICardPayload[]>(() => {
     const items = this.resolvedItems();
     const query = this.searchTerm()?.toLowerCase().trim();
     if (!query) return items;
 
     return items.filter((item) => {
-      if (!item || typeof item !== 'object') {
-        return String(item).toLowerCase().includes(query);
-      }
-      const it = item as Record<string, unknown>;
-      const name = String(it['name'] ?? it['title'] ?? '').toLowerCase();
-      const desc = String(it['description'] ?? '').toLowerCase();
-      const categories = Array.isArray(it['categories'])
-        ? it['categories'].join(' ').toLowerCase()
+      const title = String(item.title ?? '').toLowerCase();
+      const desc = String(item.description ?? '').toLowerCase();
+      const categories = Array.isArray(item.categories)
+        ? item.categories.join(' ').toLowerCase()
         : '';
-      return name.includes(query) || desc.includes(query) || categories.includes(query);
+      return title.includes(query) || desc.includes(query) || categories.includes(query);
     });
   });
 
@@ -123,12 +116,12 @@ export class CardListContainer {
   });
 
   // Grouped items from httpResource or items array
-  readonly groupedItems = computed<ICardGroup<unknown>[]>(() => {
+  readonly groupedItems = computed<ICardGroup<ICardPayload>[]>(() => {
     const groupBy = this.groupBy();
     const items = this.filteredItems();
     if (!groupBy || items.length === 0) return [];
 
-    const map = new Map<string, unknown[]>();
+    const map = new Map<string, ICardPayload[]>();
 
     for (const item of items) {
       const keys = this.#extractKeys(item, groupBy);

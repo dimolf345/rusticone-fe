@@ -7,7 +7,7 @@ import {
   signal,
   TemplateRef,
 } from '@angular/core';
-import { ICardAction, ICardGroup, ICardPayload } from '@core';
+import { ICardAction, ICardConfig, ICardGroup, ICardPayload } from '@core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroChevronDown, heroChevronUp } from '@ng-icons/heroicons/outline';
 import { GenericCard } from '../../generic-card/generic-card';
@@ -27,10 +27,11 @@ import { itemTrackBy } from '../card-list.util';
   ],
 })
 export class CardListGrouped {
-  readonly groups = input<ICardGroup<unknown>[]>([]);
+  readonly groups = input<ICardGroup<ICardPayload>[]>([]);
   readonly contentGroups = input<ICardGroup<GenericCard>[]>([]);
   readonly hasResolvedItems = input<boolean>(false);
   readonly actions = input<ICardAction[]>([]);
+  readonly cardConfig = input<ICardConfig | null | undefined>(undefined);
   readonly initialCollapsed = input<boolean>(false);
   readonly cardTemplate =
     input<TemplateRef<{ $implicit: unknown; item: unknown }> | null | undefined>(null);
@@ -63,7 +64,7 @@ export class CardListGrouped {
     this.cardAction.emit(action);
   }
 
-  asPayload(item: unknown): ICardPayload {
-    return item as ICardPayload;
+  asPayload(item: ICardPayload): ICardPayload {
+    return item;
   }
 }
