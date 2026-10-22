@@ -27,6 +27,11 @@
   @apply rounded-none;
 }
 
+.card-round-sm,
+.card-round-small {
+  @apply rounded-sm;
+}
+
 .card-round-regular {
   @apply rounded-2xl;
 }

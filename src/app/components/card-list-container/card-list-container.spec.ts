@@ -1,7 +1,7 @@
 import { Component, ComponentRef, DebugElement, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { getByTestId, ICardAction } from '@core';
+import { getByTestId, ICardAction, ICardPayload } from '@core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GenericCard } from '../generic-card/generic-card';
 import { CardListContainer, CardResourceRef } from './card-list-container';
@@ -53,23 +53,32 @@ describe('CardListContainer', () => {
 
   const testIdPrefix = 'Card List Container - ';
 
-  const mockProducts = [
+  const mockProducts: ICardPayload[] = [
     {
       id: 'p1',
-      name: 'Pizza Margherita',
-      basePrice: 8.5,
+      title: 'Pizza Margherita',
+      description: 'Pomodoro e mozzarella',
+      imageUrl: '',
+      imageAlt: 'Pizza Margherita',
+      footer: '8.5',
       categories: ['Pizza', 'Cotti al forno'],
     },
     {
       id: 'p2',
-      name: 'Rustico Leccese',
-      basePrice: 3.5,
+      title: 'Rustico Leccese',
+      description: 'Besciamella e pomodoro',
+      imageUrl: '',
+      imageAlt: 'Rustico Leccese',
+      footer: '3.5',
       categories: ['Rustici', 'Cotti al forno'],
     },
     {
       id: 'p3',
-      name: 'Pasticciotto Crema',
-      basePrice: 2.5,
+      title: 'Pasticciotto Crema',
+      description: 'Crema pasticcera',
+      imageUrl: '',
+      imageAlt: 'Pasticciotto Crema',
+      footer: '2.5',
       categories: ['Dolci'],
     },
   ];
@@ -215,6 +224,48 @@ describe('CardListContainer', () => {
       expect(cardDebugEls.length).toBe(3);
     });
 
+    it('should execute httpResourceMappingFn against resource.value when provided', () => {
+      const apiResponse = { products: mockProducts };
+      const resource = createMockResource({ value: apiResponse });
+      const mappingFn = vi.fn((val: unknown) => {
+        const payload = val as { products: ICardPayload[] };
+        return payload.products.map((p) => ({
+          ...p,
+          title: `Mapped: ${p.title}`,
+        }));
+      });
+
+      fixture.componentRef.setInput('httpResource', resource);
+      fixture.componentRef.setInput('httpResourceMappingFn', mappingFn);
+      fixture.detectChanges();
+
+      expect(mappingFn).toHaveBeenCalledWith(apiResponse);
+      const cardDebugEls = template.queryAll(By.directive(GenericCard));
+      expect(cardDebugEls.length).toBe(3);
+    });
+
+    it('should return empty array if resource value is not an array and no mappingFn is provided', () => {
+      const resource = createMockResource({ value: { notAnArray: true } });
+      fixture.componentRef.setInput('httpResource', resource);
+      fixture.detectChanges();
+
+      const cardDebugEls = template.queryAll(By.directive(GenericCard));
+      expect(cardDebugEls.length).toBe(0);
+      expect(component.resolvedItems()).toEqual([]);
+    });
+
+    it('should forward cardConfig to rendered GenericCard components', () => {
+      fixture.componentRef.setInput('items', mockProducts);
+      fixture.componentRef.setInput('cardConfig', { layout: 'horizontal', size: 'large' });
+      fixture.detectChanges();
+
+      const cardDebugEls = template.queryAll(By.directive(GenericCard));
+      expect(cardDebugEls.length).toBe(3);
+      const firstCard = cardDebugEls[0].componentInstance as GenericCard;
+      expect(firstCard.layout()).toBe('horizontal');
+      expect(firstCard.size()).toBe('large');
+    });
+
     it('should emit cardAction when a child GenericCard triggers an action', () => {
       fixture.componentRef.setInput('items', mockProducts);
       fixture.detectChanges();
@@ -236,8 +287,8 @@ describe('CardListContainer', () => {
 
     it('should support custom groupBy function', () => {
       fixture.componentRef.setInput('items', mockProducts);
-      fixture.componentRef.setInput('groupBy', (item: unknown) =>
-        ((item as Record<string, unknown>)['basePrice'] as number) > 5 ? 'Costosi' : 'Economici',
+      fixture.componentRef.setInput('groupBy', (item: ICardPayload) =>
+        parseFloat(item.footer) > 5 ? 'Costosi' : 'Economici',
       );
       fixture.detectChanges();
 

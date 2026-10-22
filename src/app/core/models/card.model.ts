@@ -37,6 +37,17 @@ export interface ICardGroup<T = unknown> {
 
 export type CardSize = 'small' | 'regular' | 'large';
 export type CardLayout = 'vertical' | 'horizontal';
-export type CardRound = 'none' | 'regular' | 'full';
+export type CardRound = 'none' | 'sm' | 'small' | 'regular' | 'full';
 
 export type CardGroupBy<T = unknown> = string | ((item: T) => string | string[]);
+
+export interface ICardConfig {
+  layout?: CardLayout;
+  size?: CardSize;
+  round?: CardRound;
+  border?: 'sm' | 'none' | string;
+  actionsDisplay?: 'auto' | 'buttons' | 'menu';
+  actionAlwaysVisible?: boolean;
+  showImgeDetail?: boolean;
+  footerClass?: string;
+}
