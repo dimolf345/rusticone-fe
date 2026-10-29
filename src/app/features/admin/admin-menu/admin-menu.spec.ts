@@ -160,7 +160,7 @@ describe('AdminMenu', () => {
 
       expect(listInstance.httpResource()).toBe(component.productResource);
       expect(listInstance.items()).toEqual(component.cardItems());
-      expect(listInstance.cardConfig()).toEqual(component.cardConfig);
+      expect(listInstance.cardConfig()).toEqual(component.cardConfig());
       expect(listInstance.groupBy()).toBe('categories');
 
       const genericCards = template.queryAll(By.directive(GenericCard));
@@ -172,6 +172,31 @@ describe('AdminMenu', () => {
       expect((genericCards[0].componentInstance as GenericCard).layout()).toBe('vertical');
       expect((genericCards[0].componentInstance as GenericCard).size()).toBe('regular');
       expect((genericCards[0].componentInstance as GenericCard).round()).toBe('sm');
+    });
+
+    it('should dynamically update cardConfig when layoutService screenSize changes', () => {
+      layoutService.setScreenSize('mobile');
+      fixture.detectChanges();
+
+      const listInstance = template.query(By.directive(CardListContainer))
+        .componentInstance as CardListContainer;
+
+      expect(listInstance.cardConfig()).toEqual({
+        layout: 'horizontal',
+        size: 'small',
+        round: 'sm',
+        border: 'sm',
+      });
+
+      layoutService.setScreenSize('desktop');
+      fixture.detectChanges();
+
+      expect(listInstance.cardConfig()).toEqual({
+        layout: 'vertical',
+        size: 'regular',
+        round: 'sm',
+        border: 'sm',
+      });
     });
 
     it('should render fallback error UI when productResource is in error state', () => {

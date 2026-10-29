@@ -59,12 +59,28 @@ export default class AdminMenu {
     { actionName: 'Elimina', icon: 'heroTrash', theme: 'btn-ghost text-error' },
   ];
 
-  readonly cardConfig: ICardConfig = {
-    layout: 'vertical',
-    size: 'regular',
-    round: 'sm',
-    border: 'sm',
-  };
+  readonly cardConfig = computed<ICardConfig>(() => {
+    const size = this.layoutService.screenSize();
+
+    switch (size) {
+      case 'mobile':
+        return {
+          layout: 'horizontal',
+          size: 'small',
+          round: 'regular',
+          border: 'sm',
+        };
+      case 'tablet':
+      case 'desktop':
+      default:
+        return {
+          layout: 'vertical',
+          size: 'regular',
+          round: 'regular',
+          border: 'sm',
+        };
+    }
+  });
 
   onProductAction(action: ICardAction): void {
     // TODO: handle edit / delete / view actions

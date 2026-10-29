@@ -34,7 +34,7 @@
     <app-card-list-container
       [httpResource]="productResource"
       [items]="cardItems()"
-      [cardConfig]="cardConfig"
+      [cardConfig]="cardConfig()"
       [searchTerm]="debouncedQuery.value()"
       [actions]="productActions"
       groupBy="categories"
