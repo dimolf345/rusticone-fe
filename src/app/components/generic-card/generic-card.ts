@@ -9,7 +9,7 @@ import {
   model,
   output,
   TemplateRef,
-  viewChild
+  viewChild,
 } from '@angular/core';
 import { CardLayout, CardRound, CardSize, ICardAction, ICardPayload, LayoutService } from '@core';
 import { NgIcon } from '@ng-icons/core';
@@ -41,7 +41,7 @@ export class GenericCard {
   readonly action = output<ICardAction>();
   readonly cardClick = output<void>();
 
-  // Computed 
+  // Computed
   readonly composedTestId = computed(() => `${this.testId()} - `);
   readonly cardContainerClasses = computed(() => {
     const cardSizeClass = `card-${this.size()}`;
@@ -67,10 +67,12 @@ export class GenericCard {
   // Template ViewChild for group projection
   readonly cardTemplate = viewChild<TemplateRef<unknown>>('cardTemplate');
 
-  onAction(actionType: string, event?: Event): void {
+  onAction(action: ICardAction, event?: Event): void {
+    const { actionName, actionLabel } = action;
     event?.stopPropagation();
     this.action.emit({
-      actionName: actionType,
+      actionName,
+      actionLabel,
       item: this.payload(),
     });
   }

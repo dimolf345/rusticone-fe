@@ -9,6 +9,7 @@ import {
 import { RouterLink } from '@angular/router';
 import {
   APP_PATHS,
+  BaseCardAction,
   CardItem,
   ICardAction,
   ICardConfig,
@@ -55,8 +56,18 @@ export default class AdminMenu {
   readonly debouncedQuery = debounced(this.searchQuery, 1000);
 
   readonly productActions: ICardAction[] = [
-    { actionName: 'Modifica', icon: 'heroPencil', theme: 'btn-ghost' },
-    { actionName: 'Elimina', icon: 'heroTrash', theme: 'btn-ghost text-error' },
+    {
+      actionName: BaseCardAction.Update,
+      actionLabel: 'Modifica',
+      icon: 'heroPencil',
+      theme: 'btn-ghost',
+    },
+    {
+      actionName: BaseCardAction.Delete,
+      actionLabel: 'Elimina',
+      icon: 'heroTrash',
+      theme: 'btn-ghost text-error',
+    },
   ];
 
   readonly cardConfig = computed<ICardConfig>(() => {
@@ -83,8 +94,12 @@ export default class AdminMenu {
   });
 
   onProductAction(action: ICardAction): void {
-    // TODO: handle edit / delete / view actions
-    console.log('Product action', action);
+    switch (action.actionName) {
+      case BaseCardAction.Delete:
+        break;
+      default:
+        return;
+    }
   }
 }
 

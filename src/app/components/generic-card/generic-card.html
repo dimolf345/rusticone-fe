@@ -55,12 +55,12 @@
                   class="btn btn-sm btn-scale"
                   [class]="act.theme || 'btn-ghost'"
                   [disabled]="act.disabled"
-                  (click)="onAction(act.actionName, $event)"
+                  (click)="onAction(act, $event)"
                 >
                   @if (act.icon) {
                     <ng-icon [name]="act.icon"></ng-icon>
                   }
-                  {{ act.actionName }}
+                  {{ act.actionLabel }}
                 </button>
               }
             </div>

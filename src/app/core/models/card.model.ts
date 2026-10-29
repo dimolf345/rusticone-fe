@@ -1,5 +1,12 @@
+export const BaseCardAction = {
+  Delete: 'delete',
+  Update: 'update',
+  Create: 'create',
+} as const;
+export type BaseCardAction = (typeof BaseCardAction)[keyof typeof BaseCardAction];
 export interface ICardAction<T = unknown> {
-  actionName: string;
+  actionName: BaseCardAction | string;
+  actionLabel: string;
   item?: T;
   icon?: string;
   theme?: string;
